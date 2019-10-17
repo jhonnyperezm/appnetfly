@@ -4,7 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {NgForm} from '@angular/forms';
 import Swal from 'sweetalert2';
 
-import * as XLSX from 'XLSX';
+// import * as XLSX from 'XLSX';
 import {SidebarComponent} from '../../../shared/sidebar/sidebar.component';
 
 type AOA = any[][];
@@ -43,8 +43,8 @@ export class ProcesosespComponent implements OnInit {
   codigopluanterior: any;
 
   // EXCEL
-  wopts: XLSX.WritingOptions = {bookType: 'xlsx', type: 'array'};
-  fileName = 'ExcelParaImportacion.xlsx';
+  // wopts: XLSX.WritingOptions = {bookType: 'xlsx', type: 'array'};
+  // fileName = 'ExcelParaImportacion.xlsx';
 
   @ViewChild('ArticulosImportForm', {static: true})
   public ArticulosImportForm: NgForm;
@@ -110,161 +110,161 @@ export class ProcesosespComponent implements OnInit {
 
   Descargar(): void {
 
-    const clases = {
-      datos: []
-    };
+    // const clases = {
+    //   datos: []
+    // };
 
-    const unidades = {
-      datos: []
-    };
+    // const unidades = {
+    //   datos: []
+    // };
 
-    const articulos = {
-      datos: []
-    };
-    clases.datos.push([['CLASES Y GRUPOS']], []);
-    clases.datos.push([['Id Clase'],
-      ['Nombre Clase'],
-      ['Id Grupo'],
-      ['Nombre Grupo']
-    ]);
+    // const articulos = {
+    //   datos: []
+    // };
+    // clases.datos.push([['CLASES Y GRUPOS']], []);
+    // clases.datos.push([['Id Clase'],
+    //   ['Nombre Clase'],
+    //   ['Id Grupo'],
+    //   ['Nombre Grupo']
+    // ]);
 
-    for (const key of this.arrayClases) {
-      clases.datos.push([
-        [key.idClase], // A1
-        [key.nombreClase], // B1
-        [key.idGrupo], // B1
-        [key.nombreGrupo]
-      ]);
-    }
+    // for (const key of this.arrayClases) {
+    //   clases.datos.push([
+    //     [key.idClase], // A1
+    //     [key.nombreClase], // B1
+    //     [key.idGrupo], // B1
+    //     [key.nombreGrupo]
+    //   ]);
+    // }
 
-    unidades.datos.push([['UNIDADES DE VENTA']], []);
-    unidades.datos.push([['Id Unidad'],
-      ['Nombre Unidad']
-    ]);
-    for (const key of this.arrayUnidades) {
-      console.log(key);
-      unidades.datos.push([
-        [key.id],
-        [key.nombre]
-      ]);
-    }
+    // unidades.datos.push([['UNIDADES DE VENTA']], []);
+    // unidades.datos.push([['Id Unidad'],
+    //   ['Nombre Unidad']
+    // ]);
+    // for (const key of this.arrayUnidades) {
+    //   console.log(key);
+    //   unidades.datos.push([
+    //     [key.id],
+    //     [key.nombre]
+    //   ]);
+    // }
 
 
-    if (this.DataCliente.manejaCodplu === true) {
-      articulos.datos.push([['DATOS ARTICULOS'], [], [], ['Codigo Plu Anterior:'], [this.codigopluanterior]], []);
-      articulos.datos.push([['Nombre articulo'],
-        ['Codigo barras'],
-        ['Venta'],
-        ['Id Clase'],
-        ['Id Grupo'],
-        ['Codigo Plu'],
-        ['Id Unidad Venta'],
-        ['Precio']
-      ]);
-    } else {
-      articulos.datos.push([['DATOS ARTICULOS']], []);
-      articulos.datos.push([['Nombre articulo'],
-        ['Codigo barras'],
-        ['Venta'],
-        ['Id Clase'],
-        ['Id Grupo'],
-        ['Id Unidad Venta'],
-        ['Precio']
-      ]);
-    }
-    const wscols = [
-      {wch: 15},
-      {wch: 15},
-      {wch: 15},
-      {wch: 15},
-      {wch: 15},
-      {wch: 15},
-      {wch: 15},
-      {wch: 15}
-    ];
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(clases.datos);
-    const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(unidades.datos);
-    const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(articulos.datos);
-    ws['!cols'] = wscols;
-    ws1['!cols'] = wscols;
-    ws2['!cols'] = wscols;
-    // generate workbook and add the worksheet
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clases');
-    XLSX.utils.book_append_sheet(wb, ws1, 'Unidades');
-    XLSX.utils.book_append_sheet(wb, ws2, 'Datos Articulo');
-    // save to file
-    XLSX.writeFile(wb, this.fileName);
-    /* this.array=''; */
+    // if (this.DataCliente.manejaCodplu === true) {
+    //   articulos.datos.push([['DATOS ARTICULOS'], [], [], ['Codigo Plu Anterior:'], [this.codigopluanterior]], []);
+    //   articulos.datos.push([['Nombre articulo'],
+    //     ['Codigo barras'],
+    //     ['Venta'],
+    //     ['Id Clase'],
+    //     ['Id Grupo'],
+    //     ['Codigo Plu'],
+    //     ['Id Unidad Venta'],
+    //     ['Precio']
+    //   ]);
+    // } else {
+    //   articulos.datos.push([['DATOS ARTICULOS']], []);
+    //   articulos.datos.push([['Nombre articulo'],
+    //     ['Codigo barras'],
+    //     ['Venta'],
+    //     ['Id Clase'],
+    //     ['Id Grupo'],
+    //     ['Id Unidad Venta'],
+    //     ['Precio']
+    //   ]);
+    // }
+    // const wscols = [
+    //   {wch: 15},
+    //   {wch: 15},
+    //   {wch: 15},
+    //   {wch: 15},
+    //   {wch: 15},
+    //   {wch: 15},
+    //   {wch: 15},
+    //   {wch: 15}
+    // ];
+    // const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(clases.datos);
+    // const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(unidades.datos);
+    // const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(articulos.datos);
+    // ws['!cols'] = wscols;
+    // ws1['!cols'] = wscols;
+    // ws2['!cols'] = wscols;
+    // // generate workbook and add the worksheet
+    // const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    // XLSX.utils.book_append_sheet(wb, ws, 'Clases');
+    // XLSX.utils.book_append_sheet(wb, ws1, 'Unidades');
+    // XLSX.utils.book_append_sheet(wb, ws2, 'Datos Articulo');
+    // // save to file
+    // XLSX.writeFile(wb, this.fileName);
+    // /* this.array=''; */
   }
 
 
   onFileChange(evt, archivo) {
-    this.DataFile = evt;
-    console.log(evt);
-    console.log(archivo);
-    const extensiones_permitidas = new Array('.xlsx', '.xls');
-    let mierror = '';
-    $('.custom-file-label').html(evt.target.files[0].name);
-    if (!archivo) {
-      // Si no tengo archivo, es que no se ha seleccionado un archivo en el formulario
-      mierror = 'No has seleccionado ningún archivo';
-      this.toastr.error('No has seleccionado ningún archivo', 'Error');
-    } else {
-      // recupero la extensión de este nombre de archivo
-      const extension = (archivo.substring(archivo.lastIndexOf('.'))).toLowerCase();
-      // alert (extension);
-      // compruebo si la extensión está entre las permitidas
-      let permitida = false;
-      for (let i = 0; i < extensiones_permitidas.length; i++) {
-        if (extensiones_permitidas[i] == extension) {
-          permitida = true;
-          break;
-        }
-      }
-      if (!permitida) {
-        this.toastr.error('Comprueba la extensión de los archivos a subir.\nSólo se pueden subir archivos con extensiones: ' +
-          extensiones_permitidas.join(), 'Error');
-        /*  mierror = 'Comprueba la extensión de los archivos a subir.\nSólo se pueden subir archivos con extensiones: ' +
-         extensiones_permitidas.join(); */
-        this.extensionCorrecta = false;
-      } else {
-        this.extensionCorrecta = true;
-        return 1;
-      }
-    }
-    return 0;
+    // this.DataFile = evt;
+    // console.log(evt);
+    // console.log(archivo);
+    // const extensiones_permitidas = new Array('.xlsx', '.xls');
+    // let mierror = '';
+    // $('.custom-file-label').html(evt.target.files[0].name);
+    // if (!archivo) {
+    //   // Si no tengo archivo, es que no se ha seleccionado un archivo en el formulario
+    //   mierror = 'No has seleccionado ningún archivo';
+    //   this.toastr.error('No has seleccionado ningún archivo', 'Error');
+    // } else {
+    //   // recupero la extensión de este nombre de archivo
+    //   const extension = (archivo.substring(archivo.lastIndexOf('.'))).toLowerCase();
+    //   // alert (extension);
+    //   // compruebo si la extensión está entre las permitidas
+    //   let permitida = false;
+    //   for (let i = 0; i < extensiones_permitidas.length; i++) {
+    //     if (extensiones_permitidas[i] == extension) {
+    //       permitida = true;
+    //       break;
+    //     }
+    //   }
+    //   if (!permitida) {
+    //     this.toastr.error('Comprueba la extensión de los archivos a subir.\nSólo se pueden subir archivos con extensiones: ' +
+    //       extensiones_permitidas.join(), 'Error');
+    //     /*  mierror = 'Comprueba la extensión de los archivos a subir.\nSólo se pueden subir archivos con extensiones: ' +
+    //      extensiones_permitidas.join(); */
+    //     this.extensionCorrecta = false;
+    //   } else {
+    //     this.extensionCorrecta = true;
+    //     return 1;
+    //   }
+    // }
+    // return 0;
   }
 
   SubirArticulos(evt) {
-    $('#Progress').modal({backdrop: 'static'});
-    console.log(this.DataImportar.nombre);
-    console.log(evt);
-    if (evt === undefined) {
-      this.toastr.error('No has seleccionado ningún archivo', 'Error');
-    } else {
-      const target: DataTransfer = <DataTransfer> (evt.target);
-      if (target.files.length !== 1) {
-        throw new Error('Cannot use multiple files');
-      }
-      // if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-      const reader: FileReader = new FileReader();
-      reader.onload = (e: any) => {
-        /* read workbook */
-        const bstr: string = e.target.result;
-        const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+    // $('#Progress').modal({backdrop: 'static'});
+    // console.log(this.DataImportar.nombre);
+    // console.log(evt);
+    // if (evt === undefined) {
+    //   this.toastr.error('No has seleccionado ningún archivo', 'Error');
+    // } else {
+    //   const target: DataTransfer = <DataTransfer> (evt.target);
+    //   if (target.files.length !== 1) {
+    //     throw new Error('Cannot use multiple files');
+    //   }
+    //   // if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    //   const reader: FileReader = new FileReader();
+    //   reader.onload = (e: any) => {
+    //     /* read workbook */
+    //     const bstr: string = e.target.result;
+    //     const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
 
-        /* grab first sheet */
-        const wsname: string = wb.SheetNames[2];
-        const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+    //     /* grab first sheet */
+    //     const wsname: string = wb.SheetNames[2];
+    //     const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
-        /* save data */
-        this.datosImportar = <AOA> (XLSX.utils.sheet_to_json(ws, {header: 1}));
-        // console.log(this.data2);
-        this.estructuraClientes(this.datosImportar);
-      };
-      reader.readAsBinaryString(target.files[0]);
-    }
+    //     /* save data */
+    //     this.datosImportar = <AOA> (XLSX.utils.sheet_to_json(ws, {header: 1}));
+    //     // console.log(this.data2);
+    //     this.estructuraClientes(this.datosImportar);
+    //   };
+    //   reader.readAsBinaryString(target.files[0]);
+    // }
   }
 
   estructuraClientes(datos) {

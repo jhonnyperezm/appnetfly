@@ -1,0 +1,164 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Transacciones</h1>
+      </div>
+    </div>
+
+    <form #transaccionesForm="ngForm">
+      <br>
+      <div class="caja_cliente">
+        <div class="row">
+          <span class="tiulocaja-configuraciones"> Nombre</span>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="nombre">Nombre
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataNewTransaccion.nombre" class="form-control" id="nombre" [(ngModel)]="DataNewTransaccion.nombre"
+                #nombre="ngModel" minlength="2" maxlength="100" required
+                [ngClass]="{'is-invalid': !nombre.valid && (nombre.dirty || nombre.touched)}"/>
+              <span class="invalid-feedback" *ngIf="nombre.errors && (nombre.dirty || nombre.touched)">
+                <li *ngIf=nombre.errors.required>
+                  El campo Nombre es obligatorio
+                </li>
+                <li *ngIf="nombre.errors.minlength">
+                  El campo Nombre debe ser mayor a 2 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="entrada">Tipo Transaccion
+              <b class="asterisco">*</b>:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="tipoentr" name="DataNewTransaccion.tipo" [(ngModel)]="DataNewTransaccion.tipo" [value]=3 required>
+            <label for="tipoentr">Entrada</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="tiposal" name="DataNewTransaccion.tipo" [(ngModel)]="DataNewTransaccion.tipo" [value]=1 required>
+            <label for="tiposal">Salida</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewTransaccion.tipo==3">
+          <div class="col-md-4">
+            <label for="costo">Desea Calculo de costo?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="costosi" name="DataNewTransaccion.costo" [(ngModel)]="DataNewTransaccion.costo" [value]=1 required>
+            <label for="costosi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="costono" name="DataNewTransaccion.costo" [(ngModel)]="DataNewTransaccion.costo" [value]=0 required>
+            <label for="costono">No</label>
+          </div>
+        </div>
+        <div class="row" *ngIf="DataNewTransaccion.costo==1">
+          <div class="col-md-4">
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="tipocosuni" name="DataNewTransaccion.clase" [(ngModel)]="DataNewTransaccion.clase" [value]=2 required>
+            <label for="tipocosuni">Unitario</label>
+          </div>
+          <div class="col-md-2">
+            <input type="radio" id="tipocostot" name="DataNewTransaccion.clase" [(ngModel)]="DataNewTransaccion.clase" [value]=3 required>
+            <label for="tipocostot">Total</label>
+
+          </div>
+          <div class="col-md-2">
+            <input type="radio" id="tipocospro" name="DataNewTransaccion.clase" [(ngModel)]="DataNewTransaccion.clase" [value]=1 required>
+            <label for="tipocospro">Promedio</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewTransaccion.tipo==3">
+          <div class="col-md-4">
+            <label for="dataPro">Solicita datos del proveedor?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="dataProsi" name="DataNewTransaccion.dataPro" [(ngModel)]="DataNewTransaccion.dataPro" [value]=1 required>
+            <label for="dataProsi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="dataProno" name="DataNewTransaccion.dataPro" [(ngModel)]="DataNewTransaccion.dataPro" [value]=0 required>
+            <label for="dataProno">No</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewTransaccion.tipo==3">
+          <div class="col-md-4">
+            <label for="persona">Solicita persona que autoriza?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="persi" name="DataNewTransaccion.persona" [(ngModel)]="DataNewTransaccion.persona" [value]=1 required>
+            <label for="persi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="perno" name="DataNewTransaccion.persona" [(ngModel)]="DataNewTransaccion.persona" [value]=0 required>
+            <label for="perno">No</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewTransaccion.tipo==3">
+          <div class="col-md-4">
+            <label for="fecha">Solicita fecha de vencimiento?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="fecvensi" name="DataNewTransaccion.fecha" [(ngModel)]="DataNewTransaccion.fecha" [value]=1 required>
+            <label for="fecvensi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="fecvenno" name="DataNewTransaccion.fecha" [(ngModel)]="DataNewTransaccion.fecha" [value]=0 required>
+            <label for="fecvenno">No</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewTransaccion.tipo==3">
+          <div class="col-md-4">
+            <label for="numOrden">Solicita numero de Orden?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="numOrdensi" name="DataNewTransaccion.numOrden" [(ngModel)]="DataNewTransaccion.numOrden" [value]=1
+              required>
+            <label for="numOrdensi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="numOrdenno" name="DataNewTransaccion.numOrden" [(ngModel)]="DataNewTransaccion.numOrden" [value]=0
+              required>
+            <label for="numOrdenno">No</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewTransaccion.tipo==3">
+          <div class="col-md-4">
+            <label for="impuesto">Desea apoyo de impuesto al consumo?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="impsi" name="DataNewTransaccion.impuesto" [(ngModel)]="DataNewTransaccion.impuesto" [value]=1
+              required>
+            <label for="impsi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="impno" name="DataNewTransaccion.impuesto" [(ngModel)]="DataNewTransaccion.impuesto" [value]=0
+              required>
+            <label for="impno">No</label>
+          </div>
+        </div>
+
+      </div>
+
+
+    </form>
+
+    <div class="centrar">
+      <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+      <button type="submit" (click)="onSubmit(DataNewTransaccion)" [disabled]="!transaccionesForm.valid" class="btnbutton button">Guardar</button>
+    </div>
+  </div>
+</div>

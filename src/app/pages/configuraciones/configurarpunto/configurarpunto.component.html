@@ -1,0 +1,2011 @@
+<div class="row">
+    <div class="container-fluid contenedorconfig">
+  
+      <div class="row color_config">
+        <div class="col-lg-12" align="center">
+          <h1>Configurar Punto</h1>
+          <h6>Cliente: {{nombreCliente}}</h6>
+          <h6>Punto: {{nombrePunto}}</h6>
+        </div>
+      </div>
+  
+      <div>
+        <aw-wizard #wizard navBarLayout="large-empty-symbols">
+          <aw-wizard-step stepTitle="CONFIGURACIÓN" [navigationSymbol]="{ symbol: '1' }">
+            <div class="caja_cliente">
+              <!-- ******************************************************************** -->
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Configuraciones en el Punto:</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <a uiSrefActive="active" (click)="LimpiarFormConfiguraciones()" role="button" data-toggle="modal"
+                      data-target="#ConfPunto" data-placement="top" title="Configuracion en el Punto">
+                      <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                    </a>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="row" *ngIf="DataTablaConfigCliente.length >= 1">
+                <div class="col-md-12">
+                  <div class="tablaconfig">
+                    <div class="centrar buscar-paginacionconfig">
+                      <div class="buscar-paginacion2">
+                        <input type="text" class="form-control" name="searchStringTConfig" placeholder="Buscar"
+                          [(ngModel)]="searchStringTConfig">
+                      </div>
+                      <div class="buscar-paginacion2">
+                        <select class="form-control" name="itempageTConfig" [(ngModel)]="itempageTConfig">
+                          <option value="5" selected>Configuracion Por Página</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </select>
+                      </div>
+                    </div>
+  
+                    <div>
+                      <div class="loading" *ngIf="loader">
+                        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                      </div>
+                      <div class="loadError" *ngIf="LoadError">
+                        <div class="alert alert-danger">{{error}}</div>
+                      </div>
+                      <div *ngIf="LoadTabla">
+                        <div class="panel-body table-responsive">
+                          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                            <thead>
+                              <tr>
+                                <th>Configuraciones</th>
+                                <th class="center">Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd gradeX"
+                                *ngFor="let data of DataTablaConfigCliente | editconfigingresarpuntos : searchStringTConfig | paginate: { itemsPerPage: itempageTConfig, currentPage: confpunto, id:'tablaConfPunto' }">
+                                <td>{{data.descripcion}}</td>
+                                <td class="center">
+                                  <a (click)="QuitarConfigPunto(data.id_configuracion)" uiSrefActive="active"
+                                    role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top"
+                                    title="Inactivar">
+                                    <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="centrarpaginacion">
+                            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="confpunto = $event" id="tablaConfPunto">
+                            </pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="centrar">
+                <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+                <button type="submit" class="btnbutton button" [disabled]="DataTablaConfigCliente.length === 0"
+                  awNextStep>Siguiente</button>
+              </div>
+            </div>
+  
+          </aw-wizard-step>
+  
+          <!-- ******************************************************************** -->
+  
+          <aw-wizard-step stepTitle="CONFIGURACIÓN" [navigationSymbol]="{ symbol: '2' }">
+            <div class="caja_cliente">
+              <br>
+              <form #ConfPuntoForm="ngForm">
+                <div class="caja_config_punto">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Las ventas del mesero son por?
+                        <b class="asterisco">*</b>:</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="ventasMeseroMesa" name="DataNewPunto.ventasMesero"
+                        [(ngModel)]="DataNewPunto.ventasMesero" [value]=1 required>
+                      <label for="ventasMeseroMesa">Mesa</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="ventasMeseroComanda" name="DataNewPunto.ventasMesero"
+                        [(ngModel)]="DataNewPunto.ventasMesero" [value]=2 required>
+                      <label for="ventasMeseroComanda">Comanda</label>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Captura la cantidad de personas atendidas?
+                        <b class="asterisco">*</b>:</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="abrir" name="DataNewPunto.capCantPers"
+                        [(ngModel)]="DataNewPunto.capCantPers" [value]=1 required>
+                      <label for="abrir">Al abrir</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="cancelar" name="DataNewPunto.capCantPers"
+                        [(ngModel)]="DataNewPunto.capCantPers" [value]=2 required>
+                      <label for="cancelar">Al cancelar</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="noPide" name="DataNewPunto.capCantPers"
+                        [(ngModel)]="DataNewPunto.capCantPers" [value]=3 required>
+                      <label for="noPide">No pide</label>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="caja_config_punto">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group"
+                        [ngClass]="{'has-error': !atiende.valid && (atiende.dirty || atiende.touched)}">
+                        <label for="atiendeMesas">La persona que atiende las mesas se denomina
+                          <b class="asterisco">*</b>:</label>
+                        <input type="text" class="form-control" id="atiendeMesas" name="DataNewPunto.atiendeMesas"
+                          [(ngModel)]="DataNewPunto.atiendeMesas" #atiende="ngModel" required>
+                        <span class="help-block" *ngIf="atiende.errors && (atiende.dirty || atiende.touched)">
+                          <li *ngIf=atiende.errors.required>
+                            El campo la persona que atiende es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 hoz">
+                      <label>El autoservicio pide distintivo?
+                        <b class="asterisco">*</b>:</label>
+                    </div>
+                    <div class="col-md-1  hoz">
+                      <input type="radio" id="imptiqsi" name="DataNewPunto.pideDistintivo"
+                        [(ngModel)]="DataNewPunto.pideDistintivo" [value]=1 required>
+                      <label for="imptiqsi">Si</label>
+                    </div>
+                    <div class="col-md-1  hoz">
+                      <input type="radio" id="imptiqno" name="DataNewPunto.pideDistintivo"
+                        [(ngModel)]="DataNewPunto.pideDistintivo" [value]=0 required>
+                      <label for="imptiqno">No</label>
+                    </div>
+                    <div class="col-md-6" *ngIf="DataNewPunto.pideDistintivo === 1">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !dist.valid && (dist.dirty || dist.touched)}">
+                        <label for="distintivo">Identifica distintivo como:</label>
+                        <input type="text" class="form-control" id="distintivo" name="DataNewPunto.distintivo"
+                          [(ngModel)]="DataNewPunto.distintivo" #dist="ngModel">
+                        <span class="help-block" *ngIf="dist.errors && (dist.dirty || dist.touched)">
+                          <li *ngIf=dist.errors.required>
+                            El campo Distintivo es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="caja_config_punto">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !prop.valid && (prop.dirty || prop.touched)}">
+                        <label for="propina">Identifica propina como
+                          <b class="asterisco">*</b>:</label>
+                        <input type="text" class="form-control" id="propina" name="DataNewPunto.propina"
+                          [(ngModel)]="DataNewPunto.propina" #prop="ngModel" required>
+                        <span class="help-block" *ngIf="prop.errors && (prop.dirty || prop.touched)">
+                          <li *ngIf=prop.errors.required>
+                            El campo Propina es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label>El porcentaje de la propina es :
+                          </label>
+                        </div>
+                        <div class="col-md-3">
+                          <input type="radio" id="sinIva" name="DataNewPunto.porcentaje"
+                            [(ngModel)]="DataNewPunto.porcentaje" [value]=1 required>
+                          <label for="sinIva">Sin Iva</label>
+                        </div>
+                        <div class="col-md-3">
+                          <input type="radio" id="conIva" name="DataNewPunto.porcentaje"
+                            [(ngModel)]="DataNewPunto.porcentaje" [value]=2 required>
+                          <label for="conIva">Con Iva</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label>Valor Porcentaje :
+                          </label>
+                        </div>
+                        <div class="col-md-6" [ngClass]="{'has-error': !val.valid && (val.dirty || val.touched)}">
+                          <input type="text" class="form-control" id="valor" name="DataNewPunto.valor"
+                            [(ngModel)]="DataNewPunto.valor" #val="ngModel" (keypress)="kPNumerosPuntos($event)" required>
+                          <span class="help-block" *ngIf="val.errors && (val.dirty || val.touched)">
+                            <li *ngIf=val.errors.required>
+                              El campo valor es obligatorio
+                            </li>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="caja_config_punto">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group smarg" [ngClass]="{'has-error': !rec.valid && (rec.dirty || rec.touched)}">
+                        <label for="recargo">Identifica recargo domicilio como
+                          <b class="asterisco">*</b>:</label>
+                        <input type="text" class="form-control" id="recargo" name="DataNewPunto.recargo"
+                          [(ngModel)]="DataNewPunto.recargo" #rec="ngModel" required>
+                        <span class="help-block" *ngIf="rec.errors && (rec.dirty || rec.touched)">
+                          <li *ngIf=rec.errors.required>
+                            El campo recargo domicilio es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label>El recargo domicilio es un
+                            <b class="asterisco">*</b>:</label>
+                        </div>
+                        <div class="col-md-3">
+                          <input type="radio" id="porcentajeDom" name="DataNewPunto.recargoDom"
+                            [(ngModel)]="DataNewPunto.recargoDom" [value]=1 required>
+                          <label for="porcentajeDom">Porcentaje</label>
+                        </div>
+                        <div class="col-md-3">
+                          <input type="radio" id="valorDom" name="DataNewPunto.recargoDom"
+                            [(ngModel)]="DataNewPunto.recargoDom" [value]=2 required>
+                          <label for="valorDom">Valor</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-3">
+                          <input type="radio" id="conIvaDom" name="DataNewPunto.ivaDom" [(ngModel)]="DataNewPunto.ivaDom"
+                            [value]=1 required>
+                          <label for="conIvaDom">Con Iva</label>
+                        </div>
+                        <div class="col-md-3">
+                          <input type="radio" id="sinIvaDom" name="DataNewPunto.ivaDom" [(ngModel)]="DataNewPunto.ivaDom"
+                            [value]=2 required>
+                          <label for="sinIvaDom">Sin Iva</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br *ngIf="DataNewPunto.ivaDom === 1">
+                  <div class="row" *ngIf="DataNewPunto.ivaDom === 1">
+                    <div class="col-md-4">
+                      <label>El recargo a domicilio tiene el iva
+                        <b class="asterisco">*</b>:</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="recDomIvaSi" name="DataNewPunto.recDomIva"
+                        [(ngModel)]="DataNewPunto.recDomIva" [value]=1 required>
+                      <label for="recDomIvaSi">Incluido</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="recDomIvaNo" name="DataNewPunto.recDomIva"
+                        [(ngModel)]="DataNewPunto.recDomIva" [value]=2 required>
+                      <label for="recDomIvaNo">Separado</label>
+                    </div>
+                    <div class="col-md-2">
+                      <input type="radio" id="recDomIvaNoTi" name="DataNewPunto.recDomIva"
+                        [(ngModel)]="DataNewPunto.recDomIva" [value]=3 required>
+                      <label for="recDomIvaNoTi">No tiene</label>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="DataNewPunto.recDomIva==1 || DataNewPunto.recDomIva==2">
+                    <div class="col-md-4">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !impDom.valid && (impDom.dirty || impDom.touched)}">
+                        <label for="impuestoDom">Impuesto
+                          <b class="asterisco">*</b>:</label>
+                        <select class="charge_select form-control" name="DataNewPunto.impuesto"
+                          [(ngModel)]="DataNewPunto.impuesto" (ngModelChange)="LoadTarifas($event)" #impDom="ngModel"
+                          required>
+                          <option value=""></option>
+                          <option [value]="imp.id_impuesto" *ngFor="let imp of ListaImpuestos">{{imp.nombre_imp}}</option>
+                        </select>
+                        <span class="help-block" *ngIf="impDom.errors && (impDom.dirty || impDom.touched)">
+                          <li *ngIf=impDom.errors.required>
+                            El campo Impuesto es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !tarDom.valid && (tarDom.dirty || tarDom.touched)}">
+                        <label for="tarifaDom">Tarifa
+                          <b class="asterisco">*</b>:</label>
+                        <select class="charge_select form-control" name="DataNewPunto.idTarifa"
+                          [(ngModel)]="DataNewPunto.idTarifa" #tarDom="ngModel" required>
+                          <option value=""></option>
+                          <option [value]="tari.id_tarifa" *ngFor="let tari of ListaTarifas">{{tari.valor}}</option>
+                        </select>
+                        <span class="help-block" *ngIf="tarDom.errors && (tarDom.dirty || tarDom.touched)">
+                          <li *ngIf=tarDom.errors.required>
+                            El campo Tarifa es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-4 hoz">
+                      <label>Existe un tope para el cobro
+                        <b class="asterisco">*</b>:</label>
+                    </div>
+                    <div class="col-md-1 hoz">
+                      <input type="radio" id="conTopeDom" name="DataNewPunto.tope" [(ngModel)]="DataNewPunto.tope"
+                        [value]=1 required>
+                      <label for="conTopeDom">Si</label>
+                    </div>
+                    <div class="col-md-1 hoz">
+                      <input type="radio" id="sinTopeDom" name="DataNewPunto.tope" [(ngModel)]="DataNewPunto.tope"
+                        [value]=0 required>
+                      <label for="sinTopeDom">No</label>
+                    </div>
+                    <div class="col-md-3" *ngIf="DataNewPunto.tope==1">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !valTop.valid && (valTop.dirty || valTop.touched)}">
+                        <label for="valorTope">Digite el tope
+                          <b class="asterisco">*</b>:</label>
+                        <input type="text" class="form-control" id="valorTope" name="DataNewPunto.valorTope"
+                          [(ngModel)]="DataNewPunto.valorTope" #valTop="ngModel" (keypress)="kPNumerosPuntos($event)"
+                          required>
+                        <span class="help-block" *ngIf="valTop.errors && (valTop.dirty || valTop.touched)">
+                          <li *ngIf=valTop.errors.required>
+                            El campo valor tope es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-3" *ngIf="DataNewPunto.tope==1">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !valRec.valid && (valRec.dirty || valRec.touched)}">
+                        <label for="valorRecargo">Digite el valor recargo
+                          <b class="asterisco">*</b>:</label>
+                        <input type="text" class="form-control" id="valorRecargo" name="DataNewPunto.valorRecargo"
+                          [(ngModel)]="DataNewPunto.valorRecargo" #valRec="ngModel" (keypress)="kPNumerosPuntos($event)"
+                          required>
+                        <span class="help-block" *ngIf="valRec.errors && (valRec.dirty || valRec.touched)">
+                          <li *ngIf=valRec.errors.required>
+                            El campo valor recargo es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="DataNewPunto.tope !== 1">
+                    <div class="col-md-6">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !porValRecDom.valid && (porValRecDom.dirty || porValRecDom.touched)}">
+                        <label for="porValRecDom">valor o porcentaje del recargo a domicilio :
+                        </label>
+                        <input type="text" class="form-control" id="porValRecargoDom" name="DataNewPunto.porValRecargoDom"
+                          [(ngModel)]="DataNewPunto.porValRecargoDom" #porValRecDom="ngModel"
+                          (keypress)="kPNumerosPuntos($event)" required>
+                        <span class="help-block"
+                          *ngIf="porValRecDom.errors && (porValRecDom.dirty || porValRecDom.touched)">
+                          <li *ngIf=porValRecDom.errors.required>
+                            El campo porcentaje o valor del recargo es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="caja_config_punto">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !desFacDom.valid && (desFacDom.dirty || desFacDom.touched)}">
+                        <label for="descuentoFactDom">Descuento en las facturas :
+                        </label>
+                        <input type="text" class="form-control" id="descuentoFactDom" name="DataNewPunto.descuentoFactDom"
+                          [(ngModel)]="DataNewPunto.descuentoFactDom" #desFacDom="ngModel"
+                          (keypress)="kPNumerosPuntos($event)" required>
+                        <span class="help-block" *ngIf="desFacDom.errors && (desFacDom.dirty || desFacDom.touched)">
+                          <li *ngIf=desFacDom.errors.required>
+                            El campo Descuento en las facturas es obligatorio
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group smarg"
+                        [ngClass]="{'has-error': !nomDocDom.valid && (nomDocDom.dirty || nomDocDom.touched)}">
+                        <label for="nombreDocDom">Nombre del documento de salida venta
+                          <b class="asterisco">*</b>:</label>
+                        <input type="text" class="form-control" id="nombreDocDom" name="DataNewPunto.nombreDocDom"
+                          [(ngModel)]="DataNewPunto.nombreDocDom" #nomDocDom="ngModel" required>
+                        <span class="help-block" *ngIf="nomDocDom.errors && (nomDocDom.dirty || nomDocDom.touched)">
+                          <li *ngIf=nomDocDom.errors.required>
+                            Nombre del documento de salida venta
+                          </li>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+  
+  
+              <div class="centrar">
+                <button type="button" class="btnbutton button" awPreviousStep>Anterior</button>
+                <button type="submit" class="btnbutton button" [disabled]="!ConfPuntoForm.valid"
+                  awNextStep>Siguiente</button>
+              </div>
+  
+            </div>
+  
+  
+          </aw-wizard-step>
+  
+          <!-- ****************************************************************** -->
+          <aw-wizard-step stepTitle="ALMACENAJE" [navigationSymbol]="{ symbol: '3' }">
+            <div class="caja_cliente">
+  
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Horas:</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <a uiSrefActive="active" (click)="LimpiarFormHoras()" role="button" data-toggle="modal"
+                      data-target="#Horas" data-placement="top" title="Horas">
+                      <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                    </a>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="row" *ngIf="ListaHoras.length >= 1">
+                <div class="col-md-12">
+                  <div class="tablaconfig">
+                    <div class="centrar buscar-paginacionconfig">
+                      <div class="buscar-paginacion2">
+                        <input type="text" class="form-control" name="searchStringTHoras" placeholder="Buscar"
+                          [(ngModel)]="searchStringTHoras">
+                      </div>
+                      <div class="buscar-paginacion2">
+                        <select class="form-control" name="itempageTHoras" [(ngModel)]="itempageTHoras">
+                          <option value="5" selected>Horas Por Página</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </select>
+                      </div>
+                    </div>
+  
+                    <div>
+                      <div class="loading" *ngIf="loader">
+                        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                      </div>
+                      <div class="loadError" *ngIf="LoadError">
+                        <div class="alert alert-danger">{{error}}</div>
+                      </div>
+                      <div *ngIf="LoadTabla">
+                        <div class="panel-body table-responsive">
+                          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                            <thead>
+                              <tr>
+                                <th>Descripcion</th>
+                                <th>hora Inicio</th>
+                                <th>hora Fin</th>
+                                <th class="center">Modificar</th>
+                                <th class="center">Eliminar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd gradeX"
+                                *ngFor="let data of ListaHoras | horaseditpuntos : searchStringTHoras | paginate: { itemsPerPage: itempageTHoras, currentPage: th, id:'tablaHoras' }">
+                                <td>{{data.descripcion}}</td>
+                                <td>{{data.horaInicio}}</td>
+                                <td>{{data.horaFin}}</td>
+                                <td class="center">
+                                  <a (click)="bindingModificarHora(data)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-target="#ModificarHora" data-placement="top"
+                                    title="Inactivar">
+                                    <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                                <td class="center">
+                                  <a (click)="bindingEliminarHora(data)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-target="#EliminarHora" data-placement="top" title="Eliminar">
+                                    <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="centrarpaginacion">
+                            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="th = $event" id="tablaHoras"></pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- *********************************************************************** -->
+              <div class="row" *ngIf="manejaBodegas">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Sitios de almacenaje:</label>
+                  </div>
+                </div>
+              </div>
+  
+              <div *ngIf="manejaBodegas">
+                <div class="row">
+                  <div class="botonesActivar">
+                    <div class="btnrouterlink">
+                      <a (click)="LimpiarFormBodegas()" data-toggle="modal" data-target="#Bodegas" title="Crear Bodega">
+                        <span class="pull-center">Crear</span>
+                      </a>
+                    </div>
+                    <div (click)="SetBodegasInactivas()" class="btnrouterlink" *ngIf="!BodegasInactivas">
+                      <a>
+                        <span class="pull-center">Activos</span>
+                      </a>
+                    </div>
+                    <div (click)="SetBodegasInactivas()" class="btnrouterlink" *ngIf="BodegasInactivas">
+                      <a>
+                        <span class="pull-center">Inactivos</span>
+                      </a>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="col-md-12" *ngIf="DataTablaBodegas.length >= 1">
+                    <div class="tablaconfig">
+                      <div class="centrar buscar-paginacionconfig">
+                        <div class="buscar-paginacion2">
+                          <input type="text" class="form-control" name="searchStringTBodegas" placeholder="Buscar"
+                            [(ngModel)]="searchStringTBodegas">
+                        </div>
+                        <div class="buscar-paginacion2">
+                          <select class="form-control" name="itempageTBodegas" [(ngModel)]="itempageTBodegas">
+                            <option value="5" selected>Sitio de almacenaje Por Página</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="40">40</option>
+                            <option value="50">50</option>
+                          </select>
+                        </div>
+                      </div>
+  
+                      <div>
+                        <div class="loading" *ngIf="loader">
+                          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                        </div>
+                        <div class="loadError" *ngIf="LoadError">
+                          <div class="alert alert-danger">{{error}}</div>
+                        </div>
+                        <div *ngIf="LoadTabla">
+                          <div class="panel-body table-responsive" *ngIf="BodegasInactivas">
+                            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                              <thead>
+                                <tr>
+                                  <th>Sitios de almacenaje Activos</th>
+                                  <th>Permite facturar</th>
+                                  <th class="center">Ver</th>
+                                  <th class="center">Modificar</th>
+                                  <th class="center">Inactivar</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr class="odd gradeX"
+                                  *ngFor="let data of DataTablaBodegas | editbodegaspuntos : searchStringTBodegas | paginate: { itemsPerPage: itempageTBodegas, currentPage: tb, id:'tablaBodegas' }">
+                                  <td>{{data.nombre}}</td>
+                                  <td *ngIf="data.permite_facturar">Si</td>
+                                  <td *ngIf="!data.permite_facturar">No</td>
+                                  <td class="center">
+                                    <a (click)="bindingDataVerBodega(data)" uiSrefActive="active" role="button"
+                                      data-toggle="modal" data-placement="top" data-target="#VerBodega"
+                                      title="Ver datos Bodega">
+                                      <img src="assets/images/eye.png" width="30" height="30" class="btnReportes">
+                                    </a>
+                                  </td>
+                                  <td class="center">
+                                    <a (click)="bindingDataModificarBodega(data)" uiSrefActive="active" role="button"
+                                      data-toggle="modal" data-placement="top" data-target="#ModificarBodega"
+                                      title="Modificar Bodega">
+                                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                                    </a>
+                                  </td>
+                                  <td class="center">
+                                    <a (click)="inactivarBodega(data.id_bodega)" uiSrefActive="active" role="button"
+                                      data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                                      <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div class="centrarpaginacion">
+                              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tb = $event" id="tablaBodegas"></pagination-controls>
+                            </div>
+                          </div>
+                          <div class="panel-body table-responsive" *ngIf="!BodegasInactivas">
+                            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                              <thead>
+                                <tr>
+                                  <th>Sitio de almacenaje Inactivos</th>
+                                  <th>Permite facturar</th>
+                                  <th class="center">Activar</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr class="odd gradeX"
+                                  *ngFor="let data of DataTablaBodegasInactivas | editbodegaspuntos : searchStringTBodegas | paginate: { itemsPerPage: itempageTBodegas, currentPage: tb, id:'tablaBodegas' }">
+                                  <td>{{data.nombre}}</td>
+                                  <td *ngIf="data.permite_facturar">Si</td>
+                                  <td *ngIf="!data.permite_facturar">No</td>
+                                  <td class="center">
+                                    <a (click)="activarBodega(data.id_bodega)" uiSrefActive="active" role="button"
+                                      data-toggle="modal" data-target="#Activar" data-placement="top" title="Activar">
+                                      <img src="assets/images/active.png" width="30" height="30" class="btnReportes">
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div class="centrarpaginacion">
+                              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tb = $event" id="tablaBodegas"></pagination-controls>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- *************************************************************************** -->
+  
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Licencias:</label>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="row" *ngIf="DataTablaLicencias.length >= 1">
+                <div class="botonesActivar">
+                  <!-- <div class="btnrouterlink">
+                    <a data-toggle="modal" data-target="#Licencias" title="Crear Licencia">
+                      <span class="pull-center">Crear</span>
+                    </a>
+                  </div> -->
+                  <!-- <div (click)="SetLicenciasInactivas()" class="btnrouterlink" *ngIf="!LicenciasInactivas">
+                    <a>
+                      <span class="pull-center">Activas</span>
+                    </a>
+                  </div>
+                  <div (click)="SetLicenciasInactivas()" class="btnrouterlink" *ngIf="LicenciasInactivas">
+                    <a>
+                      <span class="pull-center">Inactivas</span>
+                    </a>
+                  </div> -->
+                </div>
+                <p></p>
+                <div class="col-md-12" >
+                  <div class="tablaconfig">
+                    <div class="centrar buscar-paginacionconfig">
+                      <div class="buscar-paginacion2">
+                        <input type="text" class="form-control" name="searchStringTLicencias" placeholder="Buscar"
+                          [(ngModel)]="searchStringTLicencias">
+                      </div>
+                      <div class="buscar-paginacion2">
+                        <select class="form-control" name="itempageTLicencias" [(ngModel)]="itempageTLicencias">
+                          <option value="5" selected>Licencias Por Página</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </select>
+                      </div>
+                    </div>
+  
+                    <div>
+                      <div class="loading" *ngIf="loader">
+                        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                      </div>
+                      <div class="loadError" *ngIf="LoadError">
+                        <div class="alert alert-danger">{{error}}</div>
+                      </div>
+                      <div *ngIf="LoadTabla">
+                        <div class="panel-body table-responsive" *ngIf="LicenciasInactivas">
+                          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                            <thead>
+                              <tr>
+                                <th>Licencias Activas</th>
+                                <th>Estado Instalación</th>
+                                <th class="center">Ver</th>
+                                <!-- <th class="center">Modificar</th>
+                                <th class="center">Inactivar</th> -->
+                                <!-- <th class="center">Resoluciónes</th> -->
+                                <th class="center">Bodegas licencia</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd gradeX"
+                                *ngFor="let data of DataTablaLicencias | licenciasconfpun : searchStringTLicencias | paginate: { itemsPerPage: itempageTLicencias, currentPage: tl, id:'tablaLicencias' }">
+                                <td>{{data.nombre}}</td>
+                                <td *ngIf="data.estado_inst">Si</td>
+                                <td *ngIf="!data.estado_inst">No</td>
+                                <td class="center">
+                                  <a (click)="bindingDataVerLicencia(data)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-placement="top" data-target="#VerLicencia"
+                                    title="Ver datos Licencia">
+                                    <img src="assets/images/eye.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                                <!-- <td class="center">
+                                  <a (click)="bindingDataModificarLicencia(data)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-placement="top" data-target="#ModificarLicencia"
+                                    title="Modificar Licencia">
+                                    <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                                <td class="center">
+                                  <a (click)="inactivarLicencia(data.id_licencia)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                                    <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td> -->
+                                <td class="center">
+                                  <!-- <a (click)="loadResolucion(data.id_licencia)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-target="#Resoluciones" data-placement="top"
+                                    title="Resoluciones">
+                                    <img src="assets/images/nota.png" width="30" height="30" class="btnReportes">
+                                  </a> -->
+                                  <a (click)="bindingBodegasLicencias(data)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-target="#BodegasLicencia" data-placement="top"
+                                    title="Sitios de almecenaje licencia">
+                                    <img src="assets/images/bodega.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="centrarpaginacion">
+                            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tl = $event" id="tablaLicencias"></pagination-controls>
+                          </div>
+                        </div>
+                        <div class="panel-body table-responsive" *ngIf="!LicenciasInactivas">
+                          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                            <thead>
+                              <tr>
+                                <th>Licencias Inactivas</th>
+                                <th class="center">Activar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd gradeX"
+                                *ngFor="let data of DataTablaLicenciasInactivas | licenciasinaconfpun : searchStringTLicencias | paginate: { itemsPerPage: itempageTLicencias, currentPage: tl, id:'tablaLicencias' }">
+                                <td>{{data.nombre}}</td>
+                                <td *ngIf="data.estado_inst">Si</td>
+                                <td *ngIf="!data.estado_inst">No</td>
+                                <td class="center">
+                                  <a (click)="activarLicencia(data.id_licencia)" uiSrefActive="active" role="button"
+                                    data-toggle="modal" data-target="#Activar" data-placement="top" title="Activar">
+                                    <img src="assets/images/active.png" width="30" height="30" class="btnReportes">
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="centrarpaginacion">
+                            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tl = $event" id="tablaLicencias"></pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ************************************************************************** -->
+            </div>
+            <div class="centrar">
+              <button type="button" class="btnbutton button" awPreviousStep>Anterior</button>
+              <button type="button" class="btnbutton button" (click)="onSubmit(DataNewPunto)"
+                >Guardar</button>
+            </div>
+          </aw-wizard-step>
+  
+        </aw-wizard>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ******************************  Modal direccion **************************** -->
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Seleccionar Dirección</h3>
+          </div>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12" align="center">
+              <label>Selección Ingreso de Dirección</label>
+            </div>
+            <div class="col-lg-6">
+              <label for="mas">Mascara De Dirección</label>
+              <input type="radio" id="mas" class="checkbox-custom checkbox-inline" name="direccion2"
+                [(ngModel)]="direccion2" value="1" (value)="1" />
+            </div>
+            <div class="col-lg-6">
+              <label for="dig">Digitada</label>
+              <input type="radio" id="dig" class="checkbox-custom checkbox-inline" name="direccion2"
+                [(ngModel)]="direccion2" value="2" (value)="2" />
+            </div>
+          </div>
+          <br>
+  
+          <!-- ******************************  Modal direccion **************************** -->
+          <div [hidden]="direccion2 != '1'">
+            <div class="row">
+              <div class="col-xs-4 col-md-4">
+                <label for="">Tipo Via*</label>
+                <select name="" id="" class="form-control" id="via" name="via" [(ngModel)]="via">
+                  <option value=""></option>
+                  <option value="AC">Avenida calle</option>
+                  <option value="AK">Avenida carrera</option>
+                  <option value="AU">Autopista</option>
+                  <option value="AN">Autopista Norte</option>
+                  <option value="AS">Autopista Sur</option>
+                  <option value="AV">Avenida</option>
+                  <option value="CI">Circular</option>
+                  <option value="Cll">Calle</option>
+                  <option value="DG">Diagonal</option>
+                  <option value="CR">Carrera</option>
+                  <option value="TR">Transversal</option>
+                  <option value="KR">Kilometro</option>
+                </select>
+              </div>
+              <div class="col-xs-3 col-md-2">
+                <label for="">Numero*</label>
+                <input type="number" class="form-control" id="numero" name="numero" [(ngModel)]="numero">
+              </div>
+              <div class="col-md-1">
+                <label for="">bis</label>
+                <input type="checkbox" class="form-control" id="bis" name="bis" [(ngModel)]="bis" />
+              </div>
+              <div class="col-md-2">
+                <label for="">letra</label>
+                <select name="" id="" class="form-control" id="letra" name="letra" [(ngModel)]="letra">
+                  <option value=""></option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                  <option value="H">H</option>
+                  <option value="I">I</option>
+                  <option value="J">J</option>
+                  <option value="K">K</option>
+                  <option value="L">L</option>
+                  <option value="M">M</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                  <option value="P">P</option>
+                  <option value="Q">Q</option>
+                  <option value="R">R</option>
+                  <option value="S">S</option>
+                  <option value="T">T</option>
+                  <option value="U">U</option>
+                  <option value="V">V</option>
+                  <option value="W">W</option>
+                  <option value="X">X</option>
+                  <option value="Y">Y</option>
+                  <option value="Z">Z</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="">cuadrante</label>
+                <select name="" id="" class="form-control" id="cuadrante" name="cuadrante" [(ngModel)]="cuadrante">
+                  <option value=""></option>
+                  <option value="Norte">Norte</option>
+                  <option value="Oeste">Oeste</option>
+                  <option value="Este">Este</option>
+                  <option value="Sur">Sur</option>
+                </select>
+              </div>
+            </div>
+            <br />
+  
+            <div class="row">
+              <div class="col-md-2">
+                <label for="">Numero</label>
+                <input type="number" class="form-control" id="numero2" name="numero2" [(ngModel)]="numero2">
+              </div>
+              <div class="col-md-2">
+                <label for="">Letra</label>
+                <select name="" id="" class="form-control" id="letra2" name="letra2" [(ngModel)]="letra2">
+                  <option value=""></option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                  <option value="H">H</option>
+                  <option value="I">I</option>
+                  <option value="J">J</option>
+                  <option value="K">K</option>
+                  <option value="L">L</option>
+                  <option value="M">M</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                  <option value="P">P</option>
+                  <option value="Q">Q</option>
+                  <option value="R">R</option>
+                  <option value="S">S</option>
+                  <option value="T">T</option>
+                  <option value="U">U</option>
+                  <option value="V">V</option>
+                  <option value="W">W</option>
+                  <option value="X">X</option>
+                  <option value="Y">Y</option>
+                  <option value="Z">Z</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <label for="">placa</label>
+                <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="placa">
+              </div>
+              <div class="col-md-3">
+                <label for="">Cuadrante</label>
+                <select name="" id="" class="form-control" id="cuadrante2" name="cuadrante2" [(ngModel)]="cuadrante2">
+                  <option value=""></option>
+                  <option value="Norte">Norte</option>
+                  <option value="Oeste">Oeste</option>
+                  <option value="Este">Este</option>
+                  <option value="Sur">Sur</option>
+                </select>
+              </div>
+              <br>
+              <div class="col-md-12">
+                <label for="">Señas Particulares</label>
+                <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2
+                  maxlength=150 [(ngModel)]="senas"></textarea>
+              </div>
+            </div>
+          </div>
+  
+          <div [hidden]="direccion2 != '2'">
+            <div class="row">
+              <div class="col-md-12">
+                <label for="">Dirección</label>
+                <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2
+                  maxlength=150 [(ngModel)]="descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button class="btnbutton" *ngIf="direccion2==2" data-dismiss="modal"
+              (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas,descripcion)">Guardar</button>
+            <button class="btnbutton" *ngIf="direccion2==1" data-dismiss="modal"
+              (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas,descripcion)"
+              [disabled]="!via || !numero || !numero2 || !placa">Guardar</button>
+            <button class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- **************************** Fin Modal direccion ******************************** -->
+  
+  <!-- **************************** Modal Configuracion de Puntos **************************** -->
+  
+  <div id="ConfPunto" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Configuracion de Punto</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="tablaconfig">
+                <div class="centrar buscar-paginacionconfig">
+                  <div class="buscar-paginacion2">
+                    <input type="text" class="form-control" name="searchStringTConfiguraciones" placeholder="Buscar"
+                      [(ngModel)]="searchStringTConfiguraciones">
+                  </div>
+                  <div class="buscar-paginacion2">
+                    <select class="form-control" name="itempageTConfiguraciones" [(ngModel)]="itempageTConfiguraciones">
+                      <option value="5" selected="selected">Configuracion Por Página</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div>
+                  <div class="loading" *ngIf="loader">
+                    <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                  </div>
+                  <div class="loadError" *ngIf="LoadError">
+                    <div class="alert alert-danger">{{error}}</div>
+                  </div>
+                  <div *ngIf="LoadTabla">
+                    <div class="panel-body table-responsive">
+                      <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                        <thead>
+                          <tr>
+                            <th>Configuracion</th>
+                            <th class="center">
+                              Seleccionar Todo
+                              <input type="checkbox" name="checkedAll" [checked]="checkedAll"
+                                (change)="onChangeAll($event.target.checked)">
+                            </th>
+                            <!-- <th *ngIf="checkedAll === true" class="center">
+                              Seleccionar Todo
+                              <input type="checkbox" checked name="checkAll" (change)="onChangeAll($event.target.checked)">
+                            </th>
+                            <th *ngIf="checkedAll === false" class="center">
+                              Seleccionar Todo
+                              <input type="checkbox" name="checkAll" (change)="onChangeAll($event.target.checked)">
+                            </th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr (click)="onChange(data.id, !data.checked)" class="odd gradeX"
+                            *ngFor="let data of DataJsonConfiguraciones  | editconfiguracionespuntos : searchStringTConfiguraciones | paginate: { itemsPerPage: itempageTConfiguraciones, currentPage: tc, id: 'tablaConfiguraciones' }">
+                            <td>{{data.descripcion}}</td>
+                            <td class="center">
+                              <input type="checkbox" name="check" [checked]="data.checked"
+                                (change)="onChange(data.id, $event.target.checked)">
+                            </td>
+                            <!-- <td *ngIf="data.checked === true" class="center">
+                              <input type="checkbox" name="check" checked (change)="onChange(data.id, $event.target.checked)">
+                            </td>
+                            <td *ngIf="data.checked === false" class="center">
+                              <input type="checkbox" name="check" (change)="onChange(data.id, $event.target.checked)">
+                            </td> -->
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="centrarpaginacion">
+                        <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tc = $event" id="tablaConfiguraciones"></pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="bindingConfPunto();" data-dismiss="modal" class="btnbutton"
+              [disabled]="DataConfSeleccionadas.length === 0">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- **************************** Fin Configuracion de Puntos ****************************
+  
+  <!--   **************************** Modal Crear Marcas **************************** -->
+  
+  <div id="CrearMarca" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Crear Marca</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group">
+              <label for="nombreMarca">Nombre Marca
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" name="marca" [(ngModel)]="marca" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button  data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Modal Crear Marcas **************************** -->
+  
+  <!--   **************************** Modal Crear Horas ************************************ -->
+  
+  <div id="Horas" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Crear Hora</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #horasForm="ngForm">
+            <div class="row">
+  
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'has-error': !horaini.valid && (horaini.dirty || horaini.touched)}">
+                  <label for="hi">Hora de Inicio:</label>
+                  <input type="time" id="hi" name="DataNewHora.horainicio" class="form-control"
+                    [(ngModel)]="DataNewHora.horainicio" #horaini="ngModel" minlength="1" maxlength="100" required />
+                  <span class="help-block" *ngIf="horaini.errors && (horaini.dirty || horaini.touched)">
+                    <li *ngIf=horaini.errors.required>
+                      El campo Hora de Inicio es obligatorio
+                    </li>
+                    <li *ngIf="horaini.errors.minlength">
+                      El campo Hora de Inicio debe ser mayor a 1 caracteres*
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'has-error': !horafin.valid && (horafin.dirty || horafin.touched)}">
+                  <label for="hf">Hora Final:</label>
+                  <input type="time" id="hf" name="DataNewHora.horafin" class="form-control"
+                    [(ngModel)]="DataNewHora.horafin" #horafin="ngModel" minlength="1" maxlength="100" required />
+                  <span class="help-block" *ngIf="horafin.errors && (horafin.dirty || horafin.touched)">
+                    <li *ngIf=horafin.errors.required>
+                      El campo Hora Final es obligatorio
+                    </li>
+                    <li *ngIf="horafin.errors.minlength">
+                      El campo Hora Final debe ser mayor a 1 caracteres*
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'has-error': !des.valid && (des.dirty || des.touched)}">
+                  <label for="desc">Descripción:</label>
+                  <textarea rows="6" id="desc" name="DataNewHora.descripcion" class="form-control"
+                    [(ngModel)]="DataNewHora.descripcion" #des="ngModel" required></textarea>
+                  <span class="help-block" *ngIf="des.errors && (des.dirty || des.touched)">
+                    <li *ngIf=des.errors.required>
+                      El campo Descripción es obligatorio
+                    </li>
+                    <li *ngIf="des.errors.minlength">
+                      El campo Descripción debe ser mayor a 2 caracteres*
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="createHora(DataNewHora)" [disabled]="!horasForm.valid" data-dismiss="modal"
+              class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   ***************************** Fin Modal Crear Horas ************************************** -->
+  
+  
+  
+  <!--   **************************** Modal Modificar Horas ************************************ -->
+  
+  <div id="ModificarHora" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modificar Hora</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #horasEditForm="ngForm">
+            <div class="row">
+              <div class="col-md-12">
+  
+                <div class="form-group"
+                  [ngClass]="{'has-error': !horainic.valid && (horainic.dirty || horainic.touched)}">
+                  <label for="hin">Hora de Inicio:</label>
+                  <input type="time" id="hin" name="DataEditHora.horaini" class="form-control"
+                    [(ngModel)]="DataEditHora.horaini" #horainic="ngModel" minlength="1" maxlength="100" required />
+                  <span class="help-block" *ngIf="horainic.errors && (horainic.dirty || horainic.touched)">
+                    <li *ngIf=horainic.errors.required>
+                      El campo Hora de Inicio es obligatorio
+                    </li>
+                    <li *ngIf="horainic.errors.minlength">
+                      El campo Hora de Inicio debe ser mayor a 1 caracteres*
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group"
+                  [ngClass]="{'has-error': !horafina.valid && (horafina.dirty || horafina.touched)}">
+                  <label for="hfi">Hora Final:</label>
+                  <input type="time" id="hfi" name="DataEditHora.horafinal" class="form-control"
+                    [(ngModel)]="DataEditHora.horafinal" #horafina="ngModel" minlength="1" maxlength="100" required />
+                  <span class="help-block" *ngIf="horafina.errors && (horafina.dirty || horafina.touched)">
+                    <li *ngIf=horafina.errors.required>
+                      El campo Hora Final es obligatorio
+                    </li>
+                    <li *ngIf="horafina.errors.minlength">
+                      El campo Hora Final debe ser mayor a 1 caracteres*
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'has-error': !descr.valid && (descr.dirty || descr.touched)}">
+                  <label for="descr">Descripción:</label>
+                  <textarea rows="6" id="descr" name="DataEditHora.desc" class="form-control"
+                    [(ngModel)]="DataEditHora.desc" #descr="ngModel" required></textarea>
+                  <span class="help-block" *ngIf="descr.errors && (descr.dirty || descr.touched)">
+                    <li *ngIf=descr.errors.required>
+                      El campo Descripción es obligatorio
+                    </li>
+                    <li *ngIf="descr.errors.minlength">
+                      El campo Descripción debe ser mayor a 2 caracteres*
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="modificarHora(DataEditHora)" [disabled]="!horasEditForm.valid" data-dismiss="modal"
+              class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   ***************************** Fin Modal Modificar Horas ************************************** -->
+  
+  
+  <!--*************************Modal Eliminar hora***********************************-->
+  
+  <div id="EliminarHora" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Confirmación para eliminar Hora</h4>
+        </div>
+  
+        <div class="modal-body">
+          <p style="color:#FF0000">
+            <b> Seguro desea Eliminar la configuracion de la hora: {{DataEliminarHora.descripcion}}</b>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="QuitarHora(DataEliminarHora.id);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+  <!--********************** Fin Modal Eliminar hora*************************************-->
+  
+  
+  
+  <!--   **************************** Modal Bodegas **************************** -->
+  
+  <div id="Bodegas" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Sitios de almacenaje</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #bodegaForm="ngForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group" [ngClass]="{'has-error': !nameBod.valid && (nameBod.dirty || nameBod.touched)}">
+                  <label for="nombreBodega">Nombre sitio de almacenaje
+                    <b class="asterisco">*</b>:</label>
+                  <input type="text" class="form-control" name="DataNewBodega.bodega" [(ngModel)]="DataNewBodega.bodega"
+                    #nameBod="ngModel" minlength="3" maxlength="30" required />
+                  <span class="help-block" *ngIf="nameBod.errors && (nameBod.dirty || nameBod.touched)">
+                    <li *ngIf="nameBod.errors.required">
+                      El campo nombre sitio de almacenaje es obligatorio
+                    </li>
+                    <li *ngIf="nameBod.errors.minlength">
+                      El campo nombre sitio de almacenaje debe tener mas de 3 caracteres
+                    </li>
+                    <li *ngIf="nameBod.errors.maxlength">
+                      El campo nombre sitio de almacenaje no puede ser mayor a 30 caracteres
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-7 spadd">
+                <label>¿Desea facturar de este sitio de almacenaje?</label>
+              </div>
+              <div class="col-md-2">
+                <input type="radio" id="factsi" name="DataNewBodega.facturar" [(ngModel)]="DataNewBodega.facturar" [value]=1
+                  required>
+                <label for="factsi">Si</label>
+              </div>
+              <div class="col-md-2">
+                <input type="radio" id="factno" name="DataNewBodega.facturar" [(ngModel)]="DataNewBodega.facturar" [value]=0
+                  required>
+                <label for="factno">No</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="bindingBodega(DataNewBodega);" [disabled]="!bodegaForm.valid" data-dismiss="modal"
+              class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   ****************************Fin Modal Bodegas **************************** -->
+  
+  <!--   **************************** Modal Modificar Bodegas **************************** -->
+  
+  <div id="ModificarBodega" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modificar sitio de almacenaje</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #bodegaEditForm="ngForm">
+            <div class="row">
+              <div class="form-group" [ngClass]="{'has-error': !nameBode.valid && (nameBode.dirty || nameBode.touched)}">
+                <label for="nombreBodega">Nombre sitio de almacenaje
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" class="form-control" name="DataModificarBodega.bodega"
+                  [(ngModel)]="DataModificarBodega.bodega" #nameBode="ngModel" minlength="3" maxlength="30" required />
+                <span class="help-block" *ngIf="nameBode.errors && (nameBode.dirty || nameBode.touched)">
+                  <li *ngIf="nameBode.errors.required">
+                    El campo nombre sitio de almacenaje es obligatorio
+                  </li>
+                  <li *ngIf="nameBode.errors.minlength">
+                    El campo nombre sitio de almacenaje debe tener mas de 3 caracteres
+                  </li>
+                  <li *ngIf="nameBode.errors.maxlength">
+                    El campo nombre sitio de almacenaje no puede ser mayor a 30 caracteres
+                  </li>
+                </span>
+              </div>
+              <!-- <div class="form-group">
+                <label for="fact">¿Desea facturar de este sitio de almacenaje?</label>
+  
+                <div *ngIf="DataModificarBodega.facturar === true">
+                  <input type="checkbox" name="DataModificarBodega.facturar" checked id="fact" [(ngModel)]="DataModificarBodega.facturar" /> Si
+                </div>
+                <div *ngIf="DataModificarBodega.facturar === false">
+                  <input type="checkbox" name="DataModificarBodega.facturar" id="fact" [(ngModel)]="DataModificarBodega.facturar" /> No
+                </div>
+              </div> -->
+            </div>
+  
+            <div class="row">
+              <div class="col-md-7 spadd">
+                <label>¿Desea facturar de este sitio de almacenaje?</label>
+              </div>
+              <div class="col-md-2">
+                <input type="radio" id="factsi" name="DataModificarBodega.facturar"
+                  [(ngModel)]="DataModificarBodega.facturar" [value]=1 required>
+                <label for="factsi">Si</label>
+              </div>
+              <div class="col-md-2">
+                <input type="radio" id="factno" name="DataModificarBodega.facturar"
+                  [(ngModel)]="DataModificarBodega.facturar" [value]=0 required>
+                <label for="factno">No</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="ModificarBodega(DataModificarBodega);" [disabled]="!bodegaEditForm.valid"
+              data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Modal Modificar Bodegas **************************** -->
+  
+  <!--   **************************** Modal Ver Bodegas **************************** -->
+  
+  <div id="VerBodega" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Ver datos sitio de almacenaje</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group">
+              <label for="nombreBodega">Id sitio de almacenaje: </label> {{DataVerBodega.id_bodega}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <label for="nombreBodega">Nombre sitio de almacenaje: </label> {{DataVerBodega.nombre}}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Ver Bodegas **************************** -->
+  
+  <!--   **************************** Modal Licencias **************************** -->
+  
+  <div id="Licencias" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Licencias</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #licenciaForm="ngForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="nombreLicencia">Nombre Licencia
+                    <b class="asterisco">*</b>:</label>
+                  <input type="text" class="form-control" name="DataLicencia.licencia"
+                    [(ngModel)]="DataLicencia.licencia" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="estadoInst">Estado de Instalación:</label>
+  
+                  <div *ngIf="DataLicencia.estado_inst === true">
+                    <input type="checkbox" name="DataLicencia.estado_inst" checked id="estadoInst"
+                      [(ngModel)]="DataLicencia.estado_inst" /> <label for="estadoInst">Si</label>
+                  </div>
+                  <div *ngIf="DataLicencia.estado_inst === false">
+                    <input type="checkbox" name="DataLicencia.estado_inst" id="estadoInst"
+                      [(ngModel)]="DataLicencia.estado_inst" /> <label for="estadoInst">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="estadoReinst">Estado de Reinstalación:</label>
+  
+                  <div *ngIf="DataLicencia.estado_reinst === true">
+                    <input type="checkbox" name="DataLicencia.estado_reinst" checked id="estadoReinst"
+                      [(ngModel)]="DataLicencia.estado_reinst" /> <label for="estadoReinst">Si</label>
+                  </div>
+                  <div *ngIf="DataLicencia.estado_reinst === false">
+                    <input type="checkbox" name="DataLicencia.estado_reinst" id="estadoReinst"
+                      [(ngModel)]="DataLicencia.estado_reinst" /> <label for="estadoReinst">No</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="bindingLicencia(DataLicencia);" [disabled]="!licenciaForm.valid" data-dismiss="modal"
+              class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Modal Licencias **************************** -->
+  
+  
+  <!--   **************************** Modal Modificar Licencias **************************** -->
+  
+  <div id="ModificarLicencia" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modificar Licencia</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #licenciaEditForm="ngForm">
+            <div class="row">
+              <div class="form-group">
+                <label>Nombre Licencia
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" class="form-control" name="DataModificarLicencia.nombrelic"
+                  [(ngModel)]="DataModificarLicencia.nombrelic" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="estadoInst">Estado de Instalación:</label>
+  
+                  <div *ngIf="DataModificarLicencia.estado_inst === true">
+                    <input type="checkbox" name="DataModificarLicencia.estado_inst" checked id="estadoInstEdLi"
+                      [(ngModel)]="DataModificarLicencia.estado_inst" /> <label for="estadoInstEdLi">Si</label>
+                  </div>
+                  <div *ngIf="DataModificarLicencia.estado_inst === false">
+                    <input type="checkbox" name="DataModificarLicencia.estado_inst" id="estadoInstEdLi"
+                      [(ngModel)]="DataModificarLicencia.estado_inst" /> <label for="estadoInstEdLi">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="estadoInst">Estado de Reinstalación:</label>
+  
+                  <div *ngIf="DataModificarLicencia.estado_reinstalacion === true">
+                    <input type="checkbox" name="DataModificarLicencia.estado_reinstalacion" checked id="estadoReinstEdLi"
+                      [(ngModel)]="DataModificarLicencia.estado_reinstalacion" /> <label for="estadoReinstEdLi">Si</label>
+                  </div>
+                  <div *ngIf="DataModificarLicencia.estado_reinstalacion === false">
+                    <input type="checkbox" name="DataModificarLicencia.estado_reinstalacion" id="estadoReinstEdLi"
+                      [(ngModel)]="DataModificarLicencia.estado_reinstalacion" /> <label for="estadoReinstEdLi">No</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="ModificarLicencia(DataModificarLicencia);" [disabled]="!licenciaEditForm.valid"
+              data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Modal Modificar Licencias **************************** -->
+  
+  <!--   **************************** Modal Ver Licencias **************************** -->
+  
+  <div id="VerLicencia" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Ver datos Licencia</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group">
+              <label>Id Licencia: </label> {{DataVerLicencia.id_licencia}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <label>Nombre Licencia: </label> {{DataVerLicencia.nombre}}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Ver Licencias **************************** -->
+  
+  <!-- **************************** Modal Resoluciones **************************** -->
+  
+  <div id="Resoluciones" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Resoluciones de Licencia</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Crear Resolución:</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <a uiSrefActive="active" (click)="bindingResolucion(idLicencia)" role="button" data-toggle="modal"
+                  data-target="#CrearResolucion" data-placement="top" title="CrearResolucion">
+                  <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                </a>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-12">
+              <div class="tablaconfig">
+                <div class="centrar buscar-paginacionconfig">
+                  <div class="buscar-paginacion2">
+                    <input type="text" class="form-control" name="searchStringTResoluciones" placeholder="Buscar"
+                      [(ngModel)]="searchStringTResoluciones">
+                  </div>
+                  <div class="buscar-paginacion2">
+                    <select class="form-control" name="itempageTResoluciones" [(ngModel)]="itempageTResoluciones">
+                      <option value="5" selected="selected">Configuracion Por Página</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div>
+                  <div class="loading" *ngIf="loader">
+                    <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                  </div>
+                  <div class="loadError" *ngIf="LoadError">
+                    <div class="alert alert-danger">{{error}}</div>
+                  </div>
+                  <div *ngIf="LoadTabla">
+                    <div class="panel-body table-responsive">
+                      <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                        <thead>
+                          <tr>
+                            <th>En uso</th>
+                            <th>Autorizada</th>
+                            <th>Inicial</th>
+                            <th>Final</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="odd gradeX"
+                            *ngFor="let data of DataTablaResoluciones | editresolucionespuntos: searchStringTResoluciones | paginate: { itemsPerPage: itempageTResoluciones, currentPage: tr, id:'tablaresoluciones' }">
+                            <td>{{data.en_uso}}</td>
+                            <td>{{data.autorizada}}</td>
+                            <td>{{data.inicial}}</td>
+                            <td>{{data.final_f}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="centrarpaginacion">
+                        <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tr = $event" id="tablaresoluciones"></pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- **************************** Fin Resoluciones **************************** -->
+  
+  <!--   **************************** Modal Crear Resolucion **************************** -->
+  
+  <div id="CrearResolucion" class="modal fade" role="dialog">
+    <div class="modal-dialog  modal-lg">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Resolucion</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-1">
+              <input type="radio" checked name="proceso" [(ngModel)]="proceso" [value]=1>
+            </div>
+            <div class="col-md-2">
+              <b>AUTORIZADA</b>
+            </div>
+            <div class="col-md-1">
+              <input type="radio" name="proceso" [(ngModel)]="proceso" [value]=2>
+            </div>
+            <div class="col-md-2">
+              <b>EN TRAMITE</b>
+            </div>
+            <div class="col-md-3">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="resauto">Resolucion Autorizada
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control inputtext" name="DataNewResolucion.resauto"
+                [(ngModel)]="DataNewResolucion.resauto" />
+            </div>
+            <div class="col-md-3">
+              <label for="prefijo">Prefijo
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" name="DataNewResolucion.prefijo"
+                [(ngModel)]="DataNewResolucion.prefijo" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="inicial">Inicial
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" name="DataNewResolucion.inicial"
+                [(ngModel)]="DataNewResolucion.inicial" />
+            </div>
+            <div class="col-md-3">
+              <label for="final">Final
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" name="DataNewResolucion.final"
+                [(ngModel)]="DataNewResolucion.final" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="fecha">Fecha
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <my-date-picker class="valid" aria-placeholder="Fecha" name="DataNewResolucion.fecha" #fecent="ngModel"
+                [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
+                [(ngModel)]="DataNewResolucion.fecha" required readonly=""></my-date-picker>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="facturas">Alerta al faltar
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" name="DataNewResolucion.facturas"
+                [(ngModel)]="DataNewResolucion.facturas" />
+            </div>
+            <div class="col-md-3">
+              <label>Facturas</label>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-3">
+              <label for="observaciones">Observaciones:</label>
+            </div>
+            <div class="col-md-9">
+              <textarea class="form-control" rows="4" cols="120" name="DataNewResolucion.observaciones"
+                [(ngModel)]="DataNewResolucion.observaciones"></textarea>
+            </div>
+          </div>
+  
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button data-dismiss="modal" (click)="CrearResolucion(proceso, DataNewResolucion)"
+              class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--   **************************** Fin Modal Crear Resolucion **************************** -->
+  
+  
+  <!-- ******************************* Modal BodegasLicencia ************************************ -->
+  
+  <div id="BodegasLicencia" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bodegas de Licencia</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="tablaconfig">
+                <div class="centrar buscar-paginacionconfig">
+                  <div class="buscar-paginacion2">
+                    <input type="text" class="form-control" name="searchStringMBodegasLicencias" placeholder="Buscar"
+                      [(ngModel)]="searchStringMBodegasLicencias">
+                  </div>
+                  <div class="buscar-paginacion2">
+                    <select class="form-control" name="itempageMBodegasLicencias" [(ngModel)]="itempageMBodegasLicencias">
+                      <option value="5" selected="selected">Bodegas Por Página</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div>
+                  <div class="loading" *ngIf="loader">
+                    <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                  </div>
+                  <div class="loadError" *ngIf="LoadError">
+                    <div class="alert alert-danger">{{error}}</div>
+                  </div>
+                  <div *ngIf="LoadTabla">
+                    <div class="panel-body table-responsive">
+                      <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                        <thead>
+                          <tr>
+                            <th>Bodega</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr (click)="onChangeBodLic(data, !data.checked)" class="odd gradeX"
+                            *ngFor="let data of DataArrayBodegasLic | bodegaslicenciaeditpunto: searchStringMBodegasLicencias | paginate: { itemsPerPage: itempageMBodegasLicencias, currentPage: mbl, id:'modalbodegaslicencias' }">
+                            <td>{{data.nombreBodega}}</td>
+                            <td class="center">
+                              <input type="checkbox" name="check" [checked]="data.checked"
+                                (change)="onChangeBodLic(data, $event.target.checked)">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="centrarpaginacion">
+                        <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mbl = $event" id="modalbodegaslicencias"></pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- **************************** Fin BodegasLicencia ******************************** -->
+  

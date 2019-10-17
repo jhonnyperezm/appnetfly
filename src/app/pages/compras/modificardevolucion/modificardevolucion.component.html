@@ -1,0 +1,349 @@
+<div class="row">
+  <div class="container-fluid contenedorcompras">
+    <div class="row color_compras1">
+      <div class="col-lg-12" align="center">
+        <h1>Articulos Devolución N° {{DataDevolucion.numero_documento}}</h1>
+        <h6>Factura No: {{DataDevolucion.num_factura}}</h6>
+      </div>
+    </div>
+    <br>
+
+    <aw-wizard #wizard navBarLayout="large-empty-symbols">
+      <aw-wizard-step [navigationSymbol]="{ symbol: '1' }">
+        <div class="caja">
+          <span class="tiulocaja"> Datos Proveedor</span>
+          <form>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>Nombre:</label>&nbsp;&nbsp;{{DataProveedor.razon_social}}
+              </div>
+              <div class="col-lg-3">
+                <label>Codigo o Nit:</label>&nbsp;&nbsp;{{DataProveedor.nit}}
+              </div>
+              <div class="col-lg-3">
+                <label>Dirección: </label>&nbsp;&nbsp;{{DataProveedor.direccion}}
+              </div>
+              <div class="col-lg-3">
+                <label>Teléfono: </label>&nbsp;&nbsp;{{DataProveedor.telefono}}
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+
+        <div class="centrar">
+          <h3> Articulos Devolución </h3>
+        </div>
+
+        <div class="tablacompras">
+          <div class=" centrar buscar-paginacion">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringArticulos" placeholder="Buscar" [(ngModel)]="searchStringArticulos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageArticulos" [(ngModel)]="itempageArticulos">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="loading" *ngIf="loader">
+              <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+            </div>
+            <div class="loadError" *ngIf="LoadError">
+              <div class="alert alert-danger">{{error}}</div>
+            </div>
+            <div *ngIf="LoadTabla">
+              <div class="table-responsive">
+                <div class="panel-body">
+                  <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                    <thead>
+                      <tr>
+                        <th>Articulos</th>
+                        <th>Unidad Compra</th>
+                        <th>Cantidad</th>
+                        <th>Cantidad Kardex</th>
+                        <th>Factura</th>
+                        <th>Valor Unitario</th>
+                        <th>Total bruto</th>
+                        <th>Descuento</th>
+                        <th>Impuesto</th>
+                        <th>Valor Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="odd gradeX" *ngFor="let data of DataArrayArticulosDev | modificardevolucion: searchStringArticulos | paginate: { itemsPerPage: itempageArticulos, currentPage: artdev, id: 'articulosdev' }">
+                        <td>{{data.nombreArticulo}}</td>
+                        <td>{{data.id_unidad_compra}}</td>
+                        <td>{{data.cantidad_producto}}</td>
+                        <td>{{data.cantidad_kardex}}</td>
+                        <td>{{DataDevolucion.num_factura}}</td>
+                        <td>{{data.precio_unitario | number: '1.1-2' }}</td>
+                        <td>{{data.valor_bruto | number: '1.1-2' }}</td>
+                        <td>{{data.descuento | number: '1.1-2' }}</td>
+                        <td>{{data.valor_impuesto | number: '1.1-2' }}</td>
+                        <td>{{data.total}}</td>
+                        <td *ngIf="data.estado_compra">Facturado</td>
+                        <td *ngIf="!data.estado_compra">Pendiente</td>
+                        <td class="center" *ngIf="!data.estado_compra">
+                          <a *ngIf="sidebarComponent.contienePermiso(143)" class="colorbotonmodificar" (click)="bindingComprar(data)" awNextStep
+                            data-toggle="tooltip" data-placement="top" title="Comprar">
+                            <img src="assets/images/comprar-dev.png" width="30" height="30" class="btnReportes">
+
+                          </a>
+                        </td>
+                        <td class="center" *ngIf="data.estado_compra">
+                          <a>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="centrarpaginacion">
+                    <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="artdev = $event" id="articulosdev"></pagination-controls>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="centrar">
+          <button type="submit" [routerLink]="['/compras/devoluciones']" class="btnbutton"> Anterior </button>
+          <button type="submit" (click)="ImprimirDevolucion()" class="btnbutton"> Imprimir </button>
+          <button *ngIf="sidebarComponent.contienePermiso(144)" type="submit" (click)="ComprarTodosDevoluciones(DataArrayArticulosDev)"
+            [disabled]="!botonComprarTodo" awNextStep class="btnbutton" awPreviousStep> Comprar todo </button>
+        </div>
+      </aw-wizard-step>
+      <aw-wizard-step *ngIf="botonComprarTodo" [navigationSymbol]="{ symbol: '2' }">
+
+        <div class="caja">
+          <span class="tiulocaja"> Datos Proveedor</span>
+          <form>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>Nombre: </label> {{DataProveedor.razon_social}}
+              </div>
+              <div class="col-lg-3">
+                <label>Codigo o Nit: </label> {{DataProveedor.nit}}
+              </div>
+              <div class="col-lg-3">
+                <label>Dirección: </label> {{DataProveedor.direccion}}
+              </div>
+              <div class="col-lg-3">
+                <label>Teléfono: </label> {{DataProveedor.telefono}}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="caja">
+          <span class="tiulocaja"> Datos Compra</span>
+
+          <form #devUnoForm="ngForm">
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="form-group" [ngClass]="{'has-error': !fechacompra.valid && (fechacompra.dirty || fechacompra.touched)}">
+                  <label>Fecha de Compra</label>
+                  <br>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Compra" name="fecha_compra" #fechacompra="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="fecha_compra" [selDate]="DataNewCompra.fecha_compra"
+                    required readonly="">
+                  </my-date-picker>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group" [ngClass]="{'has-error': !fechakardex.valid && (fechakardex.dirty || fechakardex.touched)}">
+                  <label> Ingreso A Kardex </label>
+                  <br>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Kardex" name="fecha_kardex" #fechakardex="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged2($event)" [(ngModel)]="fecha_kardex" [selDate]="DataNewCompra.fecha_kardex"
+                    required readonly=""> </my-date-picker>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group" [ngClass]="{'has-error': !fechavencimiento.valid && (fechavencimiento.dirty || fechavencimiento.touched)}">
+                  <label> Vencimiento de Factura </label>
+                  <br>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Vencimiento" name="fecha_vencimiento" #fechavencimiento="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged3($event)" [(ngModel)]="fecha_vencimiento"
+                    [selDate]="DataNewCompra.fecha_vencimiento" required readonly="">
+                  </my-date-picker>
+                </div>
+              </div>
+              <div class=" col-lg-3">
+                <div class="form-group">
+                  <label>Numero de Factura</label>
+                  <input class="form-control" type="text" name="DataNewCompra.numerofactura" width="100px;" id="DataNewCompra.numerofactura"
+                    [(ngModel)]="DataNewCompra.numerofactura" required>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div *ngIf="tablaadicionados">
+
+            <div class="tablacompras">
+              <div class="centrar buscar-paginacion">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searcharticulosagregados" placeholder="Buscar" [(ngModel)]="searcharticulosagregados">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempagearticulosagregados" [(ngModel)]="itempagearticulosagregados">
+                    <option value="5" selected="selected">Articulos Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-responsive panel-body">
+                <table width="100%" class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+
+                      <th>Articulo</th>
+                      <th>Unidad</th>
+                      <th>Cantidad</th>
+                      <th>Unidad Kardex</th>
+                      <th>Valor Unitario</th>
+                      <th>Valor Base</th>
+                      <th>Valor Impuesto</th>
+                      <th>Valor Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let articulo of articulosAgregados | paginate: { itemsPerPage: itempagearticulosagregados, currentPage: art_agr, id :'articulo_agregado'} ; let i=index">
+
+                      <td>{{articulo.nombreArt}}</td>
+                      <td>{{articulo.nom_unidad_com}}</td>
+                      <td>{{articulo.cant}}</td>
+                      <td>{{articulo.nom_unidad_kar}}</td>
+                      <td>{{articulo.precio_uni | number:'1.2-2'}}</td>
+                      <td>{{articulo.basecom | number:'1.2-2'}}</td>
+                      <td>{{articulo.valor_imp | number:'1.2-2'}}</td>
+                      <td>{{articulo.totalcom | number:'1.2-2'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="art_agr = $event" id="articulo_agregado"></pagination-controls>
+                </div>
+                <br>
+              </div>
+            </div>
+
+            <div class="caja">
+              <span class="tiulocaja"> Totales Compra</span>
+              <div class="row">
+                <div class="col-lg-12 divcolor">
+                  <div class="col-lg-4">
+                    <label>Subtotal</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                      </div>
+                      <input type="number" class="form-control alineacion" type="number" id="DataTotales.subtotal" name="DataTotales.subtotal"
+                        [(ngModel)]="DataTotales.subtotal" readonly="true" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Impuestos</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                      </div>
+                      <input type="number" class="form-control alineacion" type="number" id="DataTotales.totalimpuestos" name="DataTotales.totalimpuestos"
+                        [(ngModel)]="DataTotales.totalimpuestos" readonly="true" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <label>Total</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                      </div>
+                      <input type="number" class="form-control alineacion" type="number" id="DataTotales.totaltotal" name="DataTotales.totaltotal"
+                        [(ngModel)]="DataTotales.totaltotal" readonly="true" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="caja">
+              <span class="tiulocaja">Totales Impuesto</span>
+              <div class="row">
+                <div class="col-lg-3" *ngFor="let impuesto of DiscriminacionImpuestos ">
+                  <label>{{impuesto.nombreimpuesto}} {{impuesto.tarifa}}</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                    </div>
+                    <input type="text" value="{{impuesto.valor_impuesto}}" class="form-control alineacion" type="number" id="valor_impuesto"
+                      name="valor_impuesto" readonly="true" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="centrar">
+              <input type="submit" data-toggle="modal" data-target="#mycancelar" name="Cancelar" class="btnbuttoncerrar" value="Cancelar">
+
+              <input type="submit" (click)="Imprimir()" [disabled]="!devUnoForm.valid" name="Imprimir" class="btnbutton" value="Imprimir">
+
+              <input type="submit" value="Comprar" [disabled]="!devUnoForm.valid" class="btnbutton" name="Comprar" (click)="ValidarNumeroFactura(DataNewCompra)">
+
+            </div>
+          </div>
+
+
+        </div>
+
+      </aw-wizard-step>
+
+    </aw-wizard>
+
+
+
+
+
+  </div>
+</div>
+
+<!--  *********************** Modal Cancelar ******************************** -->
+
+<div class="modal fade" id="mycancelar" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content modalesmodificados">
+      <div class="modal-header">
+        <h4 class="modal-title">Cancelar</h4>
+      </div>
+      <div class="modal-body">
+        <p>Esta seguro de Volver A Listado De Devoluciones</p>
+      </div>
+      <div class="modal-footer">
+        <!-- <a [routerLink]="['/dashboard/compras/devoluciones']" data-dismiss="modal" class="btnbutton">
+          Aceptar</a> -->
+          <button  [routerLink]="['/compras/devoluciones']" type="button" class="btnbutton button" data-dismiss="modal" >Aceptar</button>
+
+        <button type="button" class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- *************************** Fin  Modal Cancelar ******************************* -->

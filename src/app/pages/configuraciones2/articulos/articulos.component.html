@@ -1,0 +1,247 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Articulos</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+        <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(51)"
+          [routerLink]="['ingresararticulos']">
+          <a>
+            <span class="pull-left">Crear Articulo</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(52)"
+          [routerLink]="['articulosinactivos']">
+          <a>
+            <span class="pull-left">Articulos Inactivos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" [(ngModel)]="itempage">
+            <option value="5" selected="selected">Articulos Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <div class="loading" *ngIf="loader">
+          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        </div>
+
+        <div class="loadError" *ngIf="LoadError">
+          <div class="alert alert-danger">{{error}}</div>
+        </div>
+        <div *ngIf="LoadTabla && !noHayRegistros">
+          <div class="panel-body table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Maneja Inventario</th>
+                  <th>Unidad Kardex</th>
+                  <th>Es para Venta</th>
+                  <th>Unidad Venta</th>
+                  <th>Tiene Receta</th>
+                  <th>Hace parte de una seleccion</th>
+                  <th class="center" *ngIf="SidebarComponent.contienePermiso(55)">Inactivar</th>
+                  <th class="center" *ngIf="SidebarComponent.contienePermiso(53)">Modificar</th>
+                  <th class="center" *ngIf="SidebarComponent.contienePermiso(78)">Puntos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX"
+                  *ngFor="let data of DataArticulos | articulos : searchString | paginate: { itemsPerPage: itempage, currentPage: p }">
+                  <td>{{data.nombre}}</td>
+                  <td *ngIf="data.inventario==true">Si</td>
+                  <td *ngIf="data.inventario==false">No</td>
+                  <td>{{data.nombre_kardex}}</td>
+                  <td *ngIf="data.venta==true">Si</td>
+                  <td *ngIf="data.venta==false">No</td>
+                  <td>{{data.nombre_venta}}</td>
+                  <td *ngIf="data.receta==true">Si</td>
+                  <td *ngIf="data.receta==false">No</td>
+                  <td *ngIf="data.seleccion==true">Si</td>
+                  <td *ngIf="data.seleccion==false">No</td>
+                  <td class="center" *ngIf="SidebarComponent.contienePermiso(55)">
+                    <a (click)="bindingDataArticulo(data.id,data.nombre)" uiSrefActive="active" role="button"
+                      data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                      <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                    </a>
+                  </td>
+                  <td class="center" *ngIf="SidebarComponent.contienePermiso(53)">
+                    <a [routerLink]="['modificararticulos', data.id, data.nombre, 1, 1]" uiSrefActive="active"
+                      role="button" data-toggle="tooltip" data-placement="top" title="Modificar">
+                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                    </a>
+                  </td>
+                  <td class="center" *ngIf="SidebarComponent.contienePermiso(78)">
+                    <a (click)="mostrarPuntos(data.id)" uiSrefActive="active" role="button" data-toggle="modal"
+                      data-placement="top" data-target="#VerPuntos" title="Ver Puntos">
+                      <img src="assets/images/place.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+
+        </div>
+
+        <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Unidad Kardex</th>
+                <th>Maneja Inventario</th>
+                <th>Es para Venta</th>
+                <th>Tiene Receta</th>
+                <th>Hace parte de una seleccion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX">
+                <td colspan="6" class="center">No hay Registros</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--*************************Modal Inactivar***********************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar Articulo</h4>
+      </div>
+
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Seguro desea Inactivar el Articulo con Id: {{idArticulo}} con Nombre: {{nombreArticulo}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="InactivarArticulo(idArticulo, nombreArticulo);" data-dismiss="modal"
+            class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar*************************************-->
+
+
+<!-- ********************** Modal Puntos **********************-->
+
+<div id="VerPuntos" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Puntos</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringPuntos" placeholder="Buscar"
+                [(ngModel)]="searchStringPuntos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempagePuntos" [(ngModel)]="itempagePuntos">
+                <option value="5" selected="selected">Puntos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="loading" *ngIf="loader">
+              <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+            </div>
+            <div class="loadError" *ngIf="LoadError">
+              <div class="alert alert-danger">{{error}}</div>
+            </div>
+            <div *ngIf="LoadTabla">
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Nombre Punto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX"
+                      *ngFor="let data of DataJsonPuntos | puntosarticulos: searchStringPuntos |  paginate: { itemsPerPage: itempagePuntos, currentPage: mp, id: 'modalpuntos' }">
+                      <td>{{data.nombre}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mp = $event" id="modalpuntos"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Puntos ********************** -->

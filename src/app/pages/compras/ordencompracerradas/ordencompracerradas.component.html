@@ -1,0 +1,176 @@
+<div class="row">
+    <div class="container-fluid contenedorcompras">
+      <div class="row color_compras1">
+        <div class="col-lg-12 col-md-12" align="center">
+          <h1>
+            Ordenes de Compra Cerradas
+            <br>
+          </h1>
+        </div>
+      </div>
+      <div class="row centrar">
+        <div class="col-md-12">
+          <div class="btnrouterlink" [routerLink]="['/compras/ordencompra']">
+            <a>
+              <span class="pull-left">
+                <i class="fa fa-arrow-circle-left"></i>
+              </span>
+              <span class="pull-right">Ordenes de Compra</span>
+              <div class="clearfix"></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablacompras">
+        <div class="centrar buscar-paginacion">
+          <div class="buscar-paginacion2">
+            <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+          </div>
+          <div class="buscar-paginacion2">
+            <select class="form-control" [(ngModel)]="itempage">
+              <option value="5" selected="selected">Ordenes de Compras Por Página</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Numero</th>
+                  <th>Fecha de Pedido</th>
+                  <th>Fecha de Entrega</th>
+                  <th>Proveedor</th>
+                  <th class="center">Ver Datos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let orden of ListaOrdenesCerradas | ordencompracerradas : searchString | paginate: { itemsPerPage: itempage, currentPage: p ,id: 'id_orden'}">
+                  <td>{{orden.id_orden}}</td>
+                  <td>{{orden.fecha_pedido | date:'dd-MM-yyyy'}}</td>
+                  <td>{{orden.fecha_entrega | date:'dd-MM-yyyy'}}</td>
+                  <td>{{orden.razon_comercial}}</td>
+                  <td class="center">
+                    <a role="button" (click)="VerOrdenCerrada(orden)" data-toggle="tooltip" data-placement="top" title="Ver Datos"
+                    role="button" data-toggle="modal" data-target="#DatosModal">
+                      <img src="assets/images/eye.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrar">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event" id="id_orden"></pagination-controls>
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ********************************** Modal Ver Datos ***************************** -->
+
+  <div id="DatosModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Información de Orden</h3>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
+              <p *ngFor="let info_orden of DetalleOrdenesCerradas" class="active">
+                <i class="left-addon"></i>
+                <label> O.C Numero : </label> {{info_orden.id}}
+                <br>
+                <i class="left"></i>
+                <label># Factura : </label> {{info_orden.num_factura}}
+                <br>
+                <i class="left"></i>
+                <label>Fecha de Pedido : </label> {{info_orden.fecha_pedido | date:'dd-MM-yyyy'}}
+                <br>
+                <i class="left"></i>
+                <label>Fecha de Entrega : </label> {{info_orden.fecha_entrega | date:'dd-MM-yyyy'}}
+                <br>
+                <i class="left"></i>
+                <label>Proveedor : </label> {{info_orden.razon_comercial}}
+                <br>
+              </p>
+            </div>
+          </div>
+          <br>
+
+
+          <div class="row">
+            <div class="tablacompras">
+              <div class="centrar buscar-paginacion">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringArticulo" placeholder="Buscar" [(ngModel)]="searchStringArticulo">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" [(ngModel)]="itempage" name="itempage">
+                    <option value="5" selected="selected">Ordenes de Compras Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-responsive panel-body">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Articulo</th>
+                      <th>Unidad</th>
+                      <th>Cantidad</th>
+                      <th>Unidad Kardek</th>
+                      <th>Valor unitario</th>
+                      <th>Valor Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let articulo of ArticulosOrdenesCerradas | articulosordencompracerradas : searchStringArticulo | paginate: { itemsPerPage: itempage, currentPage: p}">
+                      <td>{{articulo.nombre_articulo}}</td>
+                      <td>{{articulo.unidad_compra}}</td>
+                      <td>{{articulo.cantidad}}</td>
+                      <td>{{articulo.nombre_kardex}}</td>
+                      <td>{{articulo.precio}}</td>
+                      <td>{{articulo.total}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrar">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ********************************** Fin Modal Ver Datos ***************************** -->

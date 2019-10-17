@@ -1,0 +1,16 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'modalarticuloseditoc'
+})
+export class ModalarticuloseditocPipe implements PipeTransform {
+
+  transform(value: any, query?: any): any {
+    if (query === undefined || query === '') { return value; }
+    return value.filter(data => {
+      return data.nombre.toLowerCase().includes(query.toLowerCase()) ||
+      data.id_articulo.toString().includes(query);
+    });
+  }
+
+}

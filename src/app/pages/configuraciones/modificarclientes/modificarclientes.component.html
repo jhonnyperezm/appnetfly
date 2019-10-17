@@ -1,0 +1,1872 @@
+<div class="row">
+    <div class="container-fluid contenedorconfig">
+  
+      <div class="row color_config">
+        <div class="col-lg-12" align="center">
+          <h1>Clientes</h1>
+        </div>
+      </div>
+  
+      <p></p>
+      <!-- <div>
+        <div class="caja_cliente"> -->
+      <form #clienteUnoForm="ngForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="razon">Razon social
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataJson.nombre" class="form-control" [(ngModel)]="DataJson.nombre"
+                #razon="ngModel" minlength="2" maxlength="100" required
+                [ngClass]="{'is-invalid': !razon.valid && (razon.dirty || razon.touched)}" />
+              <span class="invalid-feedback" *ngIf="razon.errors && (razon.dirty || razon.touched)">
+                <li *ngIf=razon.errors.required>
+                  El campo razon social es obligatorio
+                </li>
+                <li *ngIf="razon.errors.minlength">
+                  El campo razon social debe ser mayor a 2 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="nit">Nit
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataJson.nit" class="form-control" id="DataJson.nit" [ngModel]="DataJson.nit"
+                (ngModelChange)="colocarPuntos(DataNewCliente.nit=$event);calcularDigito(DataNewCliente.nit)"
+                #nitcliente="ngModel" minlength="4" maxlength="15" required
+                [ngClass]="{'is-invalid': !nitcliente.valid && (nitcliente.dirty ||nitcliente.touched)}">
+              <span class="invalid-feedback" *ngIf="nitcliente.errors && (nitcliente.dirty || nitcliente.touched)">
+                <li *ngIf=nitcliente.errors.required>
+                  El campo Nit es obligatorio
+                </li>
+                <li *ngIf="nitcliente.errors.minlength">
+                  El campo Nit debe ser mayor a 4 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="div">Div
+                <b class="asterisco">*</b>:</label>
+              <!--<div class="row">
+                        <div class="col-xs-2">
+                          <span>
+                            <b>_</b>
+                          </span>
+                        </div>
+                        <div class="col-xs-10"> -->
+              <input type="text" name="DataJson.digito_checkeo" class="form-control" id="digito"
+                [(ngModel)]="DataJson.digito_checkeo" #dig="ngModel" minlength="1" maxlength="1" required
+                [ngClass]="{'is-invalid': !dig.valid && (dig.dirty ||dig.touched)}">
+              <!-- </div>
+                      </div>-->
+              <span class="invalid-feedback" *ngIf="dig.errors && (dig.dirty || dig.touched)">
+                <li *ngIf=dig.errors.required>
+                  El campo digito es obligatorio
+                </li>
+                <li *ngIf="dig.errors.minlength">
+                  El campo digito debe ser de 1 caracter*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="correo">Correo Electronico
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataJson.email" class="form-control" id="correo" [(ngModel)]="DataJson.email"
+                #cor="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50"
+                required [ngClass]="{'is-invalid': !cor.valid && (cor.dirty || cor.touched)}" />
+              <span class="invalid-feedback" *ngIf="cor.errors && (cor.dirty || cor.touched)">
+                <li *ngIf=cor.errors.required>
+                  El campo correo es obligatorio
+                </li>
+                <li *ngIf=cor.errors.minlength>
+                  El campo correo debe ser mayor a 5 caracteres*
+                </li>
+                <li *ngIf="cor.errors">
+                  El campo correo debe ser de la forma
+                  <i>ejemplo@dominio.com</i>
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="direccion">Dirección
+                <b class="asterisco">*</b>:</label>
+              <input type="direccion" name="DataJson.direccion" class="form-control" id="direccion"
+                [(ngModel)]="DataJson.direccion" #dir="ngModel" minlength="6" maxlength="100" (focus)="focusDireccion()"
+                data-toggle="modal" data-target="#MyModal" readonly required
+                [ngClass]="{'is-invalid': !dir.valid && (dir.dirty || dir.touched)}" />
+              <span class="invalid-feedback" *ngIf="dir.errors && (dir.dirty || dir.touched)">
+                <li *ngIf=dir.errors.required>
+                  El campo Direccion es obligatorio
+                </li>
+                <li *ngIf=dir.errors.minlength>
+                  El campo correo debe ser mayor a 6 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="tel">Telefono (Fijo / Celular)
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataJson.telefono" class="form-control" id="telefono"
+                [(ngModel)]="DataJson.telefono" #tel="ngModel" minlength="7" maxlength="10" (keypress)="kPNumeros($event)"
+                required [ngClass]="{'is-invalid': !tel.valid && (tel.dirty || tel.touched)}" />
+              <span class="invalid-feedback" *ngIf="tel.errors && (tel.dirty || tel.touched)">
+                <li *ngIf=tel.errors.required>
+                  El campo telefono es obligatorio
+                </li>
+                <li *ngIf=tel.errors.minlength>
+                  El campo telefono debe ser mayor a 6 caracteres*
+                </li>
+                <li *ngIf=tel.errors.maxlength>
+                  El campo telefono no debe ser mayor a 7 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <!-- <div class="col-md-2">
+                    <div class="form-group">
+                      <label for="extension">Extension:</label>
+                      <input type="number" name="DataJson.extension" class="form-control" id="extension" [(ngModel)]="DataJson.extension" min="1"
+                        max="9999" (keypress)="kPNumeros($event)" />
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="celular">Celular:</label>
+                      <input type="text" name="DataJson.celular" class="form-control" id="celular" [(ngModel)]="DataJson.celular" #cel="ngModel"
+                        (keypress)="kPNumeros($event)" minlength="10" maxlength="10"  [ngClass]="{'is-invalid': !cel.valid && (cel.dirty || cel.touched)}"/>
+                      <span class="invalid-feedback" *ngIf="cel.errors && (cel.dirty || cel.touched)">
+                        <li *ngIf=cel.errors.minlength>
+                          El campo celular debe ser mayor a 10 digitos*
+                        </li>
+                        <li *ngIf=cel.errors.maxlength>
+                          El campo celular no debe ser mayor a 10 digitos*
+                        </li>
+                      </span>
+                    </div>
+                  </div> -->
+        </div>
+  
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="propietario">Nombre del Propietario o Gerente:</label>
+              <input type="text" name="DataJson.nombre_dueno" class="form-control" id="propietario"
+                [(ngModel)]="DataJson.nombre_dueno" #pro="ngModel" minlength="3" maxlength="100"
+                [ngClass]="{'is-invalid': !pro.valid && (pro.dirty || pro.touched)}" />
+              <span class="invalid-feedback" *ngIf="pro.errors && (pro.dirty || pro.touched)">
+                <li *ngIf=pro.errors.required>
+                  El campo nombre del propietario es obligatorio
+                </li>
+                <li *ngIf=pro.errors.minlength>
+                  El campo nombre del propietario debe ser mayor a 6 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="celular">Correo del Propietario:</label>
+              <input type="text" name="DataJson.email_dueno" class="form-control" id="correo_propietario"
+                #corpro="ngModel" minlength="5" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" maxlength="50"
+                [(ngModel)]="DataJson.email_dueno"
+                [ngClass]="{'is-invalid': !corpro.valid && (corpro.dirty || corpro.touched)}" />
+              <span class="invalid-feedback" *ngIf="corpro.errors && (corpro.dirty || corpro.touched)">
+                <li *ngIf=corpro.errors.minlength>
+                  El campo correo del propietario debe ser mayor a 6 caracteres*
+                </li>
+                <li *ngIf="corpro.errors">
+                  El campo correo del propietario debe ser de la forma
+                  <i>ejemplo@dominio.com</i>
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="celular">Telefono del Propietario:</label>
+              <input type="text" name="DataJson.cel_dueno" class="form-control" minlength="7" maxlength="13"
+                #telpro="ngModel" (keypress)="kPNumeros($event)" [(ngModel)]="DataJson.cel_dueno"
+                [ngClass]="{'is-invalid': !telpro.valid && (telpro.dirty || telpro.touched)}" />
+              <span class="invalid-feedback" *ngIf="telpro.errors && (telpro.dirty || telpro.touched)">
+                <li *ngIf=telpro.errors.minlength>
+                  El campo telefono del propietario debe ser mayor a 6 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="representantelegal">Nombre del Representante Legal
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataJson.nombre_representante" class="form-control" id="representantelegal"
+                minlength="3" maxlength="100" [(ngModel)]="DataJson.nombre_representante" #rep="ngModel" required
+                [ngClass]="{'is-invalid': !rep.valid && (rep.dirty || rep.touched)}" />
+              <span class="invalid-feedback" *ngIf="rep.errors && (rep.dirty || rep.touched)">
+                <li *ngIf=rep.errors.required>
+                  El campo nombre de representante legal es obligatorio
+                </li>
+                <li *ngIf=rep.errors.minlength>
+                  El campo nombre de representante debe ser mayor a 6 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="documento_representantelegal">Documento del Representante
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataJson.documento_representante" class="form-control"
+                (keypress)="kPNumeros($event)" minlength="6" maxlength="11" [(ngModel)]="DataJson.documento_representante"
+                #docrep="ngModel" required
+                [ngClass]="{'is-invalid': !docrep.valid && (docrep.dirty || docrep.touched)}" />
+              <span class="invalid-feedback" *ngIf="docrep.errors && (docrep.dirty ||docrep.touched)">
+                <li *ngIf=docrep.errors.required>
+                  El campo documento de representante legal es obligatorio
+                </li>
+                <li *ngIf=docrep.errors.minlength>
+                  El campo documento de representante debe ser mayor a 6 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="Pais">Pais
+                <b class="asterisco">*</b>:</label>
+              <select class="form-control" [(ngModel)]="DataJson.id_pais" name="DataJson.id_pais"
+                (ngModelChange)="loadDepartamento(DataJson.id_pais)" #pais="ngModel" required
+                [ngClass]="{'is-invalid': !pais.valid && (pais.dirty || pais.touched)}">
+                <option [value]=""></option>
+                <option [value]="paises.id" *ngFor="let paises of DataArrayPaises">{{paises.nombre}}</option>
+              </select>
+              <span class="invalid-feedback" *ngIf="pais.errors && (pais.dirty || pais.touched)">
+                <li *ngIf="pais.errors.required">
+                  El campo Pais es obligatorio
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="departamento">Departamento
+                <b class="asterisco">*</b>:</label>
+              <select class="form-control" id="id_departamento" [(ngModel)]="DataJson.id_departamento"
+                name="DataJson.id_departamento" (ngModelChange)="loadMunicipio($event)" #dep="ngModel" required
+                [ngClass]="{'is-invalid': !dep.valid && (dep.dirty || dep.touched)}">
+                <option [value]=""></option>
+                <option *ngFor="let departamentos of DataArrayDepartamentos" [value]="departamentos.id">
+                  {{departamentos.nombre}}</option>
+              </select>
+              <span class="invalid-feedback" *ngIf="dep.errors && (dep.dirty || dep.touched)">
+                <li *ngIf=dep.errors.required>
+                  El campo Departamento es obligatorio
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="municipio">Municipio
+                <b class="asterisco">*</b>:</label>
+              <select class="form-control" id="id_municipio" [(ngModel)]="DataJson.id_municipio"
+                name="DataJson.id_municipio" #mun="ngModel" required
+                [ngClass]="{'is-invalid': !mun.valid && (mun.dirty || mun.touched)}">
+                <option [value]=""></option>
+                <option *ngFor="let municipios of DataArrayMunicipios" [value]="municipios.id">{{municipios.nombre}}
+                </option>
+              </select>
+              <span class="invalid-feedback" *ngIf="mun.errors && (mun.dirty || mun.touched)">
+                <li *ngIf=mun.errors.required>
+                  El campo Municipio es obligatorio
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <!--************************************Datos de tokenPasswor y tokenEmpresa//////////////////////////////////////////-->
+  
+  
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="tokenEmpresa">Token Empresa
+              </label>
+              <input type="text" name="DataJson.token_empresa" class="form-control" id="tokenEmpresa" minlength="3"
+                maxlength="100" [(ngModel)]="DataJson.token_empresa" #tke="ngModel"
+                [ngClass]="{'is-invalid': !tke.valid && (tke.dirty || tke.touched)}" />
+              <span class="invalid-feedback" *ngIf="tke.errors && (tke.dirty || tke.touched)">
+  
+                <li *ngIf=tke.errors.minlength>
+                  El campo Token Empresa debe ser mayor a 3 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="tokenPassword">Token Password
+              </label>
+              <input type="text" name="DataJson.token_password" class="form-control" id="tokenPassword" minlength="3"
+                maxlength="100" [(ngModel)]="DataJson.token_password" #tkp="ngModel"
+                [ngClass]="{'is-invalid': !tkp.valid && (tkp.dirty || tkp.touched)}" />
+              <span class="invalid-feedback" *ngIf="tkp.errors && (tkp.dirty || tkp.touched)">
+  
+                <li *ngIf=tkp.errors.minlength>
+                  El campo Token Password debe ser mayor a 3 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+  
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="estadoInst">Estado de Instalación:</label>
+              <!-- </div> -->
+              <!-- </div>
+                  <div class="col-md-2"> -->
+              <div *ngIf="DataJson.estado_inst === true">
+                <input type="checkbox" name="DataJson.estado_inst" checked id="estadoInst"
+                  [(ngModel)]="DataJson.estado_inst" /> Si
+              </div>
+              <div *ngIf="DataJson.estado_inst === false">
+                <input type="checkbox" name="DataJson.estado_inst" id="estadoInst" [(ngModel)]="DataJson.estado_inst" />
+                No
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="caja_cliente">
+  
+          <div class="row">
+            <div class="col-md-4">
+              <label>Es franquiciador?
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="frdorsi" (change)="validarFranquiciador(DataJson.franquiciador)"
+                name="DataJson.franquiciador" [(ngModel)]="DataJson.franquiciador" [disabled]="DataJson.franquiciado == 1"
+                [value]=1 required>
+              <label for="frdorsi">Si</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="frdorno" (change)="validarFranquiciador(DataJson.franquiciador)"
+                name="DataJson.franquiciador" [(ngModel)]="DataJson.franquiciador" [disabled]="DataJson.franquiciado == 1"
+                [value]=0 required>
+              <label for="frdorno">No</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label>Es franquiciado?
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="fransi" (change)="validarFranquiciado(DataNewCliente.franquiciado)"
+                name="DataNewCliente.franquiciado" [(ngModel)]="DataJson.franquiciado"
+                [disabled]="DataJson.franquiciador == 1" [value]=1 required>
+              <label for="fransi">Si</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="franno" (change)="validarFranquiciado(DataNewCliente.franquiciado)"
+                name="DataNewCliente.franquiciado" [(ngModel)]="DataJson.franquiciado"
+                [disabled]="DataJson.franquiciador == 1" [value]=0 required>
+              <label for="franno">No</label>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+  
+        <div class="caja_cliente">
+          <span class="tiulocaja-configuraciones">Marcas</span>
+  
+          <div class="row">
+            <div class="botonesActivar">
+              <div class="btnrouterlinkconfig" (click)="LimpiarFormMarcas()" data-toggle="modal" data-target="#CrearMarca"
+                title="Crear Marca">
+                <a>
+                  <span class="pull-center">Crear</span>
+                </a>
+              </div>
+              <div (click)="SetMarcasInactivas()" class="btnrouterlinkconfig" *ngIf="!MarcasInactivas">
+                <a>
+                  <span class="pull-center">Activas</span>
+                </a>
+              </div>
+              <div (click)="SetMarcasInactivas()" class="btnrouterlinkconfig" *ngIf="MarcasInactivas">
+                <a>
+                  <span class="pull-center">Inactivas</span>
+                </a>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row" *ngIf="ListaMarcas.length>=1">
+            <div class="col-md-12">
+              <div class="tablaconfig">
+                <div class="centrar buscar-paginacionconfig">
+                  <div class="buscar-paginacion2">
+                    <input type="text" class="form-control" name="searchStringTMarcas" placeholder="Buscar"
+                      [(ngModel)]="searchStringTMarcas">
+                  </div>
+                  <div class="buscar-paginacion2">
+                    <select class="form-control" name="itempageTMarcas" [(ngModel)]="itempageTMarcas">
+                      <option value="5" selected>Marcas Por Página</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div>
+                  <!-- <div class="loading" *ngIf="loader">
+                          <img src="assets/images/loader.gif" width="10%" height="10%">
+                        </div>
+                        <div class="loadError" *ngIf="LoadError">
+                          <div class="alert alert-danger">{{error}}</div>
+                        </div>
+                        <div *ngIf="LoadTabla"> -->
+                  <div class="panel-body table-responsive" *ngIf="MarcasInactivas">
+                    <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                      <thead>
+                        <tr>
+                          <th>Marcas</th>
+                          <th class="center">Modificar</th>
+                          <th class="center">Inactivar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="odd gradeX"
+                          *ngFor="let data of ListaMarcas | tablemarcaseditcli : searchStringTMarcas | paginate: { itemsPerPage: itempageTMarcas, currentPage: tm, id:'tablaMarcas' }">
+                          <td>{{data.nombre}}</td>
+                          <td class="center">
+                            <a (click)="bindingDataModificarMarca(data)" uiSrefActive="active" role="button"
+                              data-toggle="modal" data-placement="top" data-target="#ModificarMarca"
+                              title="Modificar Marca">
+                              <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                            </a>
+                          </td>
+                          <td class="center">
+                            <a (click)="bindingInactivarMarca(data)" uiSrefActive="active" role="button"
+                              data-toggle="modal" data-target="#InactivarMarca" data-placement="top" title="Inactivar">
+                              <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="centrarpaginacion">
+                      <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" previousLabel="Anterior"
+                        nextLabel="Siguiente" (pageChange)="tm = $event" id="tablaMarcas"></pagination-controls>
+                    </div>
+                  </div>
+  
+                  <div class="panel-body table-responsive" *ngIf="!MarcasInactivas">
+                    <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                      <thead>
+                        <tr>
+                          <th>Marcas</th>
+                          <th class="center">Activar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="odd gradeX"
+                          *ngFor="let data of ListaMarcasInactivas | tablemarcaseditcli : searchStringTMarcas | paginate: { itemsPerPage: itempageTMarcas, currentPage: tm, id:'tablaMarcas' }">
+                          <td>{{data.nombre}}</td>
+                          <td class="center">
+                            <a (click)="activarMarca(data)" uiSrefActive="active" role="button" data-toggle="modal"
+                              data-target="#Activar" data-placement="top" title="Activar">
+                              <img src="assets/images/active.png" width="30" height="30" class="btnReportes">
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="centrarpaginacion">
+                      <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" previousLabel="Anterior"
+                        nextLabel="Siguiente" (pageChange)="tm = $event" id="tablaMarcas"></pagination-controls>
+                    </div>
+                  </div>
+                </div>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <br>
+        <br>
+        <br>
+  
+        <!-- Contactos del cliente -->
+        <div class="caja">
+          <span class="tiulocaja">Contactos del cliente</span>
+          <div class="row centrar">
+            <div class="col-md-3">
+  
+              <div class="form-group">
+                <label for="nombre_contacto">Nombre del contacto
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewContacto.nombre_contacto" class="form-control"
+                  [(ngModel)]="DataNewContacto.nombre_contacto" #nom="ngModel"
+                  [ngClass]="{'is-invalid': !nom.valid && (nom.dirty || nom.touched)}">
+                <span class="invalid-feedback" *ngIf="nom.errors && (nom.dirty || nom.touched)">
+                  <li *ngIf=nom.errors.required>
+                    El campo Nombre Contacto es obligatorio
+                  </li>
+                </span>
+              </div>
+  
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="cargo_contacto">Cargo:</label>
+                <input type="text" name="DataNewContacto.cargo_contacto" class="form-control"
+                  [(ngModel)]="DataNewContacto.cargo_contacto">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="telefono_contacto">Telefono
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewContacto.telefono_contacto" class="form-control"
+                  [(ngModel)]="DataNewContacto.telefono_contacto" #tel="ngModel" minlength="6" maxlength="11"
+                  (keypress)="kPNumeros($event)" [ngClass]="{'is-invalid': !tel.valid && (tel.dirty || tel.touched)}">
+                <span class="invalid-feedback" *ngIf="tel.errors && (tel.dirty || tel.touched)">
+                  <li *ngIf=tel.errors.required>
+                    El campo telefono es obligatorio
+                  </li>
+                  <li *ngIf=tel.errors.minlength>
+                    El campo correo debe ser mayor a 5 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+  
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="correo_contacto">Correo:</label>
+                <input type="email" name="DataNewContacto.correo_contacto" class="form-control"
+                  [(ngModel)]="DataNewContacto.correo_contacto" #corcont="ngModel"
+                  pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50"
+                  [ngClass]="{'is-invalid': !corcont.valid && (corcont.dirty || corcont.touched)}">
+                <span class="invalid-feedback" *ngIf="corcont.errors && (corcont.dirty || corcont.touched)">
+                  <li *ngIf=corcont.errors.required>
+                    El campo correo es obligatorio
+                  </li>
+                  <li *ngIf=corcont.errors.email>
+                    El campo correo es invalido
+                  </li>
+                  <li *ngIf=corcont.errors.minlength>
+                    El campo correo debe ser mayor a 5 caracteres*
+                  </li>
+                  <li *ngIf="corcont.errors">
+                    El campo correo debe ser de la forma
+                    <i>ejemplo@dominio.com</i>
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="centrar_proveedor">
+            <button class="btnbuttoncompras" type="button"
+              (click)="ValidationEmailContact('agregar',DataNewContacto.idcontacto, DataNewContacto)" *ngIf="btn_agregar"
+              [disabled]="!DataNewContacto.nombre_contacto || !DataNewContacto.telefono_contacto ">
+              Adicionar </button>
+            <button class="btnbuttoncompras" type="button"
+              (click)="ValidationEmailContact('actualizar',DataNewContacto.idcontacto, DataNewContacto)"
+              *ngIf="btn_actualizar"
+              [disabled]="!DataNewContacto.nombre_contacto || !DataNewContacto.telefono_contacto">Actualizar </button>
+          </div>
+          <br>
+          <div class="tablaconfig" *ngIf="ListaContactos.length>0">
+            <div class="centrar_proveedor buscar-paginacionconfig">
+              Listado de contactos
+            </div>
+  
+            <br>
+            <br>
+            <div class="table-responsive panel-body">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cargo</th>
+                    <th>Telefono</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="odd gradeX" *ngFor="let contacto of ListaContactos; let i = index">
+                    <td>{{contacto.nombre}}</td>
+                    <td>{{contacto.cargo}}</td>
+                    <td>{{contacto.telefono}}</td>
+                    <td>{{contacto.email}}</td>
+                    <td>
+                      <a (click)="EditarContacto(contacto)" uiSrefActive="active" role="button" data-toggle="tooltip"
+                        data-placement="top" title="Modificar">
+                        <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                      </a>
+                      <a (click)="EliminarContacto(i, contacto.id)" uiSrefActive="active" role="button"
+                        data-toggle="tooltip" data-placement="top" title="Eliminar">
+                        <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                      </a>
+  
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+  
+      </form>
+      <div class="centrar">
+        <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+        <button type="button" class="btnbutton button" (click)="ValidaNit(DataJson)"
+          [disabled]="!clienteUnoForm.valid || ListaMarcas.length == 0">Actualizar</button>
+      </div>
+    </div>
+    <!-- </aw-wizard-step>
+  
+          <aw-wizard-step stepTitle="CONFIGURACIONES" [navigationSymbol]="{ symbol: '2' }"> -->
+    <!-- <p></p>
+            <form #clienteDosForm="ngForm">
+              <div class="caja_cliente">
+                <div class="row centrar">
+                  <div class="col-md-12">
+                    <h5>
+                      <b>Configuraciones Cliente {{DataJson.nombre}}</b>
+                    </h5>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="recetaDifCanal">Puede manejar receta diferencial por canal:</label>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group" *ngIf="DataJson.receta_dif_canal === true">
+                      <input type="checkbox" name="DataJson.receta_dif_canal" checked id="recetaDifCanal" [(ngModel)]="DataJson.receta_dif_canal"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="DataJson.receta_dif_canal === false">
+                      <input type="checkbox" name="DataJson.receta_dif_canal" id="recetaDifCanal" [(ngModel)]="DataJson.receta_dif_canal" />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="impuestoDifCanal">Puede manejar impuesto diferencial por canal:</label>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group" *ngIf="DataJson.impuesto_dif_canal === true">
+                      <input type="checkbox" name="DataJson.impuesto_dif_canal" checked id="impuestoDifCanal" [(ngModel)]="DataJson.impuesto_dif_canal"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="DataJson.impuesto_dif_canal === false">
+                      <input type="checkbox" name="DataJson.impuesto_dif_canal" id="impuestoDifCanal" [(ngModel)]="DataJson.impuesto_dif_canal"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+               ****************************************************************************
+  
+              <p></p>
+              <div class="caja_cliente">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Impuesto y regimen que utiliza el cliente</label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <a uiSrefActive="active" (click)="cargarPais();LimpiarFormRegimen();" role="button" data-toggle="modal" data-target="#ImpuestoRegimen"
+                        data-placement="top" title="Impuesto y regimen">
+                        <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="row" *ngIf="tablaImpuestoRegimen">
+                    <div class="col-md-12">
+                  <div class="tablaconfig">
+                    <div class="centrar buscar-paginacionconfig">
+                      <div class="buscar-paginacion2">
+                        <input type="text" class="form-control" name="searchStringImpuesto" placeholder="Buscar" [(ngModel)]="searchStringImpuesto">
+                      </div>
+                      <div class="buscar-paginacion2">
+                        <select class="form-control" name="itempageImpuesto" [(ngModel)]="itempageImpuesto">
+                          <option value="5" selected>Impuestos Por Página</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </select>
+                      </div>
+                    </div>
+  
+                    <div>
+                      <div class="loading" *ngIf="loader">
+                        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                      </div>
+                      <div class="loadError" *ngIf="LoadError">
+                        <div class="alert alert-danger">{{error}}</div>
+                      </div>
+                      <div *ngIf="LoadTabla">
+                        <div class="panel-body table-responsive">
+                          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                            <thead>
+                              <tr>
+                                <th>Pais</th>
+                                <th>Impuesto</th>
+                                <th>Regimen</th>
+                                <th>Tarifa</th>
+                                <th class="center">Eliminar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd gradeX" *ngFor="let data of DataArrayImpuesto | editclienteimpuesto : searchStringImpuesto | paginate: { itemsPerPage: itempageImpuesto, currentPage: reim, id:'tablaimpuestoregimen' }">
+                                <td>{{data.nombre_pais}}</td>
+                                <td>{{data.nombre_impuesto}}</td>
+                                <td>{{data.nombre_regimen}}</td>
+                                <td>{{data.valor_tarifa}}</td>
+                                <td class="center">
+                                  <a (click)="QuitarImpuesto(data.id)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top"
+                                    title="Inactivar">
+                                    <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="centrarpaginacion">
+                            <pagination-controls (pageChange)="reim = $event" id="tablaimpuestoregimen"></pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+  
+                ***************************************************************************
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Asignar canales al cliente</label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <a uiSrefActive="active" (click)="LimpiarFormCanal();" role="button" data-toggle="modal" data-target="#CanalCliente" data-placement="top"
+                        title="Canales Cliente">
+                        <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="row" *ngIf="tablaCanales">
+                    <div class="col-md-12">
+                  <div class="tablaconfig">
+                    <div class="centrar buscar-paginacionconfig">
+                      <div class="buscar-paginacion2">
+                        <input type="text" class="form-control" name="searchStringCanal" placeholder="Buscar" [(ngModel)]="searchStringCanal">
+                      </div>
+                      <div class="buscar-paginacion2">
+                        <select class="form-control" name="itempageCanal" [(ngModel)]="itempageCanal">
+                          <option value="5" selected="selected">Canales Por Página</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </select>
+                      </div>
+                    </div>
+  
+                    <div>
+                      <div class="loading" *ngIf="loader">
+                        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                      </div>
+                      <div class="loadError" *ngIf="LoadError">
+                        <div class="alert alert-danger">{{error}}</div>
+                      </div>
+                      <div *ngIf="LoadTabla">
+                        <div class="panel-body table-responsive">
+                          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                            <thead>
+                              <tr>
+                                <th>Nombre</th>
+                                <th class="center">Eliminar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd gradeX" *ngFor="let data of DataCanales | editclientecanal : searchStringCanal | paginate: { itemsPerPage: itempageCanal, currentPage: c, id:'canales' }">
+                                <td>{{data.nombre}}</td>
+                                <td class="center">
+                                  <a (click)="QuitarCanal(data.id)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top"
+                                    title="Inactivar">
+                                    <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="centrarpaginacion">
+                            <pagination-controls (pageChange)="c = $event" id="canales"></pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+  
+  
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Asignar mensajes legales al cliente</label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <a uiSrefActive="active" (click)="MostrarArraymensajes();" role="button" data-toggle="modal" data-target="#MensajesLegalesCliente"
+                        data-placement="top" title="Mensajes Legales">
+                        <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="row" *ngIf="ListaMensajesLegales.length >= 1">
+                    <div class="col-md-12">
+                  <div class="tablaconfig">
+                    <div class="centrar buscar-paginacionconfig">
+                      <div class="buscar-paginacion2">
+                        <input type="text" class="form-control" name="searchStringMensajes" placeholder="Buscar" [(ngModel)]="searchStringMensajes">
+                      </div>
+                      <div class="buscar-paginacion2">
+                        <select class="form-control" name="itempageMensajes" [(ngModel)]="itempageMensajes">
+                          <option value="5" selected="selected">Canales Por Página</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="panel-body table-responsive">
+                      <table width="100%" class="table table-striped table-hover" id="mensajes">
+                        <thead>
+                          <tr>
+                            <th>Codigo</th>
+                            <th>Mensaje Legal</th>
+                            <th class="center">Eliminar</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="odd gradeX" *ngFor="let data of ListaMensajesLegales | clientemensaje : searchStringMensajes | paginate: { itemsPerPage: itempageMensajes, currentPage: men ,id: 'mensajes'};index as i">
+                            <td>{{data.codigo}}</td>
+                            <td>{{data.mensaje}}</td>
+                            <td class="center">
+                              <a (click)="QuitarMensajeTabla(data.id)" uiSrefActive="active" role="button" title="Eliminar">
+                                <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="centrarpaginacion">
+                        <pagination-controls (pageChange)="men = $event" id="mensajes"></pagination-controls>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                </div> -->
+  
+  
+  
+    <!-- <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Como opera el impuesto</label>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <a uiSrefActive="active" (click)="LimpiarFormImpuestoCanal()" role="button" data-toggle="modal" data-target="#OperacionImpuesto"
+                      data-placement="top" title="Operacion de Impuestos">
+                      <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                    </a>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="row" *ngIf="tablaOperaImpuesto">
+                <div class="tablaconfig">
+                  <div class="centrar buscar-paginacionconfig">
+                    <div class="buscar-paginacion2">
+                      <input type="text" class="form-control" name="searchStringImpuestoCanal" placeholder="Buscar" [(ngModel)]="searchStringImpuestoCanal">
+                    </div>
+                    <div class="buscar-paginacion2">
+                      <select class="form-control" name="itempageImpuestoCanal" [(ngModel)]="itempageImpuestoCanal">
+                        <option value="5" selected>Impuestos Por Página</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                      </select>
+                    </div>
+                  </div>
+  
+                  <div>
+                    <div class="loading" *ngIf="loader">
+                      <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+                    </div>
+                    <div class="loadError" *ngIf="LoadError">
+                      <div class="alert alert-danger">{{error}}</div>
+                    </div>
+                    <div *ngIf="LoadTabla">
+                      <div class="panel-body table-responsive">
+                        <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                          <thead>
+                            <tr>
+                              <th>Canal</th>
+                              <th>Impuesto</th>
+                              <th>Regimen</th>
+                              <th>Este es el impuesto mas usado</th>
+                              <th>Maneja unica tarifa por canal</th>
+                              <th>% unica tarifa por canal</th>
+                              <th class="center">Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="odd gradeX" *ngFor="let data of DataOperaImpuesto | editclienteimpuestocanal: searchStringImpuestoCanal | paginate: { itemsPerPage: itempageImpuestoCanal, currentPage: op, id:'tablaoperacionImp' };  let i = index">
+                              <td>{{data.nombre_canal}}</td>
+                              <td>{{data.nombre_impuesto}}</td>
+                              <td>{{data.nombre_regimen}}</td>
+                              <td *ngIf="data.impMasUsado===true">Si</td>
+                              <td *ngIf="data.impMasUsado===false">No</td>
+                              <td *ngIf="data.unicaTarCanal===true">Si</td>
+                              <td *ngIf="data.unicaTarCanal===false">No</td>
+                              <td>{{data.ValorUnicaTarCanal}}</td>
+                              <td class="center">
+                                <a (click)="BindingCanalesImpuesto(data, i)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#ModificarCanalImpuesto"
+                                  data-placement="top" title="Modificar">
+                                  <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                                </a>
+                                <a (click)="QuitarCanalImpuesto(i, data.id, data.id_canal, data.id_impuesto, data.id_regimen)" uiSrefActive="active" role="button"
+                                  data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                                  <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div class="centrarpaginacion">
+                          <pagination-controls (pageChange)="op = $event" id="tablaoperacionImp"></pagination-controls>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </form>
+            <div class="centrar">
+              <button type="button" class="btnbutton button" awPreviousStep>Anterior</button>
+              <button type="button" class="btnbutton button" (click)="onSubmit(DataJson)" [disabled]="!clienteDosForm.valid || (DataArrayImpuesto.length === 0) || (DataCanales.length === 0)"
+                awNextStep>Actualizar</button>
+            </div> -->
+    <!-- </aw-wizard-step>
+  
+        </aw-wizard> -->
+    <!-- </div>
+    </div> -->
+  </div>
+  <!-- ****************************** Modal Direccion ********************************** -->
+  <div id="MyModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Seleccionar Direccion</h3>
+          </div>
+        </div>
+  
+        <div class="modal-body">
+  
+          <div class="row">
+            <div class="col-lg-12" align="center">
+              <label>Selección Ingreso de Dirección</label>
+            </div>
+            <div class="col-lg-6">
+              <label for="mas">Mascara De Dirección</label>
+              <input type="radio" id="mas" class="checkbox-custom checkbox-inline" name="direccion2"
+                [(ngModel)]="direccion2" value="1" (value)="1" />
+            </div>
+            <div class="col-lg-6">
+              <label for="dig">Digitada</label>
+              <input type="radio" id="dig" class="checkbox-custom checkbox-inline" name="direccion2"
+                [(ngModel)]="direccion2" value="2" (value)="2" />
+            </div>
+          </div>
+          <br>
+          <div [hidden]="direccion2 != '1'">
+            <div class="row">
+              <div class="col-xs-4 col-md-4">
+                <label for="">Tipo Via*</label>
+                <select name="" id="" class="form-control" id="via" name="via" [(ngModel)]="via">
+                  <option value=""></option>
+                  <option value="AC">Avenida calle</option>
+                  <option value="AK">Avenida carrera</option>
+                  <option value="AU">Autopista</option>
+                  <option value="AN">Autopista Norte</option>
+                  <option value="AS">Autopista Sur</option>
+                  <option value="AV">Avenida</option>
+                  <option value="CI">Circular</option>
+                  <option value="Cll">Calle</option>
+                  <option value="DG">Diagonal</option>
+                  <option value="CR">Carrera</option>
+                  <option value="TR">Transversal</option>
+                  <option value="KR">Kilometro</option>
+                </select>
+              </div>
+              <div class="col-xs-3 col-md-2">
+                <label for="">Numero*</label>
+                <input type="number" class="form-control" id="numero" name="numero" [(ngModel)]="numero">
+              </div>
+              <div class="col-md-1">
+                <label for="">bis</label>
+                <input type="checkbox" class="form-control" id="bis" name="bis" [(ngModel)]="bis" />
+              </div>
+              <div class="col-md-2">
+                <label for="">letra</label>
+                <select name="" id="" class="form-control" id="letra" name="letra" [(ngModel)]="letra">
+                  <option value=""></option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                  <option value="H">H</option>
+                  <option value="I">I</option>
+                  <option value="J">J</option>
+                  <option value="K">K</option>
+                  <option value="L">L</option>
+                  <option value="M">M</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                  <option value="P">P</option>
+                  <option value="Q">Q</option>
+                  <option value="R">R</option>
+                  <option value="S">S</option>
+                  <option value="T">T</option>
+                  <option value="U">U</option>
+                  <option value="V">V</option>
+                  <option value="W">W</option>
+                  <option value="X">X</option>
+                  <option value="Y">Y</option>
+                  <option value="Z">Z</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="">cuadrante</label>
+                <select name="" id="" class="form-control" id="cuadrante" name="cuadrante" [(ngModel)]="cuadrante">
+                  <option value=""></option>
+                  <option value="Norte">Norte</option>
+                  <option value="Oeste">Oeste</option>
+                  <option value="Este">Este</option>
+                  <option value="Sur">Sur</option>
+                </select>
+              </div>
+            </div>
+            <br />
+            <label for="">
+              <h6>Vía Generadora</h6>
+            </label>
+            <br />
+            <div class="row">
+              <div class="col-md-2">
+                <label for="">Numero</label>
+                <input type="number" class="form-control" id="numero2" name="numero2" [(ngModel)]="numero2">
+              </div>
+              <div class="col-md-2">
+                <label for="">Letra</label>
+                <select name="" id="" class="form-control" id="letra2" name="letra2" [(ngModel)]="letra2">
+                  <option value=""></option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                  <option value="H">H</option>
+                  <option value="I">I</option>
+                  <option value="J">J</option>
+                  <option value="K">K</option>
+                  <option value="L">L</option>
+                  <option value="M">M</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                  <option value="P">P</option>
+                  <option value="Q">Q</option>
+                  <option value="R">R</option>
+                  <option value="S">S</option>
+                  <option value="T">T</option>
+                  <option value="U">U</option>
+                  <option value="V">V</option>
+                  <option value="W">W</option>
+                  <option value="X">X</option>
+                  <option value="Y">Y</option>
+                  <option value="Z">Z</option>
+  
+                </select>
+              </div>
+              <div class="col-md-2">
+                <label for="">placa</label>
+                <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="placa">
+              </div>
+              <div class="col-md-3">
+                <label for="">Cuadrante</label>
+                <select name="" id="" class="form-control" id="cuadrante2" name="cuadrante2" [(ngModel)]="cuadrante2">
+                  <option value=""></option>
+                  <option value="Norte">Norte</option>
+                  <option value="Oeste">Oeste</option>
+                  <option value="Este">Este</option>
+                  <option value="Sur">Sur</option>
+                </select>
+              </div>
+              <br>
+              <div class="col-md-12">
+                <label for="">Señas Particulares</label>
+                <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2
+                  maxlength=150 [(ngModel)]="senas">
+                     </textarea>
+  
+              </div>
+  
+            </div>
+          </div>
+  
+          <div [hidden]="direccion2 != '2'">
+  
+            <div class="row">
+              <div class="col-md-12">
+                <label for="">Descripciones Particulares</label>
+                <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2
+                  maxlength=150 [(ngModel)]="descripcion">
+                             </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="modal-footer">
+          <div class="centrar">
+            <button *ngIf="direccion2 == 1 " class="btnbutton"
+              (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas, descripcion)"
+              [disabled]="!via || !numero || !numero2 || !placa">Guardar</button>
+  
+            <button *ngIf="direccion2 == 2" class="btnbutton"
+              (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas, descripcion)"
+              [disabled]="!descripcion" data-dismiss="modal">Guardar</button>
+            <button class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- ************************** Modal Configuración de Regimen ************************************ -->
+  
+  
+  
+  <!--   ********************************* Modal Crear marca ************************************** -->
+  
+  <div id="CrearMarca" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+  
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Crear marca</h4>
+          </div>
+  
+          <div class="modal-body">
+            <form  #marcasForm="ngForm">
+              <div class="row">
+                  <div class="col-md-12">
+                <div class="form-group">
+                  <label>Nombre marca:</label>
+                  <input type="text" class="form-control" name="DataNewMarca.nombre" [(ngModel)]="DataNewMarca.nombre">
+                </div>
+              </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div class="centrar">
+              <button (click)="GuardarMarca(DataNewMarca)" [disabled]="!marcasForm.valid" data-dismiss="modal"
+                class="btnbutton">Aceptar</button>
+              <!-- <button (click)="MostrarMarcas()" [disabled]="ListaSelMarcas.length === 0" data-dismiss="modal" class="btnbutton">Aceptar</button> -->
+              <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!--   ************************* Fin Modal Crear marca ********************************** -->
+  
+    <!--   ********************************* Modal Modificar marca ************************************** -->
+  
+    <div id="ModificarMarca" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+  
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Modificar marca</h4>
+          </div>
+  
+          <div class="modal-body">
+            <form  #marcasEditForm="ngForm">
+              <div class="row">
+                  <div class="col-md-12">
+                <div class="form-group">
+                  <label>Nombre marca:</label>
+                  <input type="text" class="form-control" name="DataEditMarca.nombre_marca" [(ngModel)]="DataEditMarca.nombre_marca">
+                </div>
+              </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div class="centrar">
+              <button (click)="modificarMarca(DataEditMarca)" [disabled]="!marcasEditForm.valid" data-dismiss="modal"
+                class="btnbutton">Aceptar</button>
+              <!-- <button (click)="MostrarMarcas()" [disabled]="ListaSelMarcas.length === 0" data-dismiss="modal" class="btnbutton">Aceptar</button> -->
+              <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!--   ************************* Fin Modal Modificar marca ********************************** -->
+  
+  
+  
+  
+    <!--   ********************************* Modal Inactivar marca ************************************** -->
+  
+    <div id="InactivarMarca" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+  
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Confirmación</h4>
+            </div>
+  
+            <div class="modal-body">
+              <form  #marcasEditForm="ngForm">
+                <div class="row">
+                    <div class="col-md-12">
+                    <label>Esta seguro de que desea inactivar la marca {{DataInactivarMarca.nombre}}?</label>
+                </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <div class="centrar">
+                <button (click)="inactivarMarca(DataInactivarMarca)" [disabled]="!marcasEditForm.valid" data-dismiss="modal"
+                  class="btnbutton">Aceptar</button>
+                <!-- <button (click)="MostrarMarcas()" [disabled]="ListaSelMarcas.length === 0" data-dismiss="modal" class="btnbutton">Aceptar</button> -->
+                <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!--   ************************* Fin Modal Inactivar marca ********************************** -->
+  
+  
+  <!-- <div id="ImpuestoRegimen" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Configuración de Regimen</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #paisRegimenForm="ngForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="paisReg">Pais
+                    <b class="asterisco">*</b>:</label>
+                  <select class="form-control" id="paisReg" [(ngModel)]="paisReg" name="paisReg" (ngModelChange)="loadImpuesto($event)" #pai="ngModel"
+                    required [ngClass]="{'is-invalid': !pai.valid && (pai.dirty || pai.touched)}">
+                    <option [value]=""></option>
+                    <option *ngFor="let paises of DataArrayPaises" [value]="paises.id">{{paises.nombre}}</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="pai.errors && (pai.dirty || pai.touched)">
+                    <li *ngIf=pai.errors.required>
+                      El campo Pais es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form #confRegimenForm="ngForm">
+            <div class="row">
+                <div class="col-md-12">
+              <div class="form-group">
+                <label for="impuesto">Impuesto
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" id="impuesto" [(ngModel)]="impuesto" name="impuesto" (change)="LoadTarifas(impuesto, regimen)"
+                  #imp="ngModel" required [ngClass]="{'is-invalid': !imp.valid && (imp.dirty || imp.touched)}">
+                  <option [value]=""></option>
+                  <option *ngFor="let impuestos of DataArrayImpuestos" [value]="impuestos.id">{{impuestos.nombre}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="imp.errors && (imp.dirty || imp.touched)">
+                  <li *ngIf=imp.errors.required>
+                    El campo Impuesto es obligatorio
+                  </li>
+                </span>
+              </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+              <div class="form-group">
+                <label for="regimen">Regimen
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" id="regimen" [(ngModel)]="regimen" name="regimen" (change)="LoadTarifas(impuesto, regimen)"
+                  #reg="ngModel" required [ngClass]="{'is-invalid': !reg.valid && (reg.dirty || reg.touched)}">
+                  <option [value]=""></option>
+                  <option *ngFor="let regimen of DataJsonRegimen" [value]="regimen.id">{{regimen.nombre}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="reg.errors && (reg.dirty || reg.touched)">
+                  <li *ngIf=reg.errors.required>
+                    El campo Regimen es obligatorio
+                  </li>
+                </span>
+                </div>
+              </div>
+            </div>
+  
+          </form>
+  
+          <div *ngIf="DataJsonTarifas.length >= 1">
+            <div class="tablaconfig">
+              <div class="centrar buscar-paginacionconfig">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringTarifas" placeholder="Buscar" [(ngModel)]="searchStringTarifas">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempageTarifas" [(ngModel)]="itempageTarifas">
+                    <option value="5" selected="selected">Tarifas Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+  
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="tarifas">
+                  <thead>
+                    <tr>
+                      <th>Valor</th>
+                      <th class="center">Seleccionar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr (click)="onChangeTarifas(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonTarifas | modaltarifaseditcliente: searchStringTarifas | paginate: { itemsPerPage: itempageTarifas, currentPage: tar ,id: 'tarifas'}">
+                      <td>{{data.valor}}</td>
+                      <td class="center">
+                        <input type="checkbox" [checked]="data.checked" (change)="onChangeTarifas(data, $event.target.checked)">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls (pageChange)="tar = $event" id="tarifas"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="bindingConfRegimen(paisReg,impuesto,regimen);" [disabled]="!regimen||!impuesto||!paisReg||DataJsonTarSel.length === 0"
+              data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarFormRegimen()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  
+  <!-- **************************** Fin Modal Configuración de Regimen ****************************** -->
+  
+  <!-- ********************************** Modal Canales ******************************************* -->
+  <!--
+  <div id="CanalCliente" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Canales</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringListaCanales" placeholder="Buscar" [(ngModel)]="searchStringListaCanales">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageListaCanales" [(ngModel)]="itempageListaCanales">
+                  <option value="10" selected="selected">Canales Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+  
+            <div>
+              <div class="loading" *ngIf="loader">
+                <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+              </div>
+              <div class="loadError" *ngIf="LoadError">
+                <div class="alert alert-danger">{{error}}</div>
+              </div>
+              <div *ngIf="LoadTabla">
+                <div class="panel-body table-responsive">
+                  <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                    <thead>
+                      <tr>
+                        <th>Nombre Canal</th>
+                        <th>
+                          Seleccionar Todo
+                          <input type="checkbox" [checked]="checkedAll" name="checkAll" (change)="onChangeAll($event.target.checked)">
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr (change)="onChange(data.id, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonRpt | editcanalescliente : searchStringListaCanales | paginate: { itemsPerPage: itempageListaCanales, currentPage: p }">
+                        <td>{{data.nombre}}</td>
+                        <td>
+                          <input type="checkbox" [checked]="data.checked" name="check" (change)="onChange(data.id, $event.target.checked)">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="centrarpaginacion">
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="bindingCanales();" data-dismiss="modal" class="btnbutton" [disabled]="DataJsonCanales.length === 0">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarFormCanal();">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+   -->
+  
+  
+  <!-- *************************** Modal Mensajes Legales ********************************** -->
+  
+  <!-- <div id="MensajesLegalesCliente" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Mensajes Legales</h4>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            <form #msgLegalesForm="ngForm">
+  
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label for="codigo">Codigo
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataArrayMensajes.codigo" class="form-control" id="codigo" [(ngModel)]="DataArrayMensajes.codigo"
+                      #codigo="ngModel" minlength="2" maxlength="2" required
+                      [ngClass]="{'is-invalid': !codigo.valid && (codigo.dirty || codigo.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="codigo.errors && (codigo.dirty || codigo.touched)">
+                      <li *ngIf=codigo.errors.required>
+                        El campo codigo es obligatorio
+                      </li>
+                      <li *ngIf="codigo.errors.minlength">
+                        El campo codigo debe ser igual a 2 caracteres*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="mensaje">Mensaje Legal
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataArrayMensajes.mensaje" class="form-control" id="mensaje" [(ngModel)]="DataArrayMensajes.mensaje"
+                      #mensaje="ngModel" minlength="2" maxlength="45" required
+                      [ngClass]="{'is-invalid': !mensaje.valid && (mensaje.dirty || mensaje.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="mensaje.errors && (mensaje.dirty || mensaje.touched)">
+                      <li *ngIf=mensaje.errors.required>
+                        El campo Mensaje Legal es obligatorio
+                      </li>
+                      <li *ngIf="mensaje.errors.minlength">
+                        El campo Mensaje Legal debe ser igual a 2 caracteres*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="form-group" class="col-md-5">
+              <button class="btnPrimary" (click)="BindingMensajes(DataArrayMensajes);" [disabled]="!DataArrayMensajes.codigo || !DataArrayMensajes.mensaje">Adicionar</button>
+            </div>
+  
+          </div>
+  
+          <br>
+          <div *ngIf="mensajesLegales.length >= 1">
+            <div class="tablaconfig">
+              <div class="centrar buscar-paginacionconfig">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringMensajes" placeholder="Buscar" [(ngModel)]="searchStringMensajes">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempageMensajes" [(ngModel)]="itempageMensajes">
+                    <option value="5" selected="selected">Mensajes Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="mensajes">
+                  <thead>
+                    <tr>
+                      <th>Codigo</th>
+                      <th>Mensaje Legal</th>
+                      <th class="center">Accion</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of mensajesLegales | modalmensajeeditcliente : searchStringMensajes | paginate: { itemsPerPage: itempageMensajes, currentPage: men ,id: 'mensajes'};index as i">
+                      <td>{{data.codigo}}</td>
+                      <td>{{data.mensaje}}</td>
+                      <td class="center">
+                        <a (click)="QuitarMensajeModal(data.id)" uiSrefActive="active" role="button" title="Eliminar">
+                          <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls (pageChange)="men = $event" id="mensajes"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+  
+  
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="MostrarTablaMensajes();" data-dismiss="modal" class="btnbutton" [disabled]="mensajesLegales.length === 0">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarArrayMensajes();">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  
+  <!-- *************************** Fin Modal Mensajes Legales ********************************** -->
+  
+  
+  <!-- ******************************* Modal impuesto para todos los canales **************************** -->
+  <!--
+  <div id="OperacionImpuesto" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Seleccione el impuesto</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #ImpuestoCanalForm="ngForm">
+            <div class="row">
+              <div class="col-md-7">
+                <div class="form-group">
+                  <label for="impuestoTodosCanales">El impuesto es igual para todos los canales</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group" *ngIf="DataJson.unico_impuesto_canal === true">
+                  <input type="checkbox" name="DataJson.unico_impuesto_canal" checked id="impuestoTodosCanales" [(ngModel)]="DataJson.unico_impuesto_canal"
+                  />
+                </div>
+                <div class="form-group" *ngIf="DataJson.unico_impuesto_canal === false">
+                  <input type="checkbox" name="DataJson.unico_impuesto_canal" id="impuestoTodosCanales" [(ngModel)]="DataJson.unico_impuesto_canal"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="!DataJson.unico_impuesto_canal">
+              <div class="form-group" [ngClass]="{'is-invalid': !can.valid && (can.dirty || can.touched)}">
+                <label for="Canales">Canal
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" id="Canal" [(ngModel)]="Canal" name="Canal" #can="ngModel" required>
+                  <option [value]=""></option>
+                  <option *ngFor="let canal of DataCanales" [value]="canal.id">{{canal.nombre}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="can.errors && (can.dirty || can.touched)">
+                  <li *ngIf=can.errors.required>
+                    El campo Canal es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group" [ngClass]="{'is-invalid': !impcan.valid && (impcan.dirty || impcan.touched)}">
+                <label for="impuestoCanales">Impuesto
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" id="impuestoCanales" [(ngModel)]="impuestoCanales" name="impuestoCanales" (ngModelChange)="loadMunicipio($event)"
+                  #impcan="ngModel" required>
+                  <option [value]=""></option>
+                  <option *ngFor="let impuesto of DataArrayImpuesto" [value]="impuesto.id">{{impuesto.nombre_impuesto}} {{impuesto.nombre_regimen}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="impcan.errors && (impcan.dirty || impcan.touched)">
+                  <li *ngIf=impcan.errors.required>
+                    El campo Impuesto es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="impMasUsado">Este es el impuesto mas usado</label>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <input type="checkbox" name="impMasUsado" id="impMasUsado" [(ngModel)]="impMasUsado" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="unicaTarCanal">Maneja unica tarifa por canal</label>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <input type="checkbox" name="unicaTarCanal" id="unicaTarCanal" [(ngModel)]="unicaTarCanal" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group" *ngIf="unicaTarCanal">
+                <label for="ValorUnicaTarCanal">Valor unica tarifa
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" [(ngModel)]="ValorUnicaTarCanal" name="ValorUnicaTarCanal" #valUTar="ngModel" required>
+                  <option [value]=""></option>
+                  <option *ngFor="let tar of DataJsonTarifas" [value]="tar.valor">{{tar.valor}} </option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="calcularTarifa(DataJson.unico_impuesto_canal, Canal,impuestoCanales,impMasUsado,unicaTarCanal,ValorUnicaTarCanal)"
+              [disabled]="!impuestoCanales||(DataNewCliente.unicoImpuestoCanal === false && !Canal)" data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  
+  <!-- *************************** Fin impuesto para todos los canales **************************** -->
+  
+  <!-- ******************* Modal modificar impuesto para todos los canales ************************ -->
+  <!--
+  <div id="ModificarCanalImpuesto" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Seleccione el impuesto</h4>
+        </div>
+  
+        <div class="modal-body">
+          <form #ImpuestoCanalForm="ngForm">
+            <div class="row">
+              <div class="form-group" [ngClass]="{'is-invalid': !can.valid && (can.dirty || can.touched)}">
+                <label for="Canales">Canal*:</label>
+                <select class="form-control" id="Canal" [(ngModel)]="DataCanalImpuesto.id_canal" name="DataCanalImpuesto.id_canal" #can="ngModel"
+                  required>
+                  <option [value]=""></option>
+                  <option *ngFor="let canal of DataCanales" [value]="canal.id">{{canal.nombre}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="can.errors && (can.dirty || can.touched)">
+                  <li *ngIf=can.errors.required>
+                    El campo Canal es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group" [ngClass]="{'is-invalid': !impcan.valid && (impcan.dirty || impcan.touched)}">
+                <label for="impuestoCanales">Impuesto*:</label>
+                <select class="form-control" id="impuestoCanales" [(ngModel)]="DataCanalImpuesto.impuestoCanales" name="DataCanalImpuesto.impuestoCanales"
+                  (ngModelChange)="loadMunicipio($event)" #impcan="ngModel" required>
+                  <option [value]=""></option>
+                  <option *ngFor="let impuesto of DataArrayImpuesto" [value]="impuesto.id_imp_reg">{{impuesto.nombre_impuesto}} {{impuesto.nombre_regimen}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="impcan.errors && (impcan.dirty || impcan.touched)">
+                  <li *ngIf=impcan.errors.required>
+                    El campo Impuesto es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="impMasUsado">Este es el impuesto mas usado</label>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <input type="checkbox" [value]="DataCanalImpuesto.impMasUsado" name="impMasUsado" id="impMasUsado" [(ngModel)]="DataCanalImpuesto.impMasUsado"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="unicaTarCanal">Maneja unica tarifa por canal</label>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <input type="checkbox" [value]="DataCanalImpuesto.unicaTarCanal" name="DataCanalImpuesto.unicaTarCanal" id="unicaTarCanal"
+                    [(ngModel)]="DataCanalImpuesto.unicaTarCanal" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group" *ngIf="DataCanalImpuesto.unicaTarCanal">
+                <label for="ValorUnicaTarCanal">Valor unica tarifa
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" [(ngModel)]="DataCanalImpuesto.ValorUnicaTarCanal" name="DataCanalImpuesto.ValorUnicaTarCanal"
+                  #valUTar="ngModel" required>
+                  <option [value]=""></option>
+                  <option *ngFor="let tar of DataJsonTarifas" [value]="tar.valor">{{tar.valor}} </option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+  
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="ModificarCanalesImpuesto(DataCanalImpuesto)" [disabled]="!DataCanalImpuesto.impuestoCanales||(DataNewCliente.unicoImpuestoCanal === false && !DataCanalImpuesto.id_canal)"
+              data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  
+  <!-- *************************** Fin modificar impuesto para todos los canales ************************* -->
+  

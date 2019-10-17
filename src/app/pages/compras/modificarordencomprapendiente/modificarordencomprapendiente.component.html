@@ -1,0 +1,965 @@
+<div class="row">
+  <div class="container-fluid contenedorcompras">
+
+
+    <div class="row color_compras1">
+      <div class="col-lg-12" align="center">
+        <h1>Compra N° {{DataNewOrden.consecutivo}}</h1>
+      </div>
+    </div>
+
+    <aw-wizard #wizard navBarLayout="large-empty-symbols">
+      <aw-wizard-step stepTitle="ARTICULOS" [navigationSymbol]="{ symbol: '1' }">
+
+        <form #ordenesDosForm="ngForm">
+
+          <div class="caja">
+            <span class="tiulocaja">Datos de Articulos</span>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="articulo">Articulo
+                    <b class="asterisco">*</b>:</label>
+                  <input type="text" name="DataNewArticulo.nombreArticulo" role="button" data-toggle="modal" data-target="#ArticulosModal"
+                    [(ngModel)]="DataNewArticulo.nombreArticulo" class="form-control" #art="ngModel" readonly="true" required
+                    [ngClass]="{'is-invalid': !art.valid && (art.dirty || art.touched)}">
+                  <span class="invalid-feedback" *ngIf="art.errors && (art.dirty || art.touched)">
+                    <li *ngIf=art.errors.required>
+                      El articulo es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="id_unidad_compra">Unidad de compra
+                    <b class="asterisco">*</b>:</label>
+                  <select class="charge_select form-control" name="DataNewArticulo.id_unidad_compra" [(ngModel)]="DataNewArticulo.id_unidad_compra"
+                    #unidad="ngModel" required
+                    [ngClass]="{'is-invalid': !unidad.valid && (unidad.dirty || unidad.touched)}">
+                    <option></option>
+                    <option [value]="unidadcompra.id_unidad_compra" *ngFor="let unidadcompra of ListaUnidadesCompra">{{unidadcompra.nombre_unidad}} </option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="unidad.errors && (unidad.dirty || unidad.touched)">
+                    <li *ngIf=unidad.errors.required>
+                      El campo unidad de compra es obligatorio*
+                    </li>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="cantidad">Cantidad
+                    <b class="asterisco">*</b>:</label>
+                  <input type="text" class="form-control" (keypress)="keyPress($event);CalculoValoresArticulo()" (change)="CalculoValoresArticulo()"
+                    name="DataNewArticulo.cantidad" [(ngModel)]="DataNewArticulo.cantidad" minlength="1" maxlength="6" #cant="ngModel"
+                    required [ngClass]="{'is-invalid': !cant.valid && (cant.dirty || cant.touched)}">
+                  <span class="invalid-feedback" *ngIf="cant.errors && (cant.dirty || cant.touched)">
+                    <li *ngIf="cant.errors.required">
+                      El campo cantidad es obligatorio*
+                    </li>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="cantidad">Valor Ultima Compra</label>
+                  <input type="text" class="form-control" name="DataNewArticulo.ultimacompra" [(ngModel)]="DataNewArticulo.ultimacompra" readonly="true">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="caja">
+            <span class="tiulocaja">Valores del Articulo</span>
+            <div class="row">
+              <div class="col-md-2 spaddi">
+                <div class="form-group">
+                  <label>Tipo Valor
+                    <b class="asterisco">*</b>:</label>
+                  <select class="form-control" name="DataNewArticulo.valor" [(ngModel)]="DataNewArticulo.valor" [ngModelOptions]="{standalone: true}">
+                    <option value="1" selected="selected">Valor Unitario</option>
+                    <option value="2">Valor Total</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2 spaddi">
+                <div class="form-group" *ngIf="DataNewArticulo.valor == '1'">
+                  <label>Precio
+                    <b class="asterisco">*</b>:</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                    </div>
+                    <input type="text" class="form-control" name="DataNewArticulo.precio_unitario" placeholder="Digite el valor unitario sin impuestos y sin descuentos"
+                      [(ngModel)]="DataNewArticulo.precio_unitario" #preciounitario="ngModel" (ngModelChange)="CalculoValoresArticulo()"
+                      (change)="ValidacionValorNegociado()" required [ngClass]="{'is-invalid': !preciounitario.valid && (preciounitario.dirty || preciounitario.touched)}"/>
+                  </div>
+                  <span class="invalid-feedbackSecond" *ngIf="preciounitario.errors && (preciounitario.dirty || preciounitario.touched)">
+                    <li *ngIf="preciounitario.errors.required">
+                      El precio unitario es obligatorio*
+                    </li>
+                  </span>
+                </div>
+                <div class="form-group" *ngIf="DataNewArticulo.valor == '2'|| DataNewArticulo.valor=='0'">
+                  <label>Precio
+                    <b class="asterisco">*</b>:</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                    </div>
+                    <input type="text" class="form-control" name="DataNewArticulo.precio_total" placeholder="Digite el valor total sin impuestos y sin descuentos"
+                      [(ngModel)]="DataNewArticulo.precio_total" #preciototal="ngModel" [disabled]="blockprecio" (ngModelChange)="CalculoValoresArticulo()"
+                      (change)="ValidacionValorNegociado()" required [ngClass]="{'is-invalid': !preciototal.valid && (preciototal.dirty || preciototal.touched)}"/>
+                  </div>
+                  <span class="invalid-feedbackSecond" *ngIf="preciototal.errors && (preciototal.dirty || preciototal.touched)">
+                    <li *ngIf="preciototal.errors.required">
+                      El precio total es obligatorio*
+                    </li>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-2 spaddi">
+                <div class="form-group">
+                  <label for="impuesto">Impuesto
+                    <b class="asterisco">*</b>:</label>
+                  <select class="charge_select form-control" name="DataNewArticulo.impuesto" [(ngModel)]="DataNewArticulo.impuesto" (ngModelChange)="LoadTarifas($event)"
+                    #imp="ngModel" required [ngClass]="{'is-invalid': !imp.valid && (imp.dirty || imp.touched)}">
+                    <option value="" selected></option>
+                    <option [value]="imp.id_impuesto" *ngFor="let imp of ListaImpuestos">{{imp.nombre_imp}}</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="imp.errors && (imp.dirty || imp.touched)">
+                    <li *ngIf="imp.errors.required">
+                      Seleccione un Impuesto*
+                    </li>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-1 spaddi">
+                <div class="form-group">
+                  <label for="tarifa">Tarifa
+                    <b class="asterisco">*</b>:</label>
+                  <select class="charge_select form-control" name="DataNewArticulo.tarifa" [(ngModel)]="DataNewArticulo.tarifa" (ngModelChange)="bindinTarifa($event);CalculoValoresArticulo()"
+                    #tari="ngModel" required [ngClass]="{'is-invalid':!tari.valid && (tari.dirty || tari.touched)}">
+                    <option value="" selected></option>
+                    <option [value]="tarifa.id_tarifa" *ngFor="let tarifa of ListaTarifas">{{tarifa.valor}}</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="tari.errors && (tari.dirty || tari.touched)">
+                    <li *ngIf=tari.errors.required>
+                      Seleccione una tarifa*
+                    </li>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-2 spaddi form-group">
+                <label>Base</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                  </div>
+                  <input type="number" class="form-control" name="DataNewArticulo.base" [(ngModel)]="DataNewArticulo.base" readonly />
+                </div>
+              </div>
+              <div class="col-md-2 spaddi form-group">
+                <label>Total</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                  </div>
+                  <input type="number" class="form-control" name="DataNewArticulo.total" [(ngModel)]="DataNewArticulo.total" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="centrar">
+            <input type="submit" aria-hidden="true" *ngIf="btn_adicionar_articulo" name="AdicionarArticulo" (click)="AgregarArticulo();"
+              class="btnbuttoncompras" [disabled]="!ordenesDosForm.valid" value="Adicionar Articulo">
+            <input type="submit" aria-hidden="true" *ngIf="btn_modificar_articulo" name="ModificarArticulo" (click)="EditArticulo(DataNewArticulo)"
+              class="btnbuttoncompras" [disabled]="!ordenesDosForm.valid" value="Modificar Articulo">
+            <input type="submit" aria-hidden="true" *ngIf="btn_modificar_articulo2" name="ModificarArticulo" (click)="EditArticulo(DataNewArticulo);"
+              class="btnbuttoncompras" [disabled]="!ordenesDosForm.valid" value="Modificar Articulo" awNextStep>
+          </div>
+        </form>
+        <div>
+          <div *ngIf="tablaadicionados">
+            <div class="centrar">
+              <h3 class="h3">Listado de Articulos Agregados</h3>
+            </div>
+
+            <div class="tablacompras">
+              <div class="centrar buscar-paginacion">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searcharticulosagregados" placeholder="Buscar" [(ngModel)]="searcharticulosagregados">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempagearticulosagregados" [(ngModel)]="itempagearticulosagregados">
+                    <option value="5" selected="selected">Articulos Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-responsive panel-body">
+                <table width="100%" class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+
+                      <th>Articulo</th>
+                      <th>Unidad</th>
+                      <th>Cantidad</th>
+                      <th>Unidad Kardex</th>
+                      <th>Valor Unitario</th>
+                      <th>Valor Base</th>
+                      <th>Valor Impuesto</th>
+                      <th>Valor Total</th>
+                      <th *ngIf="!btn_modificar_articulo">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let articulo of articulosAgregados  | articuloseditocpendiente : searcharticulosagregados | paginate: { itemsPerPage: itempagearticulosagregados, currentPage: art_agr, id :'articulo_agregado'} ; let i=index">
+                      <td>{{articulo.nombreArt}}</td>
+                      <td>{{articulo.nom_unidad_com}}</td>
+                      <td>{{articulo.cant}}</td>
+                      <td>{{articulo.nom_unidad_kar}}</td>
+                      <td>{{articulo.precio_uni | number:'1.2-2'}}</td>
+                      <td>{{articulo.basecom | number:'1.2-2'}}</td>
+                      <td>{{articulo.valor_imp | number:'1.2-2'}}</td>
+                      <td>{{articulo.totalcom | number:'1.2-2'}}</td>
+                      <td class="center">
+                        <a  *ngIf="!btn_modificar_articulo" (click)="bindingEditarArticulo(articulo);" data-toggle="tooltip" data-placement="top" title="Modificar">
+                          <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                        </a>
+                        <a *ngIf="articulosAgregados.length > 1 && !btn_modificar_articulo" (click)="bindingEliminarArticulo(articulo)" class="colorbotoneliminar" data-toggle="modal"
+                          data-placement="top" data-target="#EliminarArticulo" title="Eliminar" role="button">
+                          <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                        </a>
+                        <a *ngIf="articulosAgregados.length == 1 && !btn_modificar_articulo " (click)="bindingEliminarArticulo(articulo)" class="colorbotoneliminar" data-toggle="modal"
+                          data-placement="top" data-target="#EliminarArticuloUltimo" title="Eliminar" role="button">
+                          <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="art_agr = $event" id="articulo_agregado"></pagination-controls>
+                </div>
+                <br>
+              </div>
+            </div>
+
+            <div class="centrar">
+              <button type="button" class="btnbutton button" [routerLink]="['/compra/ordencomprapendientes']" >Anterior</button>
+              <button type="submit" (click)="CalculoTotalesCompra()" class="btnbutton button" awNextStep [disabled]="!articulosAgregados">Siguiente</button>
+            </div>
+          </div>
+
+
+        </div>
+
+      </aw-wizard-step>
+      <aw-wizard-step stepTitle="DATOS ORDEN - COMPRA" [navigationSymbol]="{ symbol: '2' }">
+        <div class="caja">
+          <span class="tiulocaja"> Datos Proveedor</span>
+          <form>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>Nombre: </label> {{DataNewOrden.nombre_proveedor}}
+              </div>
+              <div class="col-lg-3">
+                <label>Codigo o Nit: </label> {{DataNewOrden.nit_proveedor}}
+              </div>
+              <div class="col-lg-3">
+                <label>Dirección: </label> {{DataNewOrden.direccion_proveedor}}
+              </div>
+              <div class="col-lg-3">
+                <label>Teléfono: </label> {{DataNewOrden.telefono_proveedor}}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="caja">
+          <span class="tiulocaja"> Datos Compra</span>
+
+          <form #ordenesTresForm="ngForm">
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="form-group" [ngClass]="{'has-error': !fechacompra.valid && (fechacompra.dirty || fechacompra.touched)}">
+                  <label>Fecha de Compra</label>
+                  <br>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Compra" name="fecha_compra" #fechacompra="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="fecha_compra" [selDate]="DataNewOrden.fecha_compra"
+                    required readonly="">
+                  </my-date-picker>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group" [ngClass]="{'has-error': !fechakardex.valid && (fechakardex.dirty || fechakardex.touched)}">
+                  <label> Ingreso A Kardex </label>
+                  <br>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Kardex" name="fecha_kardex" #fechakardex="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged2($event)" [(ngModel)]="fecha_kardex" [selDate]="DataNewOrden.fecha_kardex"
+                    required readonly=""> </my-date-picker>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group" [ngClass]="{'has-error': !fechavencimiento.valid && (fechavencimiento.dirty || fechavencimiento.touched)}">
+                  <label> Vencimiento de Factura </label>
+                  <br>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Vencimiento" name="fecha_vencimiento" #fechavencimiento="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged3($event)" [(ngModel)]="fecha_vencimiento"
+                    [selDate]="DataNewOrden.fecha_vencimiento" required readonly="">
+                  </my-date-picker>
+                </div>
+              </div>
+              <div class=" col-lg-3">
+                <div class="form-group">
+                  <label>Numero de Factura</label>
+                  <input class="form-control" type="text" name="DataNewOrden.numerofactura" width="100px;" id="DataNewCompra.numerofactura"
+                    [(ngModel)]="DataNewOrden.numerofactura" required>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="row">
+
+          <div class="col-md-12">
+            <button type="submit" awNextStep [disabled]="ListaArticulosDevolucion.length === 0 && ListaArticulosPendientes.length === 0"
+              class="btnbuttoncompras" awNextStep> Pendientes y devoluciones </button>
+          </div>
+        </div>
+        <br>
+
+        <div class="tablacompras">
+          <div class="centrar buscar-paginacion">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searcharticulosfinalizados" placeholder="Buscar" [(ngModel)]="searcharticulosfinalizados">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempagearticulosfinalizados" [(ngModel)]="itempagearticulosfinalizados">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover">
+              <thead>
+                <tr>
+
+                  <th>Articulo</th>
+                  <th>Unidad</th>
+                  <th>Cantidad</th>
+                  <th>Unidad Kardex</th>
+                  <th>Valor Unitario</th>
+                  <th>Valor Base</th>
+                  <th>Valor Impuesto</th>
+                  <th>Valor Total</th>
+                  <th colspan="2">
+                    <a type="button" data-toggle="tooltip" data-placement="top" title="Agregar Articulo" (click)="Agregar_ArtPreview()" awPreviousStep>
+                      <img src="assets/images/add-art.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                    Agregar Articulo
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let articulo of articulosAgregados  | articulosfineditocpendiente: searcharticulosfinalizados | paginate: { itemsPerPage: itempagearticulosfinalizados, currentPage: artf, id :'articulo_finalizados'} ; let i=index">
+
+                  <td>{{articulo.nombreArt}}</td>
+                  <td>{{articulo.nom_unidad_com}}</td>
+                  <td>{{articulo.cant}}</td>
+                  <td>{{articulo.nom_unidad_kar}}</td>
+                  <td>{{articulo.precio_uni| number:'1.2-2'}}</td>
+                  <td>{{articulo.basecom | number:'1.2-2'}}</td>
+                  <td>{{articulo.valor_imp | number:'1.2-2'}}</td>
+                  <td>{{articulo.totalcom | number:'1.2-2'}}</td>
+
+                  <td>
+                    <a *ngIf="articulo.origen === 'compra' " (click)="Modificar_ArtPreview(articulo)" data-toggle="tooltip" data-placement="top"
+                      title="Modificar" awPreviousStep>
+                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                    </a>
+                    <a *ngIf="articulo.origen === 'compra' && articulosAgregados.length > 1" (click)="bindingEliminarArticulo(articulo)" class="colorbotoneliminar"
+                      data-toggle="modal" data-placement="top" data-target="#EliminarArticulo" title="Eliminar" role="button">
+                      <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                    <a *ngIf="articulo.origen === 'compra' && articulosAgregados.length == 1 " (click)="bindingEliminarArticulo(articulo)" class="colorbotoneliminar"
+                      data-toggle="modal" data-placement="top" data-target="#EliminarArticuloUltimo" title="Eliminar" role="button">
+                      <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                    <a *ngIf="articulo.origen === 'compra' " class="colorbotonmodificar" (click)="bindingDevolver(articulo)" role="button" data-toggle="modal"
+                      data-target="#devolucionArt" data-placement="top" title="Devolución">
+                      <img src="assets/images/volver.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="artf = $event" id="articulo_finalizados"></pagination-controls>
+            </div>
+            <br>
+          </div>
+        </div>
+
+        <div class="caja">
+          <span class="tiulocaja"> Totales Compra</span>
+          <div class="row">
+            <div class="col-lg-12 divcolor">
+              <div class="col-lg-4">
+                <label>Subtotal</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                  </div>
+                  <input type="number" class="form-control alineacion" type="number" id="DataTotales.subtotal" name="DataTotales.subtotal"
+                    [(ngModel)]="DataTotales.subtotal" readonly="true" />
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Impuestos</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                  </div>
+                  <input type="number" class="form-control alineacion" type="number" id="DataTotales.totalimpuestos" name="DataTotales.totalimpuestos"
+                    [(ngModel)]="DataTotales.totalimpuestos" readonly="true" />
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Total</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                  </div>
+                  <input type="number" class="form-control alineacion" type="number" id="DataTotales.totaltotal" name="DataTotales.totaltotal"
+                    [(ngModel)]="DataTotales.totaltotal" readonly="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="caja">
+          <span class="tiulocaja">Totales Impuesto</span>
+          <div class="row">
+            <div class="col-lg-3" *ngFor="let impuesto of DiscriminacionImpuestos ">
+              <label>{{impuesto.nombreimpuesto}} {{impuesto.tarifa}}</label>
+              <div class="input-group">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text igtsp" id="basic-addon1"><i class="fas fa-dollar-sign"></i></span>
+                      </div>
+                <input type="text" value="{{impuesto.valor_impuesto}}" class="form-control alineacion" type="number" id="valor_impuesto"
+                  name="valor_impuesto" readonly="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="centrar">
+          <input type="submit" data-toggle="modal" data-target="#mycancelar" name="Cancelar" class="btnbuttoncerrar" value="Cancelar">
+
+          <input type="submit" (click)="Imprimir()" name="Imprimir" class="btnbutton" value="Imprimir">
+
+          <input type="submit" value="Comprar" [disabled]="!ordenesTresForm.valid" class="btnbutton" name="Comprar" (click)="ValidarNumeroFactura(DataNewOrden)">
+
+        </div>
+
+        <div *ngIf="articulosPendientes.length > 0">
+          <div class="tabladevolucionpendientes">
+            <h3 class="h3">Pendientes Generadas </h3>
+          </div>
+
+          <div class="tablacompras">
+            <div class="table-responsive panel-body">
+              <table width="100%" class="table table-striped table-hover">
+                <thead>
+                  <tr>
+
+                    <th>Articulo</th>
+                    <th>Unidad</th>
+                    <th>Cantidad</th>
+                    <th>Unidad Kardex</th>
+                    <th>Valor Unitario</th>
+                    <th>Valor Base</th>
+                    <th>Valor Impuesto</th>
+                    <th>Valor Total</th>
+                </thead>
+                <tbody>
+                  <tr class="odd gradeX" *ngFor="let articulo of articulosPendientes  | paginate: { itemsPerPage: itempagenewpendiente, currentPage: np, id :'newpendiente'} ; let i=index">
+
+                    <td>{{articulo.nombreArt}}</td>
+                    <td>{{articulo.nom_unidad_com}}</td>
+                    <td>{{articulo.cant}}</td>
+                    <td>{{articulo.nom_unidad_kar}}</td>
+                    <td>{{articulo.precio_uni | number:'1.2-2'}}</td>
+                    <td>{{articulo.basecom | number:'1.2-2'}}</td>
+                    <td>{{articulo.valor_imp | number:'1.2-2'}}</td>
+                    <td>{{articulo.totalcom | number:'1.2-2'}}</td>
+
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="np = $event" id="newpendiente"></pagination-controls>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+
+
+        <div *ngIf="articulosDevoluciones.length > 0">
+          <div class="tabladevolucionpendientes">
+            <h3 class="h3">Devoluciones Generadas </h3>
+          </div>
+          <div class="tablacompras">
+
+
+            <div class="table-responsive panel-body">
+              <table width="100%" class="table table-striped table-hover">
+                <thead>
+                  <tr>
+
+                    <th>Articulo</th>
+                    <th>Unidad</th>
+                    <th>Cantidad</th>
+                    <th>Unidad Kardex</th>
+                    <th>Valor Unitario</th>
+                    <th>Valor Base</th>
+                    <th>Valor Impuesto</th>
+                    <th>Valor Total</th>
+                </thead>
+                <tbody>
+                  <tr class="odd gradeX" *ngFor="let articulo of articulosDevoluciones  | paginate: { itemsPerPage: itempagenewdevolucion, currentPage: nd, id :'newdevolucion'} ; let i=index">
+
+                    <td>{{articulo.nombreArt}}</td>
+                    <td>{{articulo.nom_unidad_com}}</td>
+                    <td>{{articulo.cant}}</td>
+                    <td>{{articulo.nom_unidad_kar}}</td>
+                    <td>{{articulo.precio_uni | number:'1.2-2'}}</td>
+                    <td>{{articulo.basecom | number:'1.2-2'}}</td>
+                    <td>{{articulo.valor_imp | number:'1.2-2'}}</td>
+                    <td>{{articulo.totalcom | number:'1.2-2'}}</td>
+
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="nd = $event" id="newdevolucion"></pagination-controls>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+
+      </aw-wizard-step>
+      <aw-wizard-step stepTitle="PENDIENTES Y DEVOLUCIONES" [navigationSymbol]="{ symbol: '3' }">
+        <div class="tabladevolucionpendientes">
+          <h3 class="h3">Pendientes</h3>
+        </div>
+        <div class="tablacompras">
+          <div class=" centrar buscar-paginacion">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringPendientes" placeholder="Buscar" [(ngModel)]="searchStringPendientes">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempagePendientes" [(ngModel)]="itempagePendientes">
+                <option value="5" selected="selected">Artículos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Articulo</th>
+                  <th>Unidad de Compra</th>
+                  <th>Cantidad</th>
+                  <th>Unidad Kardex</th>
+                  <th>Cantidad En Kardex</th>
+                  <th>Valor Unitario</th>
+                  <th>Total Bruto</th>
+                  <th>Descuento</th>
+                  <th>Impuesto</th>
+                  <th>Tarifa</th>
+                  <th>Impuesto</th>
+                  <th>Valor Total</th>
+                  <th colspan="2">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr required class="odd gradeX" *ngFor="let la_pendientes of ListaArticulosPendientes | pendienteseditocpendiente: searchStringPendientes | paginate: { itemsPerPage: itempagePendientes, currentPage: tp, id: 'tablapendientes' };let i=index">
+                  <td>{{la_pendientes.nombreArticulo}}</td>
+                  <td>{{la_pendientes.nom_unidad_compra}}</td>
+                  <td>{{la_pendientes.cantidad}}</td>
+                  <td>{{la_pendientes.nom_unidad_kardex}}</td>
+                  <td>{{la_pendientes.cantidad}}</td>
+                  <td>${{la_pendientes.precio_unitario | number: '1.1-2'}}</td>
+                  <td>${{la_pendientes.valor_bruto | number: '1.1-2'}}</td>
+                  <td>${{la_pendientes.descuento | number: '1.1-2'}}</td>
+                  <td>{{la_pendientes.nombreImpuesto}}</td>
+                  <td>{{la_pendientes.tarifa}}</td>
+                  <td>${{la_pendientes.valor_impuesto | number: '1.1-2' }}</td>
+                  <td>${{la_pendientes.valor_total | number: '1.1-2' }}</td>
+                  <td class="center">
+                    <a class="colorbotonmodificar" (click)="ComprarPendiente(la_pendientes); EliminarPendiente(la_pendientes.idtabla);" data-toggle="tooltip"
+                      data-placement="top" title="Comprar" role="button" awPreviousStep>
+                      <img src="assets/images/comprar-dev.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tp = $event" id="tablapendientes"></pagination-controls>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-12" align="right">
+            <button type="submit" (click)="ComprarTodosPendientes(ListaArticulosPendientes);" class="btnbuttcompras" awPreviousStep [disabled]="ListaArticulosPendientes.length === 0">
+              Comprar </button>
+          </div>
+        </div>
+
+
+        <div class="tabladevolucionpendientes">
+          <h3 class="h3">Devoluciones </h3>
+        </div>
+        <div class="tablacompras">
+          <div class=" centrar buscar-paginacion">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringDevoluciones" placeholder="Buscar" [(ngModel)]="searchStringDevoluciones">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageDevoluciones" [(ngModel)]="itempageDevoluciones">
+                <option value="5" selected="selected">Artículos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Articulo</th>
+                  <th>Unidad de Compra</th>
+                  <th>Cantidad</th>
+                  <th>Unidad Kardex</th>
+                  <th>Cantidad En Kardex</th>
+                  <th>Valor Unitario</th>
+                  <th>Total Bruto</th>
+                  <th>Descuento</th>
+                  <th>Impuesto</th>
+                  <th>Tarifa</th>
+                  <th>Impuesto</th>
+                  <th>Valor Total</th>
+                  <th colspan="2">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr required class="odd gradeX" *ngFor="let la_devolucion of ListaArticulosDevolucion | devolucioneseditocpendiente: searchStringDevoluciones | paginate: { itemsPerPage: itempageDevoluciones, currentPage: td, id: 'tabladevoluciones' };let i=index">
+                  <td>{{la_devolucion.nombreArticulo}}</td>
+                  <td>{{la_devolucion.nom_unidad_compra}}</td>
+                  <td>{{la_devolucion.cantidad}}</td>
+                  <td>{{la_devolucion.nom_unidad_kardex}}</td>
+                  <td>{{la_devolucion.cantidad}}</td>
+                  <td>${{la_devolucion.precio_unitario | number: '1.1-2'}}</td>
+                  <td>${{la_devolucion.valor_bruto | number: '1.1-2'}}</td>
+                  <td>${{la_devolucion.descuento | number: '1.1-2'}}</td>
+                  <td>{{la_devolucion.nombreImpuesto}}</td>
+                  <td>{{la_devolucion.tarifa}}</td>
+                  <td>${{la_devolucion.valor_impuesto | number: '1.1-2' }}</td>
+                  <td>${{la_devolucion.valor_total | number: '1.1-2' }}</td>
+                  <td class="center">
+                    <a class="colorbotonmodificar" (click)="ComprarDevolucion(la_devolucion); EliminarDevolucion(la_devolucion.idtabla)" data-toggle="tooltip"
+                      data-placement="top" title="Comprar" role="button" awPreviousStep>
+                      <img src="assets/images/comprar-dev.png" width="30" height="30" class="btnReportes">
+
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="td = $event" id="tabladevoluciones"></pagination-controls>
+            </div>
+          </div>
+        </div>
+
+        <br>
+        <div class="row">
+          <div class="col-md-12" align="right">
+            <button type="submit" (click)="ComprarTodosDevoluciones(ListaArticulosDevolucion);" class="btnbuttcompras" awPreviousStep
+              [disabled]="ListaArticulosDevolucion.length === 0"> Comprar </button>
+          </div>
+        </div>
+
+
+        <div class="centrar">
+          <button type="submit" class="btnbutton" awPreviousStep> Anterior </button>
+          <button type="submit" (click)="ImprimirPenDev()" class="btnbutton"> Imprimir </button>
+          <button type="submit" (click)="ComprarTodosPendientes(ListaArticulosPendientes); ComprarTodosDevoluciones(ListaArticulosDevolucion)"
+            class="btnbutton" awPreviousStep [disabled]="ListaArticulosDevolucion.length === 0 && ListaArticulosPendientes.length === 0">
+            Comprar todo </button>
+        </div>
+      </aw-wizard-step>
+    </aw-wizard>
+
+  </div>
+</div>
+<!-- **************************** Seleccion de articulos ****************************** -->
+
+<div id="ArticulosModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Artículos Con Negociacion</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablacompras">
+          <div class="centrar buscar-paginacion">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringArt" placeholder="Buscar" [(ngModel)]="searchStringArt">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageArt" [(ngModel)]="itempageArt">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Articulo</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="clickFilaArt(data.id_articulo)" class="odd gradeX" *ngFor="let data of DataJsonArticulos | modalarticuloseditocpendiente: searchStringArt | paginate: { itemsPerPage: itempageArt, currentPage: marti ,id: 'modalarticulo'}">
+                  <td>{{data.id_articulo}}</td>
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="radio" name="DataNewArticulo.id_articulo" value="{{data.id_articulo}}" [(ngModel)]="DataNewArticulo.id_articulo"
+                      required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="marti = $event" id="modalarticulo"></pagination-controls>
+          </div>
+
+          <div class="centrar2" *ngIf="asig_articulos">
+            <a *ngIf="mas_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="loadMasArticulos(DataNewOrden.id_pro)"
+              title="Agregar Articulo">
+              <img src="assets/images/plus.png" width="15" height="15" class="btnReportes">
+              Mas Articulos <!-- 1 -->
+            </a>
+            <a *ngIf="menos_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="loadArticulosNegociacion(DataNewOrden.id_pro)"
+              title="Agregar Articulo">
+              <img src="assets/images/minus.png" width="15" height="15" class="btnReportes">
+              Menos Articulos <!-- 1 -->
+            </a>
+          </div>
+          <div class="centrar2" *ngIf="!asig_articulos">
+            <a *ngIf="mas_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="LoadTodosArticulosInventario()"
+              title="Agregar Articulo">
+              <img src="assets/images/plus.png" width="15" height="15" class="btnReportes">
+              Mas Articulos <!-- 2 -->
+            </a>
+            <a *ngIf="menos_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="LoadUltimosArticulosPorProveedor(DataNewOrden.id_pro)"
+              title="Agregar Articulo">
+              <img src="assets/images/minus.png" width="15" height="15" class="btnReportes">
+              Menos Articulos <!-- 2 -->
+            </a>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="GuardarArticuloSel(DataNewArticulo.id_articulo, DataNewOrden)" [disabled]="!DataNewArticulo.id_articulo"
+              data-dismiss="modal" class="btnbutton">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ************************ Fin Seleccion de articulos ********************************** -->
+
+<!-- ****************** Modal eliminar Articulo de la compra ****************************** -->
+
+<div id="EliminarArticulo" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Confirmación</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="centrarmodal">
+          Esta seguro de Eliminar El Producto
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" class="btnbutton" (click)="DeleteArticulo(idTablaEliminar);">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ************************** Fin eliminar Articulo de la compra ************************* -->
+
+<!-- ************************** Modal eliminar Articulo de la compra **************************** -->
+
+<div id="EliminarArticuloUltimo" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Información</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="centrarmodal">
+          <p> No puede Eliminar el Unico Artículo de La Compra</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <!-- <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- *********************** Fin eliminar Articulo de la compra ************************ -->
+
+<!--  **************************** Modal Cancelar ************************** -->
+
+<div class="modal fade" id="mycancelar" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content modalesmodificados">
+      <div class="modal-header">
+        <h4 class="modal-title">Cancelar</h4>
+      </div>
+      <div class="modal-body">
+        <p>Esta seguro de Volver A Listado De Compras</p>
+      </div>
+      <div class="modal-footer">
+        <a [routerLink]="['/compras/compra']" data-dismiss="modal" class="btnbutton">
+          Aceptar</a>
+        <button type="button" class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- **************************** Fin  Modal Cancelar ******************************* -->
+
+<!--  ************************ Modal Devoluciones ******************************** -->
+
+<div id="devolucionArt" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="centrarmodal">
+          <h3>Devolucion:</h3>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form #devolucioncompra="ngForm" action="" method="post" novalidate>
+          <div class="row">
+            <div class="col-md-6" align="center">
+              <input type="radio" id="tipopar" name="DataNewDevolucion.tipo" [(ngModel)]="DataNewDevolucion.tipo" [value]="1" required />
+              <label for="tipopar">Parcial</label>
+              <br>
+            </div>
+            <div class="col-md-6" align="center" *ngIf="articulosAgregados.length > 1">
+              <input type="radio" id="tipotot" name="DataNewDevolucion.tipo" [(ngModel)]="DataNewDevolucion.tipo" [value]="2" required/>
+              <label for="tipotot">Total</label>
+              <br>
+            </div>
+          </div>
+          <div class="row" *ngIf="DataNewDevolucion.tipo == '1'">
+            <div class="col-md-12">
+            <div class="form-group">
+              <label>Cantidad a devolver</label>
+              <input type="number" class="form-control" name="DataNewDevolucion.cantidad_parcial" placeholder="Cantidad Parcial" [(ngModel)]="DataNewDevolucion.cantidad_parcial"
+                (ngModelChange)="ValidarCantidad($event, DatosArticuloDevolucion.cant)" required pattern="[0-9]+" />
+            </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="createDevolucion(DataNewDevolucion, DatosArticuloDevolucion)" [disabled]="!devolucioncompra.valid || cant_superior"
+          data-dismiss="modal" class="btnbutton">
+          Aceptar</button>
+        <button type="button" class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- **************************** Fin  Modal Devoluciones ********************************* -->

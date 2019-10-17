@@ -1,0 +1,353 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Listas de Descuentos</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+
+      <div class="col-md-12">
+
+        <div class="btnrouterlinkconfig" [routerLink]="['/configuraciones2/listaprecios']">
+          <a>
+            <span class="pull-left">
+              <i class="fa fa-arrow-circle-left"></i>
+            </span>
+            <span class="pull-right">Lista de Precios activas</span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(219)" uiSrefActive="active"
+          (click)="LimpiarFormDescuento()" role="button" data-toggle="modal" data-target="#CrearDescuento"
+          data-placement="top" title="Crear Descuento">
+          <a>
+            <span class="pull-left">Crear Descuentos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+
+        <div class="btnrouterlinkconfig"  *ngIf="sidebarComponent.contienePermiso(294)" [routerLink]="['/configuraciones2/listaprecios/listadescuentosinactivos']">
+          <a>
+            <span class="pull-left">Descuentos Inactivos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tablaconfig"   >
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchStringLista" placeholder="Buscar"
+            [(ngModel)]="searchStringLista">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempageLista" [(ngModel)]="itempageLista">
+            <option value="5" selected="selected">Lista de Descuentos por Pagina</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <div class="loading" *ngIf="loader">
+          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        </div>
+        <div class="loadError" *ngIf="LoadError">
+          <div class="alert alert-danger">{{error}}</div>
+        </div>
+        <div *ngIf="LoadTabla && !noHayRegistros" class="panel-body table-responsive">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Descuento</th>
+                <th>Porcentaje</th>
+                <th class="center" *ngIf="sidebarComponent.contienePermiso(295)" >Inactivar</th>
+                <!--       <th>Descripción</th> -->
+                <th class="center" *ngIf="sidebarComponent.contienePermiso(220)">Modificar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX"
+                *ngFor="let data of lisDescuentosArray | listadescuentos : searchStringLista | paginate: { itemsPerPage: itempageLista, currentPage: p }">
+                <td>{{data.nombre}}</td>
+                <td>{{data.porcentaje}}</td>
+
+                <td class="center" *ngIf="sidebarComponent.contienePermiso(295)" >
+                  <a  (click)="bindingDataInactivar(data)" uiSrefActive="active"
+                    role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                    <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                  </a>
+                </td>
+
+                <!--  <td>{{data.descripcion}}</td> -->
+                <td class="center" *ngIf="sidebarComponent.contienePermiso(220)">
+                  <a (click)="bindingDataModificar(data)" uiSrefActive="active" role="button" data-toggle="modal"
+                    data-target="#modificarDescuento" data-placement="top" title="modificar">
+                    <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+        <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Descuento</th>
+                <th>Porcentaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX">
+                <td colspan="2" class="center">No hay Registros</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--****************************************Modal Crear Descuento*******************************************************-->
+
+<div id="CrearDescuento" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear Descuento</h4>
+      </div>
+      <div class="modal-body">
+        <form #descForm="ngForm">
+          <div class="form-group">
+            <label for="codigo">Codigo
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="codigo" name="DataDescuento.codigo"
+              [(ngModel)]="DataDescuento.codigo" #cod="ngModel" minlength="2" maxlength="5" required
+              [ngClass]="{'is-invalid': !cod.valid && (cod.dirty || cod.touched)}" (keypress)="kPNumeros($event)">
+            <span class="invalid-feedback" *ngIf="cod.errors && (cod.dirty || cod.touched)">
+              <li *ngIf=cod.errors.required>
+                El campo Codigo es obligatorio
+              </li>
+              <li *ngIf="cod.errors.minlength">
+                El campo Codigo debe ser mayor a 2 caracteres*
+              </li>
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="nombre">Nombre Descuento
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="nombre" name="DataDescuento.nombre"
+              [(ngModel)]="DataDescuento.nombre" #nom="ngModel" required
+              [ngClass]="{'is-invalid': !nom.valid && (nom.dirty || nom.touched)}">
+            <span class="invalid-feedback" *ngIf="nom.errors && (nom.dirty || nom.touched)">
+              <li *ngIf=nom.errors.required>
+                El campo Nombre Descuento es obligatorio
+              </li>
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="porcentaje">Porcentaje de Descuento
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="porcentaje" name="DataDescuento.porcentaje"
+              [(ngModel)]="DataDescuento.porcentaje" #por="ngModel" required
+              [ngClass]="{'is-invalid': !por.valid && (por.dirty || por.touched)}">
+            <span class="invalid-feedback" *ngIf="por.errors && (por.dirty || por.touched)">
+              <li *ngIf=por.errors.required>
+                El campo Porcentaje de Descuento
+              </li>
+            </span>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label for="si">Con Justificacion
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="si" name="DataDescuento.addDesc" [(ngModel)]="DataDescuento.addDesc" [value]=1
+                required>
+              <b>Si</b>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="no" name="DataDescuento.addDesc" [(ngModel)]="DataDescuento.addDesc" [value]=2
+                required>
+              <b>No</b>
+            </div>
+          </div>
+
+          <!-- <div class="form-group" *ngIf="DataDescuento.addDesc==1" >
+              <label for="descripcion">Descripcion
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" id="descripcion" name="DataDescuento.descripcion" [(ngModel)]="DataDescuento.descripcion"
+                #descri="ngModel" required [ngClass]="{'is-invalid': !descri.valid && (descri.dirty || descri.touched)}">
+              <span class="invalid-feedback" *ngIf="descri.errors && (descri.dirty || descri.touched)">
+                <li *ngIf=descri.errors.required>
+                  El campo Descripcion
+                </li>
+              </span>
+            </div> -->
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitDesc(DataDescuento);" [disabled]="!descForm.valid" data-dismiss="modal"
+            class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--**************************************** Fin Modal Crear Descuento*******************************************************-->
+<!--*************************Modal Inactivar***********************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar Lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Seguro desea Inactivar la Lista de precios con Id: {{ DataDescuentoInactivo.idInac }} con Nombre: {{ DataDescuentoInactivo.nombreInac}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="Inactivar(DataDescuentoInactivo.idInac, DataDescuentoInactivo.nombreInac);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar*************************************-->
+
+
+<!--****************************************Modal Modificar Descuento*******************************************************-->
+
+<div id="modificarDescuento" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Descuento</h4>
+      </div>
+      <div class="modal-body">
+        <form #descUpForm="ngForm">
+          <div class="form-group">
+            <label for="codigo">Codigo
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="codigo" name="DataDescuentoNew.codnew"
+              [(ngModel)]="DataDescuentoNew.codnew" #codi="ngModel" minlength="2" maxlength="5" required
+              [ngClass]="{'is-invalid': !codi.valid && (codi.dirty || codi.touched)}">
+            <span class="invalid-feedback" *ngIf="codi.errors && (codi.dirty || codi.touched)">
+              <li *ngIf=codi.errors.required>
+                El campo Codigo es obligatorio
+              </li>
+              <li *ngIf="codi.errors.minlength">
+                El campo Codigo debe ser mayor a 2 caracteres*
+              </li>
+            </span>
+          </div>
+
+          <div class="form-group" [ngClass]="{'is-invalid': !nomm.valid && (nomm.dirty || nomm.touched)}">
+            <label for="nombre">Nombre Descuento
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="nombre" name="DataDescuentoNew.nombrenew"
+              [(ngModel)]="DataDescuentoNew.nombrenew" #nomm="ngModel" required>
+            <span class="invalid-feedback" *ngIf="nomm.errors && (nomm.dirty || nomm.touched)">
+              <li *ngIf=nom.errors.required>
+                El campo Nombre Descuento es obligatorio
+              </li>
+            </span>
+          </div>
+
+          <div class="form-group" [ngClass]="{'is-invalid': !porr.valid && (porr.dirty || porr.touched)}">
+            <label for="porcentaje">Porcentaje de Descuento
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="porcentaje" name="DataDescuentoNew.porcentajenew"
+              [(ngModel)]="DataDescuentoNew.porcentajenew" #porr="ngModel" required>
+            <span class="invalid-feedback" *ngIf="porr.errors && (porr.dirty || porr.touched)">
+              <li *ngIf=porr.errors.required>
+                El campo Porcentaje de Descuento
+              </li>
+            </span>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label for="si">Con Justificacion
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="si" name="DataDescuentoNew.addDescnew" [(ngModel)]="DataDescuentoNew.addDescnew"
+                [value]=1 required>
+              <b>Si</b>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="no" name="DataDescuentoNew.addDescnew" [(ngModel)]="DataDescuentoNew.addDescnew"
+                [value]=2 required>
+              <b>No</b>
+            </div>
+          </div>
+
+          <!--  <div class="form-group" *ngIf="DataDescuentoNew.addDescnew==1" >
+              <label for="descripcion">Descripcion
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" id="descripcion" name="DataDescuentoNew.descripcionnew" [(ngModel)]="DataDescuentoNew.descripcionnew"
+                #dess="ngModel" required [ngClass]="{'is-invalid': !dess.valid && (dess.dirty || dess.touched)}">
+              <span class="invalid-feedback" *ngIf="dess.errors && (dess.dirty || dess.touched)">
+                <li *ngIf=dess.errors.required>
+                  El campo Descripcion
+                </li>
+              </span>
+            </div> -->
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitUpdateDesc(DataDescuentoNew);" [disabled]="!descUpForm.valid" data-dismiss="modal"
+            class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--**************************************** Fin Modal Modificar Descuento*******************************************************-->

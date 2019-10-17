@@ -1,0 +1,207 @@
+<div class="menu collapse show">
+  <div class="nav-side-menu" role="navigation">
+    <br>
+    <div class="dropdown profile-element">
+    
+      <!-- <span [ngStyle]="{'background-color': getRandomColor()}">
+                        G -->
+      <!-- <img alt="image" class="img-circle" src="assets/images/default-user.png" /> -->
+      <!-- </span> -->
+      <br>
+      <br>
+      <br>
+      <span class="clear">
+        <span class="block m-t-xs">
+          <strong class="font-bold"></strong>
+        </span>
+        <br>
+        <span class="text-xs block bg-az">
+        </span>
+      </span>
+    </div>
+    <ul>
+      <li [routerLink]="['/dashboard']">
+        <a>
+          <img src="assets/images/barra/PNG 52 X 52/azul/dashboard 52x52.png" class="img-barra"> Dashboard
+        </a>
+      </li>
+      <li>
+        <a>
+          <i class="fas fa-reply bg-des"></i> Menú Principal
+        </a>
+      </li>
+      <div>
+        <div class="accordion-group">
+
+          <!-- ******************************************************************** -->
+          <!-- ******************************************************************** -->
+          <!-- *********************** MENU CONFIGURACION ************************* -->
+          <!-- ******************************************************************** -->
+          <!-- ******************************************************************** -->
+
+          <li *ngIf="accesoAplicacion(2) && logConf === '1'" data-toggle="collapse" data-target="#configuracion">
+            <a>
+              <img src="assets/images/barra/PNG 52 X 52/azul/configuracion 52x52.png" class="img-barra"> Configuración
+              <span class="arrow"></span>
+              <!-- <i class="fa fa-cog fa-lg"></i> Configuración <span class="arrow"></span> -->
+            </a>
+          </li>
+          <ul class="nav-second-level collapse" id="configuracion">
+            <li [routerLink]="['/configuraciones/clientes']">
+              Clientes
+            </li>
+            <li *ngIf="contienePermiso(5)" [routerLink]="['/configuraciones/marcas']" >
+              Marcas
+            </li>
+            <li *ngIf="contienePermiso(2)" [routerLink]="['/configuraciones/aplicaciones']" >
+              Aplicaciones
+            </li>
+            <li *ngIf="contienePermiso(215)" [routerLink]="['/configuraciones/agrupamiento']"
+                >
+              Agrupamiento puntos
+            </li>
+            <li *ngIf="contienePermiso(4)" [routerLink]="['/configuraciones/roles']" >
+              Roles
+            </li>
+            <li *ngIf="contienePermiso(3)" [routerLink]="['/configuraciones/usuarios']" >
+              Usuarios
+            </li>
+            <li *ngIf="contienePermiso(6)" [routerLink]="['/configuraciones/gruposcorporativos']"
+                >
+              Grupos Corporativos
+            </li>
+            <li *ngIf="contienePermiso(7)" [routerLink]="['/configuraciones/impuestos']" >
+              Impuestos
+            </li>
+            <li *ngIf="contienePermiso(10)" [routerLink]="['/configuraciones2/clases']" >
+              Clases
+            </li>
+            <li *ngIf="contienePermiso(9)" [routerLink]="['/configuraciones2/articulos']" >
+              Articulos
+            </li>
+            <li *ngIf="contienePermiso(99)" [routerLink]="['/configuraciones2/articulosreceta']"
+                >
+              Recetas
+            </li>
+            <li *ngIf="contienePermiso(85)" [routerLink]="['/configuraciones2/listaprecios']"
+                >
+              Listas de Precios
+            </li>
+            <li *ngIf="contienePermiso(112)" [routerLink]="['/configuraciones2/impuestosventas']"
+                >
+              Impuestos ventas
+            </li>
+            <li *ngIf="contienePermiso(79)" [routerLink]="['/configuraciones2/gruposseleccion']"
+                >
+              Grupos de Selección
+            </li>
+            <li *ngIf="contienePermiso(92)" [routerLink]="['/configuraciones2/gruposempaque']"
+                >
+              Grupos de Empaque
+            <li *ngIf="contienePermiso(8)" [routerLink]="['/configuraciones2/bodegas']" >
+              Sitios de almacenaje
+            </li>
+            <li *ngIf="contienePermiso(210)" [routerLink]="['/configuraciones3/costosestimados']"
+                >
+              Costos Estimados
+            </li>
+            <li *ngIf="contienePermiso(198)" [routerLink]="['/configuraciones3/gruposformaspago']"
+                >
+              Grupos Formas de pago
+            </li>
+            <li *ngIf="contienePermiso(192)" [routerLink]="['/configuraciones3/transacciones']"
+                >
+              Transacciones
+            </li>
+            <li *ngIf="contienePermiso(212)" [routerLink]="['/configuraciones3/asignarproductos']"
+                >
+              Asignar Producto
+            </li>
+            <li *ngIf="contienePermiso(251)" [routerLink]="['/configuraciones3/procesosesp']"
+                >
+              Procesos especiales
+            </li>
+            <li *ngIf="contienePermiso(186)" [routerLink]="['/configuraciones3/clientedomicilio']"
+                >
+              Clientes Domicilio
+            </li>
+            <li *ngIf="contienePermiso(252)" [routerLink]="['/configuraciones3/unidades']" >
+              Unidad de medida
+            </li>
+            <li *ngIf="contienePermiso(275)" [routerLink]="['/configuraciones3/clientecomensal']"
+                >
+              Clientes Comensales
+            </li>
+          </ul>
+
+          <!-- ******************************************************************** -->
+          <!-- ******************************************************************** -->
+          <!-- *********************** MENU COMPRAS ******************************* -->
+          <!-- ******************************************************************** -->
+          <!-- ******************************************************************** -->
+          <li *ngIf="accesoAplicacion(4) && logConf === '1'" data-toggle="collapse" data-target="#compras">
+            <a>
+              <img src="assets/images/barra/PNG 52 X 52/azul/compras 52x52.png" class="img-barra"> Gestión Compras
+              <span class="arrow"></span>
+            </a>
+          </li>
+          <ul class="nav-second-level collapse" id="compras">
+            <li [routerLink]="['/compras/proveedores']">
+              Proveedores
+            </li>
+          </ul>
+          <ul class="nav-second-level collapse" id="compras">
+            <li [routerLink]="['/compras/ordencompra']">
+              Ordenes de Compra
+            </li>
+          </ul>
+          <ul class="nav-second-level collapse" id="compras">
+            <li [routerLink]="['/compras/compra']">
+              Compras
+            </li>
+          </ul>
+          <ul class="nav-second-level collapse" id="compras">
+            <li [routerLink]="['/compras/pendientes']">
+              Pendientes
+            </li>
+          </ul>
+          <ul class="nav-second-level collapse" id="compras">
+            <li [routerLink]="['/compras/devoluciones']">
+              Devoluciones
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<!--****************************************Modal Asignar saldo a todos los internos*******************************************************-->
+
+<div id="SaldoTodosInternos" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Actualizar saldos a Clientes Internos</h4>
+      </div>
+      <div class="modal-header centrarmodal">
+        <h3>Confirmación</h3>
+      </div>
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Está seguro que desea actualizar los saldos a todos los clientes internos?</b>
+        </p>
+
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button  data-dismiss="modal" class="btn btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btn btnbuttoncerrar" >Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--**************************************** Fin Modal*******************************************************************************************-->

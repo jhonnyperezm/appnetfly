@@ -1,0 +1,932 @@
+<div class="row">
+    <div class="container-fluid contenedorcompras">
+      <div class="row color_compras1">
+        <div class="col-lg-12" align="center">
+          <h1>Crear Proveedor</h1>
+        </div>
+      </div>
+
+      <aw-wizard #wizard navBarLayout="large-empty-symbols">
+        <aw-wizard-step stepTitle="DATOS PROVEEDOR" [navigationSymbol]="{ symbol: '1' }">
+          <form #proveedorForm="ngForm" (ngSubmit)="Siguiente();">
+            <br>
+            <div class="caja_proveedor">
+              <span class="tiulocaja"> Datos Proveedor</span>
+
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="docu">Documento
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewProveedor.documento" class="form-control" role="button" data-toggle="modal" data-target="#DocumentoModal"
+                      [(ngModel)]="DataNewProveedor.documento" #docu="ngModel" readonly required
+                      [ngClass]="{'is-invalid': !docu.valid && (docu.dirty || docu.touched)}">
+                    <span class="invalid-feedback" *ngIf="docu.errors && (docu.dirty || docu.touched)">
+                      <li *ngIf=docu.errors.required>
+                        El campo Documento es obligatorio
+                      </li>
+
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="razon">Razon Social
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="proveedor" class="form-control" [(ngModel)]="DataNewProveedor.razon_social" [value]="DataNewProveedor.razon_social"
+                      #razon="ngModel" minlength="2" maxlength="100" required
+                      [ngClass]="{'is-invalid': !razon.valid && (razon.dirty || razon.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="razon.errors && (razon.dirty || razon.touched)">
+                      <li *ngIf=razon.errors.required>
+                        El campo Razon Social es obligatorio
+                      </li>
+                      <li *ngIf="razon.errors.minlength">
+                        El campo Razon Social debe ser mayor a 2 caracteres*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="proveedor">Razon Comercial
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewProveedor.razoncomercial" class="form-control" [(ngModel)]="DataNewProveedor.razoncomercial"
+                      #proveedor="ngModel" minlength="2" maxlength="100" required
+                      [ngClass]="{'is-invalid': !proveedor.valid && (proveedor.dirty || proveedor.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="proveedor.errors && (proveedor.dirty || proveedor.touched)">
+                      <li *ngIf=proveedor.errors.required>
+                        El campo Razon Comercial es obligatorio
+                      </li>
+                      <li *ngIf="proveedor.errors.minlength">
+                        El campo Razon Comercial debe ser mayor a 2 caracteres*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="radios">Tipo de persona
+                      <b class="asterisco">*</b>:</label>
+                    <select class="form-control" #tipoper="ngModel" [(ngModel)]="DataNewProveedor.tipoPersona" name="DataNewProveedor.tipoPersona"
+                      required>
+                      <option></option>
+                      <option [value]="1">Natural</option>
+                      <option [value]="2">Juridica</option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="tipoper.errors && (tipoper.dirty || tipoper.touched)">
+                      <li *ngIf=tipoper.errors.required>
+                        El campo Tipo persona es obligatorio
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="asigna_articulo">Asignar Articulos:</label>
+                    <select class="form-control" [(ngModel)]="DataNewProveedor.asigna_articulo" name="DataNewProveedor.asigna_articulo" required>
+                      <option></option>
+                      <option [value]="0">No</option>
+                      <option [value]="1">Si</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="Pais">Pais
+                      <b class="asterisco">*</b>:</label>
+                    <select class="form-control" [(ngModel)]="DataNewProveedor.id_pais" name="DataNewProveedor.id_pais" (change)="loadDepartamento(DataNewCliente.id_pais)"
+                      #pais="ngModel" required [ngClass]="{'is-invalid': !pais.valid && (pais.dirty || pais.touched)}">
+                      <option [value]=""></option>
+                      <option [value]="paises.id" *ngFor="let paises of DataArrayPaises">{{paises.nombre}}</option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="pais.errors && (pais.dirty || pais.touched)">
+                      <li *ngIf="pais.errors.required">
+                        El campo Pais es obligatorio
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="departamento">Departamento
+                      <b class="asterisco">*</b>:</label>
+                    <select class="form-control" [(ngModel)]="DataNewProveedor.id_departamento" name="DataNewProveedor.id_departamento" (ngModelChange)="loadMunicipio($event)"
+                      #dep="ngModel" required [ngClass]="{'is-invalid': !dep.valid && (dep.dirty || dep.touched)}">
+                      <option [value]=""></option>
+                      <option *ngFor="let departamentos of DataArrayDepartamentos" [value]="departamentos.id">{{departamentos.nombre}}</option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="dep.errors && (dep.dirty || dep.touched)">
+                      <li *ngIf=dep.errors.required>
+                        El campo Departamento es obligatorio
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="municipio">Municipio
+                      <b class="asterisco">*</b>:</label>
+                    <select class="form-control" [(ngModel)]="DataNewProveedor.id_municipio" name="DataNewProveedor.id_municipio" #mun="ngModel"
+                      required [ngClass]="{'is-invalid': !mun.valid && (mun.dirty || mun.touched)}">
+                      <option [value]=""></option>
+                      <option *ngFor="let municipios of DataArrayMunicipios" [value]="municipios.id">{{municipios.nombre}}</option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="mun.errors && (mun.dirty || mun.touched)">
+                      <li *ngIf=mun.errors.required>
+                        El campo Municipio es obligatorio
+                      </li>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="telefono">Telefono
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewProveedor.telefono" class="form-control" [(ngModel)]="DataNewProveedor.telefono" #telefono="ngModel"
+                      minlength="7" maxlength="12" (keypress)="kPNumeros($event)" required
+                      [ngClass]="{'is-invalid': !telefono.valid && (telefono.dirty || telefono.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="telefono.errors && (telefono.dirty || telefono.touched)">
+                      <li *ngIf=telefono.errors.required>
+                        El campo Telefono es obligatorio
+                      </li>
+                      <li *ngIf="telefono.errors.minlength">
+                        El campo Telefono debe ser mayor a 6 digitos*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="email">Email de pedidos
+                      <b class="asterisco">*</b>:</label>
+                    <input type="email" name="DataNewProveedor.email" class="form-control" [(ngModel)]="DataNewProveedor.email" #email="ngModel"
+                      pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50" required
+                      [ngClass]="{'is-invalid': !email.valid && (email.dirty || email.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="email.errors && (email.dirty || email.touched)">
+                      <li *ngIf=email.errors.required>
+                        El campo email es obligatorio
+                      </li>
+                      <li *ngIf=email.errors.email>
+                        El campo email es invalido
+                      </li>
+                      <li *ngIf=email.errors.minlength>
+                        El campo email debe ser mayor a 5 caracteres*
+                      </li>
+                      <li *ngIf="email.errors">
+                        El campo email debe ser de la forma
+                        <i>ejemplo@dominio.com</i>
+                      </li>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="direccion">Direccion
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewProveedor.direccion" class="form-control" [(ngModel)]="DataNewProveedor.direccion" #dir="ngModel"
+                      minlength="6" maxlength="100" (focus)="focusDireccion()" data-toggle="modal" data-target="#MyModal" readonly required
+                      [ngClass]="{'is-invalid': !dir.valid && (dir.dirty || dir.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="dir.errors && (dir.dirty || dir.touched)">
+                      <li *ngIf=dir.errors.required>
+                        El campo Direccion es obligatorio
+                      </li>
+                      <li *ngIf=dir.errors.minlength>
+                        El campo Direccion debe ser mayor a 6 caracteres*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="observaciones">Observaciones:</label>
+                    <textarea rows="4" name="DataNewProveedor.observaciones" class="form-control" [(ngModel)]="DataNewProveedor.observaciones"></textarea>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="caja">
+              <span class="tiulocaja">Contactos del proveedor</span>
+              <div class="row centrar">
+                <div class="col-md-3">
+
+                  <div class="form-group">
+                    <label for="nombre_contacto">Nombre del contacto<b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewContacto.nombre_contacto" class="form-control" [(ngModel)]="DataNewContacto.nombre_contacto"
+                      #nomconca="ngModel" [ngClass]="{'is-invalid': !nomconca.valid && (nomconca.dirty || nomconca.touched)}" >
+                    <span class="invalid-feedback" *ngIf="nomconca.errors && (nomconca.dirty || nomconca.touched)">
+                      <li *ngIf=nomconca.errors.required>
+                        El campo Nombre Contacto es obligatorio
+                      </li>
+                    </span>
+                  </div>
+
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="cargo_contacto">Cargo:</label>
+                    <input type="text" name="DataNewContacto.cargo_contacto" class="form-control" [(ngModel)]="DataNewContacto.cargo_contacto">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="telefono_contacto">Telefono<b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewContacto.telefono_contacto" class="form-control" [(ngModel)]="DataNewContacto.telefono_contacto"
+                      #tel="ngModel" minlength="6" maxlength="11" (keypress)="kPNumeros($event)"
+                      [ngClass]="{'is-invalid': !tel.valid && (tel.dirty || tel.touched)}">
+                    <span class="invalid-feedback" *ngIf="tel.errors && (tel.dirty || tel.touched)">
+                      <li *ngIf=tel.errors.required>
+                        El campo telefono es obligatorio
+                      </li>
+                      <li *ngIf=tel.errors.minlength>
+                        El campo correo debe ser mayor a 5 caracteres*
+                      </li>
+                    </span>
+                  </div>
+
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="correo_contacto">Correo:</label>
+                    <input type="email" name="DataNewContacto.correo_contacto" class="form-control" [(ngModel)]="DataNewContacto.correo_contacto"
+                      #corcont="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50"
+                      [ngClass]="{'is-invalid': !corcont.valid && (corcont.dirty || corcont.touched)}">
+                    <span class="invalid-feedback" *ngIf="corcont.errors && (corcont.dirty || corcont.touched)">
+                      <li *ngIf=corcont.errors.required>
+                        El campo correo es obligatorio
+                      </li>
+                      <li *ngIf=corcont.errors.email>
+                        El campo correo es invalido
+                      </li>
+                      <li *ngIf=corcont.errors.minlength>
+                        El campo correo debe ser mayor a 5 caracteres*
+                      </li>
+                      <li *ngIf="corcont.errors">
+                        El campo correo debe ser de la forma
+                        <i>ejemplo@dominio.com</i>
+                      </li>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="centrar_proveedor">
+                <button class="btnbuttoncompras" type="button" (click)="ValidationEmailContact('agregar',DataNewContacto.idcontacto, DataNewContacto)"
+                  *ngIf="btn_agregar" [disabled]="!DataNewContacto.nombre_contacto || !DataNewContacto.telefono_contacto ">
+                  Adicionar </button>
+                <button class="btnbuttoncompras" type="button" (click)="ValidationEmailContact('actualizar',DataNewContacto.idcontacto, DataNewContacto)"
+                  *ngIf="btn_actualizar" [disabled]="!DataNewContacto.nombre_contacto || !DataNewContacto.telefono_contacto">Actualizar </button>
+              </div>
+              <br>
+
+              <div class="tablacompras" *ngIf="ListaContactos.length>0">
+                <div class="centrar_proveedor buscar-paginacion">
+                  Listado de contactos
+                </div>
+
+                <br>
+                <br>
+                <div class="table-responsive panel-body">
+                  <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="odd gradeX" *ngFor="let contacto of ListaContactos; let i = index">
+                        <td>{{contacto.nombre}}</td>
+                        <td>{{contacto.cargo}}</td>
+                        <td>{{contacto.telefono}}</td>
+                        <td>{{contacto.correo}}</td>
+                        <td>
+                          <a (click)="EditarContacto(contacto)" uiSrefActive="active" role="button" data-toggle="tooltip" data-placement="top" title="Modificar">
+                            <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                          </a>
+                          <a (click)="EliminarContacto(i)" uiSrefActive="active" role="button" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                            <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                          </a>
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="centrar">
+              <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+              <button *ngIf="DataNewProveedor.asigna_articulo=== '0' " type="submit" class="btnbutton" [disabled]="DataNewContacto.nombre_contacto || DataNewContacto.telefono_contacto  || !proveedorForm.valid"
+                (click)="GuardarProveedor(DataNewProveedor)"> Guardar </button>
+              <button *ngIf="DataNewProveedor.asigna_articulo=== '1' " type="button" class="btnbutton" [disabled]="DataNewContacto.nombre_contacto || DataNewContacto.telefono_contacto || !proveedorForm.valid"
+                (click)="LoadAllArticulos()" awNextStep>Siguiente</button>
+
+            </div>
+          </form>
+        </aw-wizard-step>
+        <aw-wizard-step stepTitle="ARTICULOS" *ngIf="DataNewProveedor.asigna_articulo==='1' " [navigationSymbol]="{ symbol: '2' }">
+          <form #proveedorDosForm="ngForm" (ngSubmit)="Siguiente();">
+              <form #proveedorArtForm="ngForm">
+            <div class="caja">
+              <span class="tiulocaja">Datos de Negociación</span>
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Articulo
+                      <b class="asterisco">*</b>:</label>
+                    <input class="form-control" role="button" data-toggle="modal" data-target="#ArticulosModal" type="text" name="DataNewArticulo.nombreArticulo"
+                      [(ngModel)]="DataNewArticulo.nombreArticulo" readonly>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="id_unidad_compra">Unidad de compra
+                      <b class="asterisco">*</b>:</label>
+                    <select class="charge_select form-control" name="DataNewArticulo.id_unidad_compra" [(ngModel)]="DataNewArticulo.id_unidad_compra"
+                      #unidad="ngModel" required [ngClass]="{'is-invalid': !unidad.valid && (unidad.dirty || unidad.touched)}">
+                      <option></option>
+                      <option [value]="unidadcompra.id_unidad_compra" *ngFor="let unidadcompra of ListaUnidadesCompra">{{unidadcompra.nombre_unidad}} </option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="unidad.errors && (unidad.dirty || unidad.touched)">
+                      <li *ngIf=unidad.errors.required>
+                        El campo unidad de compra es obligatorio*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="radios">Precio Negociado
+                      <b class="asterisco">*</b>:</label>
+                    <select class="form-control" [(ngModel)]="DataNewArticulo.precio_negociado" name="DataNewArticulo.precio_negociado" required>
+                      <option></option>
+                      <option [value]="1">Si</option>
+                      <option [value]="0">No</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3" *ngIf="DataNewArticulo.precio_negociado==='1' ">
+                  <div class="form-group">
+                    <label for="radios">Rango de Fechas:</label>
+                    <select class="form-control" [(ngModel)]="DataNewArticulo.rango_fechas" name="DataNewArticulo.rango_fechas" required>
+                      <option></option>
+                      <option [value]="1">Si</option>
+                      <option [value]="2">No</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+            <div *ngIf="DataNewArticulo.precio_negociado==='1'" class="caja">
+              <span class="tiulocaja">Datos de Articulo</span>
+              <div class="row">
+                <div class="col-md-2 spaddi">
+                  <label>Precio Negociado</label>
+                  <input type="number" class="form-control" name="DataNewArticulo.valor_negociado" [(ngModel)]="DataNewArticulo.valor_negociado">
+                </div>
+                <div class="col-md-2 spaddi">
+                  <label>Incluye Impuestos</label>
+                  <br>
+                  <input type="checkbox" class="checkbox-custom checkbox-inline" name="DataNewArticulo.incluye_impuestos" [(ngModel)]="DataNewArticulo.incluye_impuestos"
+                    #incluye="ngModel" />
+                </div>
+
+                <div *ngIf="DataNewArticulo.incluye_impuestos === true" class="col-md-2 spaddi">
+                  <label>Impuesto</label>
+                  <select class="charge_select form-control" name="DataNewArticulo.impuesto" [(ngModel)]="DataNewArticulo.impuesto" (ngModelChange)="LoadTarifas(DataNewArticulo.impuesto)"
+                    #imp="ngModel" required>
+                    <option [value]="imp.id_impuesto" *ngFor="let imp of ListaImpuestos">{{imp.nombre_imp}}</option>
+                  </select>
+
+                </div>
+                <div *ngIf="DataNewArticulo.incluye_impuestos === true" class="col-md-2 spaddi">
+                  <label>Tarifa</label>
+                  <select class="charge_select form-control" name="DataNewArticulo.tarifa" [(ngModel)]="DataNewArticulo.tarifa" required>
+                    <option></option>
+                    <option [value]="tar.id_tarifa" *ngFor="let tar of ListaTarifas">{{tar.valor}}</option>
+                  </select>
+                </div>
+                <div *ngIf="DataNewArticulo.rango_fechas==='1' " class="col-md-2 spaddi">
+                  <label> Fecha Inicial</label>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Inicial" name="DataNewArticulo.fecha_inicial" #fecini="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="DataNewArticulo.fecha_inicial"
+                    required readonly="">
+                  </my-date-picker>
+                </div>
+
+                <div *ngIf="DataNewArticulo.rango_fechas==='1'" class="col-md-2 spaddi">
+                  <label>Fecha Final</label>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Final" name="DataNewArticulo.fecha_final" #fecini="ngModel" id="example-date-input"
+                    [options]="myDatePickerOptions" [(ngModel)]="DataNewArticulo.fecha_final" required readonly=""></my-date-picker>
+                </div>
+              </div>
+            </div>
+            </form>
+
+            <div class="centrar">
+              <!-- <input type="submit" aria-hidden="true" aria-hidden="true" *ngIf="btn_agregar" name="AdicionarArticulo" (click)="AgregarArticulo(DataNewArticulo)"
+                class="btnbuttoncompras" [disabled]="!DataNewArticulo.precio_negociado || DataNewArticulo.precio_negociado ==='1' && (!DataNewArticulo.rango_fechas
+               || !DataNewArticulo.valor_negociado) || DataNewArticulo.rango_fechas ==='1' && (!DataNewArticulo.fecha_inicial || !DataNewArticulo.fecha_final)
+               || DataNewArticulo.incluye_impuestos && (!DataNewArticulo.impuesto || !DataNewArticulo.tarifa)" value="Adicionar Articulo"> -->
+               <input type="submit" aria-hidden="true" aria-hidden="true" *ngIf="btn_agregar" name="AdicionarArticulo" (click)="AgregarArticulo(DataNewArticulo)"
+                class="btnbuttoncompras" [disabled]="!proveedorArtForm.valid" value="Adicionar Articulo">
+              <input type="submit" aria-hidden="true" *ngIf="btn_actualizar" name="AdicionarArticulo" (click)="ActualizarArticulo(DataNewArticulo)"
+                class="btnbuttoncompras" aria-hidden="true" [disabled]="!proveedorArtForm.valid"  value="Actualizar Articulo">
+            </div>
+
+            <div class="centrarmodal">
+              <h3>Articulos Seleccionados</h3>
+            </div>
+
+            <div class="tablacompras">
+              <div class="centrar buscar-paginacion">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringArtSel" placeholder="Buscar" [(ngModel)]="searchStringArtSel">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempageArtSel" [(ngModel)]="itempageArtSel">
+                    <option value="5" selected="selected">Articulos Por Página</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-responsive panel-body">
+                <table width="100%" class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>Articulo</th>
+                      <th>Unidad de Compra</th>
+                      <th>Precio Negociado</th>
+                      <th>Incluye Impuesto</th>
+                      <th>Impuesto</th>
+                      <th>Tarifa</th>
+                      <th>Fecha Inicial</th>
+                      <th>Fecha Final</th>
+                      <th *ngIf="!btn_actualizar" >Modificar</th>
+                      <th *ngIf="!btn_actualizar" >Eliminar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of DataArrayArticulosSeleccionados | ingresarproveedor: searchStringArtSel | paginate: { itemsPerPage: itempageArtSel, currentPage: artsel ,id: 'articuloSel'} let i = index">
+                      <td>{{data.nombreArticulo}}</td>
+                      <td>{{data.unidad}}</td>
+                      <td>{{data.valorNegociado}}</td>
+                      <td *ngIf="data.incluyeImpuestos">Si</td>
+                      <td *ngIf="!data.incluyeImpuestos">No</td>
+                      <td>{{data.nombreImpuesto}}</td>
+                      <td>{{data.valortarifa}}</td>
+                      <td>{{data.fechaInicial}}</td>
+                      <td>{{data.fechaFinal}}</td>
+                      <td class="center" *ngIf="!btn_actualizar">
+                        <a  (click)="EditArticulo(data,i)" data-toggle="tooltip" data-placement="top" title="Modificar">
+                          <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                        </a>
+                        </td>
+                        <td class="center" *ngIf="!btn_actualizar">
+                        <a  (click)="bindingDataArticulo(i, data.idArticulo, data.nombreArticulo)" role="button" data-toggle="modal" data-target="#EliminarArt"
+                          data-placement="top" title="Eliminar">
+                          <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                        </a>
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="artsel = $event" id="articuloSel"></pagination-controls>
+              </div>
+            </div>
+            <div class="centrar">
+              <button type="submit" class="btnbutton" [disabled]="btn_actualizar" awPreviousStep> Anterior </button>
+              <button type="submit" class="btnbutton" [disabled]="DataArrayArticulosSeleccionados.length === 0 || btn_actualizar" (click)="GuardarProveedor(DataNewProveedor)">Guardar</button>
+            </div>
+          </form>
+        </aw-wizard-step>
+      </aw-wizard>
+
+    </div>
+  </div>
+
+  <!-- **********************  Modal Direccion *************************** -->
+
+  <div id="MyModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="centrarmodal">
+              <h3>Seleccionar Dirección</h3>
+            </div>
+          </div>
+
+          <div class="modal-body">
+
+              <div class="row">
+                  <div class="col-lg-12" align="center">
+                    <label>Selección Ingreso de Dirección</label>
+                  </div>
+                  <div class="col-lg-6">
+                    <label for="mas">Mascara De Dirección</label>
+                    <input type="radio" id="mas" class="checkbox-custom checkbox-inline" name="direccion2" [(ngModel)]="direccion2" value="1" (value)="1"
+                    />
+                  </div>
+                  <div class="col-lg-6">
+                    <label for="dig">Digitada</label>
+                    <input type="radio" id="dig" class="checkbox-custom checkbox-inline" name="direccion2" [(ngModel)]="direccion2" value="2" (value)="2"
+                    />
+                  </div>
+                </div>
+                <br>
+                <div [hidden]="direccion2 != '1'">
+                  <div class="row">
+                    <div class="col-xs-4 col-md-4">
+                      <label for="">Tipo Via*</label>
+                      <select name="" id="" class="form-control" id="via" name="via" [(ngModel)]="via">
+                        <option value=""></option>
+                        <option value="AC">Avenida calle</option>
+                        <option value="AK">Avenida carrera</option>
+                        <option value="AU">Autopista</option>
+                        <option value="AN">Autopista Norte</option>
+                        <option value="AS">Autopista Sur</option>
+                        <option value="AV">Avenida</option>
+                        <option value="CI">Circular</option>
+                        <option value="Cll">Calle</option>
+                        <option value="DG">Diagonal</option>
+                        <option value="CR">Carrera</option>
+                        <option value="TR">Transversal</option>
+                        <option value="KR">Kilometro</option>
+                      </select>
+                    </div>
+                    <div class="col-xs-3 col-md-2">
+                      <label for="">Numero*</label>
+                      <input type="number" class="form-control" id="numero" name="numero" [(ngModel)]="numero">
+                    </div>
+                    <div class="col-md-1">
+                      <label for="">bis</label>
+                      <input type="checkbox" class="form-control" id="bis" name="bis" [(ngModel)]="bis" />
+                    </div>
+                    <div class="col-md-2">
+                      <label for="">letra</label>
+                      <select name="" id="" class="form-control" id="letra" name="letra" [(ngModel)]="letra">
+                        <option value=""></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="I">I</option>
+                        <option value="J">J</option>
+                        <option value="K">K</option>
+                        <option value="L">L</option>
+                        <option value="M">M</option>
+                        <option value="N">N</option>
+                        <option value="O">O</option>
+                        <option value="P">P</option>
+                        <option value="Q">Q</option>
+                        <option value="R">R</option>
+                        <option value="S">S</option>
+                        <option value="T">T</option>
+                        <option value="U">U</option>
+                        <option value="V">V</option>
+                        <option value="W">W</option>
+                        <option value="X">X</option>
+                        <option value="Y">Y</option>
+                        <option value="Z">Z</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="">cuadrante</label>
+                      <select name="" id="" class="form-control" id="cuadrante" name="cuadrante" [(ngModel)]="cuadrante">
+                        <option value=""></option>
+                        <option value="Norte">Norte</option>
+                        <option value="Oeste">Oeste</option>
+                        <option value="Este">Este</option>
+                        <option value="Sur">Sur</option>
+                      </select>
+                    </div>
+                  </div>
+                  <br />
+                  <label for="">
+                    <h6>Vía Generadora</h6>
+                  </label>
+                  <br />
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label for="">Numero</label>
+                      <input type="number" class="form-control" id="numero2" name="numero2" [(ngModel)]="numero2">
+                    </div>
+                    <div class="col-md-2">
+                      <label for="">Letra</label>
+                      <select name="" id="" class="form-control" id="letra2" name="letra2" [(ngModel)]="letra2">
+                        <option value=""></option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="I">I</option>
+                        <option value="J">J</option>
+                        <option value="K">K</option>
+                        <option value="L">L</option>
+                        <option value="M">M</option>
+                        <option value="N">N</option>
+                        <option value="O">O</option>
+                        <option value="P">P</option>
+                        <option value="Q">Q</option>
+                        <option value="R">R</option>
+                        <option value="S">S</option>
+                        <option value="T">T</option>
+                        <option value="U">U</option>
+                        <option value="V">V</option>
+                        <option value="W">W</option>
+                        <option value="X">X</option>
+                        <option value="Y">Y</option>
+                        <option value="Z">Z</option>
+
+                      </select>
+                    </div>
+                    <div class="col-md-2">
+                      <label for="">placa</label>
+                      <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="placa">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="">Cuadrante</label>
+                      <select name="" id="" class="form-control" id="cuadrante2" name="cuadrante2" [(ngModel)]="cuadrante2">
+                        <option value=""></option>
+                        <option value="Norte">Norte</option>
+                        <option value="Oeste">Oeste</option>
+                        <option value="Este">Este</option>
+                        <option value="Sur">Sur</option>
+                      </select>
+                    </div>
+                    <br>
+                    <div class="col-md-12">
+                      <label for="">Señas Particulares</label>
+                      <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2 maxlength=150 [(ngModel)]="senas">
+                     </textarea>
+
+                    </div>
+
+                  </div>
+                </div>
+
+                <div [hidden]="direccion2 != '2'">
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label for="">Descripciones Particulares</label>
+                      <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2 maxlength=150 [(ngModel)]="descripcion">
+                             </textarea>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
+        <div class="modal-footer">
+            <div class="centrar">
+              <button *ngIf="direccion2 == 1 " class="btnbutton" (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas, descripcion)"
+                [disabled]="!via || !numero || !numero2 || !placa">Guardar</button>
+
+              <button *ngIf="direccion2 == 2" class="btnbutton" (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas, descripcion)"
+                [disabled]="!descripcion" data-dismiss="modal" >Guardar</button>
+              <button class="btnbuttoncerrar" data-dismiss="modal" >Cancelar</button>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+  <!-- ****************************  Fin Modal Direccion **************************** -->
+
+  <!-- ***************************** Modal Tipo documento ******************************** -->
+
+  <div id="DocumentoModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Seleccione el tipo de documento</h3>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-2">
+              <label for="tdocnit">Nit:</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="tdocnit" class="checkbox-custom checkbox-inline" name="DataNewProveedor.tipodoc" [(ngModel)]="DataNewProveedor.tipodoc"
+                value="1" (value)="1" />
+            </div>
+            <div class="col-md-2">
+              <label for="tdocced">Cedula:</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="tdocced" class="checkbox-custom checkbox-inline" name="DataNewProveedor.tipodoc" [(ngModel)]="DataNewProveedor.tipodoc"
+                value="2" (value)="2" />
+            </div>
+          </div>
+          <hr>
+          <div class="row" *ngIf="DataNewProveedor.tipodoc==='1'">
+            <div class="col-md-8 spaddi">
+              <div class="form-group">
+                <label for="nit">Nit:</label>
+                <input type="text" name="DataNewProveedor.nit" class="form-control" [(ngModel)]="DataNewProveedor.nit" (ngModelChange)="colocarPuntos(DataNewProveedor.nit=$event);calcularDigito(DataNewProveedor.nit)"
+                  #nitcliente="ngModel" (keypress)="kPNumeros($event)" minlength="4" maxlength="15" required
+                  [ngClass]="{'is-invalid': !nitcliente.valid && (nitcliente.dirty || nitcliente.touched)}">
+                <span class="invalid-feedback" *ngIf="nitcliente.errors && (nitcliente.dirty || nitcliente.touched)">
+                  <li *ngIf=nitcliente.errors.required>
+                    El campo Nit es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4 spaddi">
+              <div class="form-group">
+                <label for="div">Digito de verificación:</label>
+                <div class="row">
+                  <!-- <div class="col-xs-6 col-md-4">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                  </div> -->
+                  <!-- <div class="col-md-8"> -->
+                    <input type="text" name="DataNewProveedor.digito" class="form-control" [(ngModel)]="DataNewProveedor.digito" #dig="ngModel"
+                      minlength="1" maxlength="1"
+                      [ngClass]="{'is-invalid': !dig.valid && (dig.dirty ||dig.touched)}">
+                  </div>
+                  <span class="invalid-feedback" *ngIf="dig.errors && (dig.dirty || dig.touched)">
+                    <li *ngIf=dig.errors.required>
+                      El campo digito es obligatorio
+                    </li>
+                    <li *ngIf="dig.errors.minlength">
+                      El campo digito debe ser de 1 caracter*
+                    </li>
+                  </span>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="DataNewProveedor.tipodoc==='2'">
+              <div class="col-md-12">
+            <div class="form-group">
+              <label for="num">Cedula:</label>
+              <input type="text" name="DataNewProveedor.cedula" class="form-control" [(ngModel)]="DataNewProveedor.cedula" [value]="DataNewProveedor.cedula"
+                #num="ngModel" minlength="6" maxlength="11" (keypress)="kPNumeros($event)"
+                [ngClass]="{'is-invalid': !num.valid && (num.dirty || num.touched)}">
+              <span class="invalid-feedback" *ngIf="num.errors && (num.dirty || num.touched)">
+                <li *ngIf=num.errors.required>
+                  El campo Numero es obligatorio
+                </li>
+                <li *ngIf=num.errors.minlength></li> El campo numero debe ser mayor a 6 numeros
+              </span>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="GuardarDocumento(DataNewProveedor)" [disabled]="(DataNewProveedor.tipodoc=='1' && !DataNewProveedor.nit) || (DataNewProveedor.tipodoc=='2' && !DataNewProveedor.cedula)"
+              data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ***************************** Fin Modal Tipo documento ******************************* -->
+
+  <!-- **************************** Modal seleccionar Articulo ****************************** -->
+
+  <div id="ArticulosModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Seleccione los articulos</h3>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="tablacompras">
+            <div class="centrar buscar-paginacion">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringArt" placeholder="Buscar" [(ngModel)]="searchStringArt">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageArt" [(ngModel)]="itempageArt">
+                  <option value="5" selected="selected">Articulos Por Página</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive panel-body">
+              <table width="100%" class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Articulo</th>
+                    <th>Unidad Kardex</th>
+                    <th class="center">Seleccionar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaArticulos(data.id);" class="odd gradeX" *ngFor="let data of DataArrayArticulos | modalarticulosingproveedor: searchStringArt | paginate: { itemsPerPage: itempageArt, currentPage: art ,id: 'articulo'}">
+                    <td>{{data.id}}</td>
+                    <td>{{data.nombre}}</td>
+                    <td>{{data.nombre_kardex}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataNewArticulo.seleccion_articulo" value="{{data.id}}" [(ngModel)]="DataNewArticulo.seleccion_articulo"
+                        required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="art = $event" id="articulo"></pagination-controls>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="GuardarArticuloSeleccionado(DataNewArticulo.seleccion_articulo)" [disabled]="!DataNewArticulo.seleccion_articulo"
+              data-dismiss="modal" class="btnbutton">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ****************************** Fin Modal seleccionar Articulo ***************************** -->
+
+  <!-- *********************** Modal para eliminar el articulo de la lista ************************ -->
+
+  <div id="EliminarArt" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Confirmación</h3>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <p> Esta seguro que desea eliminar el articulo
+            <b>{{nombreArtEliminar}}</b>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="DeleteArticulo(indextablaArt, idArtEliminar, nombreArtEliminar);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ************************* Fin Modal para eliminar el articulo de la lista ******************** -->

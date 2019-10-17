@@ -1,0 +1,149 @@
+<div class="row">
+    <div class="container-fluid contenedorcompras">
+      <div class="row color_compras1">
+        <div class="col-lg-12" align="center">
+          <h1>
+            Ordenes de Compra
+          </h1>
+        </div>
+      </div>
+      <div class="row centrar">
+        <div class="col-md-12">
+          <div class="btnrouterlink" *ngIf="sidebardComponent.contienePermiso(127)" [routerLink]="['ingresarordencompra']">
+            <a>
+              <span class="pull-left">Agregar Ordenes de Compra</span>
+              <span class="pull-right">
+                <i class="fa fa-arrow-circle-right"></i>
+              </span>
+              <div class="clearfix"></div>
+            </a>
+          </div>
+          <div class="btnrouterlink" *ngIf="sidebardComponent.contienePermiso(128)" [routerLink]="['ordencompracerradas']">
+            <a>
+              <span class="pull-left">Cerradas</span>
+              <span class="pull-right">
+                <i class="fa fa-arrow-circle-right"></i>
+              </span>
+              <div class="clearfix"></div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="tablacompras">
+        <div class="centrar buscar-paginacion">
+          <div class="buscar-paginacion2">
+            <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+          </div>
+          <div class="buscar-paginacion2">
+            <select class="form-control" [(ngModel)]="itempage">
+              <option value="5" selected="selected">Ordenes de Compras Por Página</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="loading" *ngIf="loader">
+            <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+          </div>
+          <div class="loadError" *ngIf="LoadError">
+            <div class="alert alert-danger">{{error}}</div>
+          </div>
+          <div *ngIf="LoadTabla">
+            <div class="table-responsive">
+              <div class="panel-body">
+                <table width="100%" class="table" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>
+                        <div class="th-inner sortable both asc">Numero Orden</div>
+                        <div class="fht-cell" style="width: 226px;"></div>
+                      </th>
+                      <th>Fecha de pedido</th>
+                      <th>Fecha de Entrega</th>
+                      <th>Proveedor</th>
+                      <th class="center">Estado</th>
+                      <th class="center" *ngIf="sidebardComponent.contienePermiso(132)">Modificar</th>
+                      <th class="center" *ngIf="sidebardComponent.contienePermiso(133)">Eliminar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of DataArray | ordencompra : searchString | paginate: { itemsPerPage: itempage, currentPage: p }">
+
+                      <td>{{data.id_orden}}
+                        <span *ngIf="data.modificada=='1'" aria-hidden="true">&nbsp;&nbsp;&nbsp;CORR.</span>
+                      </td>
+                      <td>{{data.fecha_pedido | date:'dd-MM-yyyy'}}</td>
+                      <td>{{data.fecha_entrega | date:'dd-MM-yyyy'}}</td>
+                      <td>{{data.razon_social}}</td>
+                      <td class="center">
+                        <a *ngIf="data.estado_email=='1'" uiSrefActive="active" role="button" data-toggle="tooltip" data-placement="top" title="Orden enviada por correo">
+                          <!-- <i data-toggle="tooltip" data-placement="top" title="Enviado" class="fas fa-share-square colorbotonactivar"></i> -->
+                          <img src="assets/images/envio.png" width="30" height="30" class="btnReportes">
+                        </a>
+                        <a  *ngIf="data.estado_email=='0'" uiSrefActive="active" role="button" data-toggle="tooltip" data-placement="top" title="Pendiente">
+                          <!-- <i data-toggle="tooltip" data-placement="top" title="Pendiente" class="fas fa-exclamation-triangle colorbotonwarning"></i> -->
+                          <img src="assets/images/pendenvio.png" width="30" height="30" class="btnReportes">
+                        </a>
+                      </td>
+                      <td class="center" *ngIf="sidebardComponent.contienePermiso(132)">
+                        <a [routerLink]="['modificarordencompra', data.id,data.id_proveedor]"
+                          uiSrefActive="active" role="button" data-toggle="tooltip" data-placement="top" title="Modificar">
+                          <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                        </a>
+                      </td>
+                    <td class="center" *ngIf="sidebardComponent.contienePermiso(133)">
+                        <a (click)="bindingEliminarOrden(data.id)" uiSrefActive="active"
+                          role="button" data-toggle="tooltip" data-placement="top" title="Eliminar"
+                          role="button" data-toggle="modal" data-target="#EliminarModal">
+                          <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrar">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ********************************** Modal Eliminar ***************************** -->
+
+
+  <div id="EliminarModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          <div class="centrarmodal">
+            <h3>Confirmación</h3>
+          </div>
+        </div>
+
+        <div class="modal-body">
+            <p style="color:#FF0000">
+                <b>Esta seguro que desea eliminarla orden de compra numero : {{id_eliminar}}</b>
+              </p>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+              <button (click)="deleteOrden(id_eliminar)" class="btnbutton" data-dismiss="modal">Aceptar</button>
+            <button class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ********************************** Modal Eliminar  ***************************** -->

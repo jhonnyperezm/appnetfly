@@ -1,0 +1,113 @@
+.font {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+}
+.tablacompras {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  border: solid 0.5px #123e99 !important;
+}
+.buscar-paginacion {
+  background-color: #4767aa !important;
+  color: white;
+  /* font-family: sans-serif !important; */
+  font-size: 12px !important;
+}
+.buscar-paginacion2 {
+  color: white;
+  display: inline-block !important;
+  vertical-align: top;
+  width: 40%;
+  margin: 0px 10px;
+}
+.form-control {
+  font-size: 12px;
+}
+.centrar {
+  text-align: center;
+  padding: 20px 0px 20px 0px;
+}
+.centrarmodal {
+  text-align: center;
+  color: #4767aa;
+}
+.modal-header {
+  display: initial;
+  text-align: center;
+}
+.modal-footer {
+  justify-content: center;
+}
+.btnbutton {
+  border-radius: 8px !important;
+  color: white !important;
+  font-family: "Open Sans", sans-serif !important;
+  font-size: 16px !important;
+  background-color: #009933 !important;
+  padding: 6px 30px !important;
+  border: none !important;
+  margin: 5px;
+}
+.btnbuttoncerrar {
+  border-radius: 8px !important;
+  color: white !important;
+  font-family: "Open Sans", sans-serif !important;
+  font-size: 16px !important;
+  background-color: #666666 !important;
+  padding: 6px 30px !important;
+  border: none !important;
+  margin: 5px;
+}
+.asterisco {
+  color: red;
+}
+.center {
+  text-align: center;
+  padding: 10px;
+}
+.centrarpaginacion {
+  text-align: center !important;
+}
+.ngx-pagination {
+  padding: 0px;
+}
+
+table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+input[type="radio"] {
+  width: 15px;
+  height: 15px;
+  /* margin: 0px 10px; */
+}
+
+.ng-valid[required],
+.ng-valid.required {
+  border-left: 5px solid #42a948;
+  /* green*/
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a4a2a1;
+}
+
+.valid[required],
+valid.required {
+  border-left: 0px solid white;
+}
+
+.is-invalid {
+  border-color: #a94442;
+}
+.is-invalid:focus {
+  border-color: #a94442;
+  box-shadow: 0 0 0 0.2rem rgba(169, 68, 66, 0.25);
+}
+
+.invalid-feedback {
+  color: #a94442;
+}
+
+.button[disabled], html input[type=button][disabled], input[type=reset][disabled], input[type=submit][disabled], button[disabled] {
+  opacity: 0.5 !important;
+}

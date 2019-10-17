@@ -1,0 +1,965 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Asignar productos a puntos</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-lg-12">
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(213)"  (click)="clickAP();LimpiarFormAP()">
+          <a>
+            <span class="pull-left">Asignar puntos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(214)"  (click)="clickCD();LimpiarFormCD()">
+          <a>
+            <span class="pull-left">Cambio de datos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="asignarPuntos">
+      <form #asignarProductosForm="ngForm">
+        <div class="caja_principal">
+          <div class="row">
+            <div class="col-md-2">
+              <input type="radio" id="accop" (click)="LimpiarCampos()" name="DataAsignacion.accion" [(ngModel)]="DataAsignacion.accion" [value]=0
+                required>
+              <label for="accop">Copiar</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="acact" (click)="LimpiarCampos()" name="DataAsignacion.accion" [(ngModel)]="DataAsignacion.accion" [value]=1
+                required>
+              <label for="acact">Activar</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="acdes" (click)="LimpiarCampos()" name="DataAsignacion.accion" [(ngModel)]="DataAsignacion.accion" [value]=2
+                required>
+              <label for="acdes">Desactivar</label>
+            </div>
+          </div>
+        </div>
+      </form>
+      <br>
+      <form #asignarForm="ngForm">
+        <div class="caja_principal" *ngIf="DataAsignacion.accion === 0">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="puntooact">Punto de Operación
+                  <b class="asterisco">*</b>:</label>
+                <input class="form-control" role="button" id="puntooact" data-toggle="modal" data-target="#PuntosOperacionModal" type="text"
+                  #puntoope="ngModel" name="DataAsignacion.puntooperacion" [(ngModel)]="DataAsignacion.puntooperacion" readonly
+                  required [ngClass]="{'is-invalid': !puntoope.valid && (puntoope.dirty || puntoope.touched)}">
+                <span class="invalid-feedback" *ngIf="puntoope.errors && (puntoope.dirty || puntoope.touched)">
+                  <li *ngIf=puntoope.errors.required>
+                    El campo Punto de Operación es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="puntoocop">Lee del punto
+                  <b class="asterisco">*</b>:</label>
+                <input class="form-control" role="button" id="puntoocop" data-toggle="modal" data-target="#PuntosCopiarModal" type="text"
+                  #puncop="ngModel" name="DataAsignacion.puntocopiar" [(ngModel)]="DataAsignacion.puntocopiar" readonly required
+                  [ngClass]="{'is-invalid': !puncop.valid && (puncop.dirty || puncop.touched)}">
+                <span class="invalid-feedback" *ngIf="puncop.errors && (puncop.dirty || puncop.touched)">
+                  <li *ngIf=puncop.errors.required>
+                    El campo Lee del punto es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="caja_principal" *ngIf="DataAsignacion.accion === 1">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="puntooact">Punto de Operación a activar
+                  <b class="asterisco">*</b>:</label>
+                <input class="form-control" role="button" id="puntooact" data-toggle="modal" data-target="#PuntosOperacionModal" type="text"
+                  #puntoopeact="ngModel" name="DataAsignacion.puntooperacion" [(ngModel)]="DataAsignacion.puntooperacion" readonly
+                  required [ngClass]="{'is-invalid': !puntoopeact.valid && (puntoopeact.dirty || puntoopeact.touched)}">
+                <span class="invalid-feedback" *ngIf="puntoopeact.errors && (puntoopeact.dirty || puntoopeact.touched)">
+                  <li *ngIf=puntoopeact.errors.required>
+                    El campo Punto de Operación a activar es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="caja_principal" *ngIf="DataAsignacion.accion === 2">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="puntoodes">Punto de Operación a desactivar
+                  <b class="asterisco">*</b>:</label>
+                <input class="form-control" role="button" id="puntoodes" data-toggle="modal" data-target="#PuntosOperacionModal" type="text"
+                  #puntoopedes="ngModel" name="DataAsignacion.puntooperacion" [(ngModel)]="DataAsignacion.puntooperacion" readonly
+                  required [ngClass]="{'is-invalid': !puntoopedes.valid && (puntoopedes.dirty || puntoopedes.touched)}">
+                <span class="invalid-feedback" *ngIf="puntoopedes.errors && (puntoopedes.dirty || puntoopedes.touched)">
+                  <li *ngIf=puntoopedes.errors.required>
+                    El campo Punto de Operación a desactivar es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <br>
+      <form #articulosForm="ngForm">
+        <div class="caja_principal" *ngIf="DataAsignacion.accion === 0 || DataAsignacion.accion">
+          <span class="tiulocaja-configuraciones">Articulos</span>
+
+          <div class="row">
+            <div class="col-md-2">
+              <input type="radio" id="artcla" name="DataAsignacion.articulos" [(ngModel)]="DataAsignacion.articulos" [value]=0 required>
+              <label for="artcla">Clases</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="artgru" name="DataAsignacion.articulos" [(ngModel)]="DataAsignacion.articulos" [value]=1 required>
+              <label for="artgru">Grupos</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="arttod" name="DataAsignacion.articulos" [(ngModel)]="DataAsignacion.articulos" [value]=2 required>
+              <label for="arttod">Todos</label>
+            </div>
+          </div>
+          <br>
+          <div class="row" *ngIf="DataAsignacion.articulos === 0 || DataAsignacion.articulos === 1 ">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Clases:</label>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <a uiSrefActive="active" (click)="LimpiarModalClases()" role="button" data-toggle="modal" data-target="#ClasesModal" data-placement="top"
+                  title="Clases">
+                  <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                </a>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row" *ngIf="DataAsignacion.articulos == 1">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Grupos:</label>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <a uiSrefActive="active" (click)="LimpiarModalGrupos()" role="button" data-toggle="modal" data-target="#GruposModal" data-placement="top"
+                  title="Grupos">
+                  <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+      <div class="caja_principal" *ngIf="DataAsignacion.articulos === 0 && ListaClases.length >= 1">
+
+        <div class="row">
+            <div class="col-md-12">
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringTClases" placeholder="Buscar" [(ngModel)]="searchStringTClases">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageTClases" [(ngModel)]="itempageTClases">
+                  <option value="5" selected="selected">Clases Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Nombre Clase</th>
+                      <th class="center">Eliminar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of ListaClases | tablaclasesap: searchStringTClases |  paginate: { itemsPerPage: itempageTClases, currentPage: tc, id: 'tablaclases' }">
+                      <td>{{data.nombre}}</td>
+                      <td class="center">
+                        <a (click)="QuitarClase(data)" uiSrefActive="active" role="button" data-placement="top" title="Inactivar">
+                          <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tc = $event" id="tablaclases"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="caja_principal" *ngIf="DataAsignacion.articulos === 1 && ListaGrupos.length >= 1">
+
+        <div class="row">
+            <div class="col-md-12">
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringTGrupos" placeholder="Buscar" [(ngModel)]="searchStringTGrupos">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageTGrupos" [(ngModel)]="itempageTGrupos">
+                  <option value="5" selected="selected">Grupos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Nombre Grupo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of ListaGrupos | tablagruposap: searchStringTGrupos |  paginate: { itemsPerPage: itempageTGrupos, currentPage: tg, id: 'tablagrupos' }">
+                      <td>{{data.nombre}}</td>
+                      <td class="center">
+                        <a (click)="QuitarGrupo(data)" uiSrefActive="active" role="button" data-placement="top" title="Inactivar">
+                          <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tg = $event" id="tablagrupos"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="centrar" *ngIf="DataAsignacion.accion === 0 || DataAsignacion.accion">
+
+        <button type="submit" class="btnbutton button" (click)="bindingConfirmacion(DataAsignacion)" [disabled]="!asignarProductosForm.valid || !articulosForm.valid ||
+    (DataAsignacion.articulos === 0 && ListaClases.length === 0) ||
+    (DataAsignacion.articulos === 1 && ListaGrupos.length === 0)" data-toggle="modal" data-target="#confirmacionModal">Guardar</button>
+      </div>
+    </div>
+
+
+    <!-- *********************************************************************** -->
+    <!-- **************************** CAMBIO DE DATOS ************************** -->
+    <!-- *********************************************************************** -->
+
+    <div *ngIf="cambioDatos">
+      <div class="caja_principal">
+        <form #cambioDatosForm="ngForm">
+
+          <div class="row">
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="cambcla">Clase:</label>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <input id="cambcla" class="form-control" role="button" data-toggle="modal" data-target="#ClasesCambioModal" type="text" #camcla="ngModel"
+                  name="DataCambio.nombre_clase" [(ngModel)]="DataCambio.nombre_clase" readonly required
+                  [ngClass]="{'is-invalid': !camcla.valid && (camcla.dirty || camcla.touched)}">
+                <span class="invalid-feedback" *ngIf="camcla.errors && (camcla.dirty || camcla.touched)">
+                  <li *ngIf=camcla.errors.required>
+                    El campo Clase es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="cambgru">Grupo:</label>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <input id="cambgru" class="form-control" role="button" data-toggle="modal" data-target="#GruposCambioModal" type="text" #camgru="ngModel"
+                  name="DataCambio.nombre_grupo" [(ngModel)]="DataCambio.nombre_grupo" readonly required
+                  [ngClass]="{'is-invalid': !camgru.valid && (camgru.dirty || camgru.touched)}">
+                <span class="invalid-feedback" *ngIf="camgru.errors && (camgru.dirty || camgru.touched)">
+                  <li *ngIf=camgru.errors.required>
+                    El campo Grupo es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="cambgrune">Grupo Nuevo:</label>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <input id="cambgrune" class="form-control" role="button" data-toggle="modal" data-target="#GruposCambioNewModal" type="text"
+                  #camgrunew="ngModel" name="DataCambio.nombre_grupo_new" [(ngModel)]="DataCambio.nombre_grupo_new" readonly
+                  required [ngClass]="{'is-invalid': !camgrunew.valid && (camgrunew.dirty || camgrunew.touched)}">
+                <span class="invalid-feedback" *ngIf="camgrunew.errors && (camgrunew.dirty || camgrunew.touched)">
+                  <li *ngIf=camgrunew.errors.required>
+                    El campo Grupo Nuevo es obligatorio
+                  </li>
+
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br>
+
+        <div class="row" *ngIf="ListaGruposCambio.length >= 1">
+            <div class="col-md-12">
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringTGrupos" placeholder="Buscar" [(ngModel)]="searchStringTGrupos">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageTGrupos" [(ngModel)]="itempageTGrupos">
+                  <option value="5" selected="selected">Grupos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Articulo</th>
+                      <th>Grupo Anterior</th>
+                      <th>Grupo Nuevo</th>
+                      <th>Eliminar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of ListaGruposCambio | tablagruposap: searchStringTGrupos |  paginate: { itemsPerPage: itempageTGrupos, currentPage: tg, id: 'tablagrupos' }">
+                      <td>{{data.nombre}}</td>
+                      <td>{{data.nombre_grupo_ant}}</td>
+                      <td>{{data.nombre_grupo}}</td>
+                      <td class="center">
+                        <a (click)="QuitarGrupoCambio(data)" uiSrefActive="active" role="button" data-placement="top" title="Inactivar">
+                          <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tg = $event" id="tablagrupos"></pagination-controls>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="centrar" *ngIf="ListaGruposCambio.length >= 1">
+          <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+          <button type="submit" class="btnbutton button" [disabled]="ListaGruposCambio.length === 0 || !cambioDatosForm.valid" data-toggle="modal"
+            data-target="#confirmacionCambioModal">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ********************** Modal Puntos Operacion **********************-->
+
+<div id="PuntosOperacionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Puntos</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringPuntos" placeholder="Buscar" [(ngModel)]="searchStringPuntos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempagePuntos" [(ngModel)]="itempagePuntos">
+                <option value="5" selected="selected">Puntos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Punto</th>
+                    <th class="center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaPuntoOp(data.idPunto)" class="odd gradeX" *ngFor="let data of DataJsonPuntos | modalpuntosap: searchStringPuntos |  paginate: { itemsPerPage: itempagePuntos, currentPage: mp, id: 'modalpuntos' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataAsignacion.id_punto_operacion" value="{{data.idPunto}}" [(ngModel)]="DataAsignacion.id_punto_operacion"
+                        required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mp = $event" id="modalpuntos"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="guardarPuntoOperacion(DataAsignacion.id_punto_operacion)" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Puntos Operacion********************** -->
+
+
+
+<!-- ********************** Modal Puntos Copiar ********************** -->
+
+<div id="PuntosCopiarModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Puntos</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringPuntosCopy" placeholder="Buscar" [(ngModel)]="searchStringPuntosCopy">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempagePuntosCopy" [(ngModel)]="itempagePuntosCopy">
+                <option value="5" selected="selected">Puntos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Punto</th>
+                    <th class="center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaPuntoCop(data.idPunto)" class="odd gradeX" *ngFor="let data of DataJsonPuntos | modalpuntoscopiarap: searchStringPuntosCopy |  paginate: { itemsPerPage: itempagePuntosCopy, currentPage: mpc, id: 'modalpuntoscopiar' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataAsignacion.id_punto_copiar" value="{{data.idPunto}}" [(ngModel)]="DataAsignacion.id_punto_copiar"
+                        required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mpc = $event" id="modalpuntoscopiar"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="guardarPuntoCopiar(DataAsignacion.id_punto_copiar)" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Puntos Copiar********************** -->
+
+
+<!-- ********************** Modal Clases **********************-->
+
+<div id="ClasesModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Clases</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringClases" placeholder="Buscar" [(ngModel)]="searchStringClases">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageClases" [(ngModel)]="itempageClases">
+                <option value="5" selected="selected">Clases Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Clase</th>
+                    <th class="center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="onChangeClases(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonClases | modalclasesap: searchStringClases |  paginate: { itemsPerPage: itempageClases, currentPage: mc, id: 'modalclases' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="checkbox" [checked]="data.checked" (change)="onChangeClases(data, $event.target.checked)">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mc = $event" id="modalclases"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="MostrarClases();LoadGrupos(ListaClasesSel)" [disabled]="ListaClasesSel.length === 0"
+            class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Clases********************** -->
+
+
+<!-- ********************** Modal Grupos **********************-->
+
+<div id="GruposModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Grupos</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringGrupos" placeholder="Buscar" [(ngModel)]="searchStringGrupos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageGrupos" [(ngModel)]="itempageGrupos">
+                <option value="5" selected="selected">Grupos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Grupo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="onChangeGrupos(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonGrupos | modalgruposap: searchStringGrupos |  paginate: { itemsPerPage: itempageGrupos, currentPage: mg, id: 'modalgrupos' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="checkbox" [checked]="data.checked" (change)="onChangeGrupos(data, $event.target.checked)">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mg = $event" id="modalgrupos"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="MostrarGrupos()" [disabled]="ListaGruposSel.length === 0" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Grupos ********************** -->
+
+
+
+
+<!-- *************************Modal confirmacion Modal*********************************** -->
+
+<div id="confirmacionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{confirmacion}}</h4>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          <b>{{msjConfirmacion}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmit(DataAsignacion);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Modal confirmacion Modal************************************* -->
+
+
+
+
+<!-- ********************** Modal Clases **********************-->
+
+<div id="ClasesCambioModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Clases</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringClases" placeholder="Buscar" [(ngModel)]="searchStringClases">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageClases" [(ngModel)]="itempageClases">
+                <option value="5" selected="selected">Clases Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Clase</th>
+                    <th class="center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaClases(data.id)" class="odd gradeX" *ngFor="let data of DataJsonClasesCambio | modalclasesap: searchStringClases |  paginate: { itemsPerPage: itempageClases, currentPage: mc, id: 'modalclases' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataCambio.id_clase" value="{{data.id}}" [(ngModel)]="DataCambio.id_clase" required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mc = $event" id="modalclases"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="LoadGruposCambio(DataCambio.id_clase)" [disabled]="!DataCambio.id_clase" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Clases********************** -->
+
+
+<!-- ********************** Modal Grupos **********************-->
+
+<div id="GruposCambioModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Grupos</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringGrupos" placeholder="Buscar" [(ngModel)]="searchStringGrupos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageGrupos" [(ngModel)]="itempageGrupos">
+                <option value="5" selected="selected">Grupos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Grupo</th>
+                    <th class="center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaGrupos(data.id)" class="odd gradeX" *ngFor="let data of DataJsonGruposCambio | modalgruposap: searchStringGrupos |  paginate: { itemsPerPage: itempageGrupos, currentPage: mg, id: 'modalgrupos' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataCambio.id_grupo" value="{{data.id}}" [(ngModel)]="DataCambio.id_grupo" required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mg = $event" id="modalgrupos"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="GuardarGrupoCambio(DataCambio.id_grupo)" [disabled]="!DataCambio.id_grupo" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Grupos ********************** -->
+
+
+
+<!-- ********************** Modal Grupos New **********************-->
+
+<div id="GruposCambioNewModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Grupos</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringGrupos" placeholder="Buscar" [(ngModel)]="searchStringGrupos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageGrupos" [(ngModel)]="itempageGrupos">
+                <option value="5" selected="selected">Grupos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Grupo</th>
+                    <th class="center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaGruposNew(data.id)" class="odd gradeX" *ngFor="let data of DataJsonGruposCambio | modalgruposap: searchStringGrupos |  paginate: { itemsPerPage: itempageGrupos, currentPage: mg, id: 'modalgrupos' }">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataCambio.id_grupo_new" value="{{data.id}}" [(ngModel)]="DataCambio.id_grupo_new" (ngModelChange)="GuardarGrupoCambioNew(DataCambio.id_grupo_new)"
+                        required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mg = $event" id="modalgrupos"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="searchArticulos(DataCambio)" [disabled]="!DataCambio.id_grupo_new" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Grupos New ********************** -->
+
+
+
+<!-- *************************Modal confirmacion Cambio Modal*********************************** -->
+
+<div id="confirmacionCambioModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para modificar el grupo</h4>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          <b>Esta seguro que desea cambiar el grupo de los articulos?</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitCambiar(ListaGruposCambio);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Modal confirmacion Cambio Modal************************************* -->

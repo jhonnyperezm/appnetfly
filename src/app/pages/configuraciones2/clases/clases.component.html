@@ -1,0 +1,305 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Clases</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+        <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(145)" uiSrefActive="active"
+           role="button" data-toggle="modal" data-target="#CrearClases"
+          data-placement="top" title="CrearClases">
+          <a>
+            <span class="pull-left">Crear Clases</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(146)"
+          [routerLink]="['clasesinactivas']">
+          <a>
+            <span class="pull-left">Clases Inactivas</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchStringTClases" placeholder="Buscar"
+            [(ngModel)]="searchStringTClases">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempageTClases" [(ngModel)]="itempageTClases">
+            <option value="5" selected="selected">Clases Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="loader">
+        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+      </div>
+
+      <div class="loadError" *ngIf="LoadError">
+        <div class="alert alert-danger">{{error}}</div>
+      </div>
+      <div *ngIf="LoadTabla && !noHayRegistros">
+        <div class="panel-body table-responsive">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Clases</th>
+                <th>Venta</th>
+                <th>Inventario</th>
+                <th class="center" *ngIf="SidebarComponent.contienePermiso(147)">Inactivar</th>
+                <th class="center" *ngIf="SidebarComponent.contienePermiso(148)">Modificar</th>
+                <th class="center" *ngIf="SidebarComponent.contienePermiso(149)">Grupos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX"
+                *ngFor="let data of DataArray| clases: searchStringTClases | paginate: { itemsPerPage: itempageTClases, currentPage: p }">
+                <td>{{data.nombre}}</td>
+
+                <td>
+                  <div *ngIf="data.tipo==1">
+                    Si
+                  </div>
+
+                  <div *ngIf="data.tipo==2">
+                    No
+                  </div>
+
+                  <div *ngIf="data.tipo==3">
+                    Si
+                  </div>
+                </td>
+                <td>
+                  <div *ngIf="data.tipo==1">
+                    No
+                  </div>
+
+                  <div *ngIf="data.tipo==2">
+                    Si
+                  </div>
+
+                  <div *ngIf="data.tipo==3">
+                    Si
+                  </div>
+                </td>
+                <td class="center" *ngIf="SidebarComponent.contienePermiso(147)">
+                  <a (click)="bindingDataInactivar(data.id,data.nombre)" uiSrefActive="active" role="button"
+                    data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                    <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                  </a>
+                </td>
+                <td class="center" *ngIf="SidebarComponent.contienePermiso(148)">
+                  <a (click)="bindingDataModificar(data)" uiSrefActive="active" role="button" data-toggle="modal"
+                    data-placement="top" data-target="#ModificarClase" title="Modificar">
+                    <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                  </a>
+                </td>
+                <td class="center" *ngIf="SidebarComponent.contienePermiso(149)">
+                  <a [routerLink]="['gruposclases', data.id]" uiSrefActive="active" role="button" data-toggle="tooltip"
+                    data-placement="top" title="Ver Grupos">
+                    <img src="assets/images/module.png" width="30" height="30" class="btnReportes">
+                    <!-- <i class="fas fa-project-diagram colorbotonactivar"></i> -->
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="LoadTabla " class="table-responsive panel-body">
+        <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+          <thead>
+            <tr>
+              <th>Clases</th>
+              <th>Inventario</th>
+              <th>Venta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="odd gradeX">
+              <td colspan="3" class="center">No hay Registros</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!--************************* Inicio Modal  Modificar clases***********************************-->
+
+<div id="ModificarClase" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Clases</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #clasesEditForm="ngForm">
+          <div class="form-group">
+            <label for="nombre">Nombre Clase*:</label>
+            <input type="text" class="form-control" name="DataModificar.nombre" [(ngModel)]="nombreClase"
+              #nameCla="ngModel" minlength="3" maxlength="30" required
+              [ngClass]="{'is-invalid': !nameCla.valid && (nameCla.dirty || nameCla.touched)}" />
+            <span class="invalid-feedback" *ngIf="nameCla.errors && (nameCla.dirty || nameCla.touched)">
+              <li *ngIf="nameCla.errors.required">
+                El campo nombre de la clase es obligatorio
+              </li>
+              <li *ngIf="nameCla.errors.minlength">
+                El campo nombre debe tener mas de 3 caracteres
+              </li>
+              <li *ngIf="nameCla.errors.maxlength">
+                El campo nombre no puede ser mayor a 30 caracteres
+              </li>
+            </span>
+          </div>
+          <div class="row center">
+            <div class="col-md-12">
+              <h6>Modulos</h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <input type="checkbox" id="modVen" name="paraVenta" [(ngModel)]="paraVenta" required /><label
+                for="modVen">Venta</label>
+            </div>
+            <div class="col-md-4">
+              <input type="checkbox" id="modInven" name="paraInven" [(ngModel)]="paraInven" required /><label
+                for="modInven">Inventario</label>
+            </div>
+          </div>
+
+        </form>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="onSubmitModificar(nombreClase,paraVenta,paraInven);"
+              [disabled]="!clasesEditForm.valid && !paraVenta && !paraInven" data-dismiss="modal"
+              class=" btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--*************************Modal Inactivar clases***********************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar Clases </h4>
+      </div>
+
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Esta seguro que desea Inactivar la Clase: {{nombreInactivar}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="Inactivar(idInactivar, nombreInactivar);" data-dismiss="modal"
+            class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar clases*************************************-->
+
+<!--*************************Modal Crear Clases**************************-->
+<div id="CrearClases" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear Clases</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #clasesForm="ngForm">
+          <div class="form-group">
+            <label for="nombre">Nombre Clase*:</label>
+            <input type="text" class="form-control" name="DataNewClase.clase" [(ngModel)]="DataNewClase.clase" #nameCla="ngModel" minlength="3"
+              maxlength="30" required
+              [ngClass]="{'is-invalid': !nameCla.valid && (nameCla.dirty || nameCla.touched)}" />
+            <span class="invalid-feedback" *ngIf="nameCla.errors && (nameCla.dirty || nameCla.touched)">
+              <li *ngIf="nameCla.errors.required">
+                El campo nombre de la clases es obligatorio
+              </li>
+              <li *ngIf="nameCla.errors.minlength">
+                El campo nombre debe tener mas de 3 caracteres
+              </li>
+              <li *ngIf="nameCla.errors.maxlength">
+                El campo nombre no puede ser mayor a 30 caracteres
+              </li>
+            </span>
+          </div>
+          <div class="row center">
+            <div class="col-md-12">
+              <h6>Modulos</h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <input type="checkbox" id="modulVen"  name="DataNewClase.paraVenta" [(ngModel)]="DataNewClase.paraVenta" required /><label
+                for="modulVen">Venta</label>
+            </div>
+            <div class="col-md-4">
+              <input type="checkbox" id="modulInven" name="DataNewClase.paraInven" [(ngModel)]="DataNewClase.paraInven" required /><label
+                for="modulInven">Inventario</label>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="CrearClase(DataNewClase);"
+            [disabled]="!clasesForm.valid && !DataNewClase.paraVenta && !DataNewClase.paraInven" data-dismiss="modal"
+            class="btnbutton">Crear</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarFormularioClases()">Cancelar</button>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+<!--************************* Fin Modal Crear Clases******************************-->

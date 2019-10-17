@@ -1,0 +1,671 @@
+<div class="row">
+
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Modificar Receta</h1>
+        <h6>{{nombreArticulo}}</h6>
+      </div>
+    </div>
+
+    <br>
+    <div>
+      <div class="caja_cliente">
+        <div class="row" *ngIf="DataCliente.receta_dif_canal">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Canales</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <a (click)="LimpiarFormCanalesReceta()" uiSrefActive="active" role="button" data-toggle="modal" data-target="#CanalReceta"
+                data-placement="top" title="Canales">
+                <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="DataCliente.receta_dif_canal && tablaCanalesReceta">
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringTCanalReceta" placeholder="Buscar" [(ngModel)]="searchStringTCanalReceta">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageTCanalReceta" [(ngModel)]="itempageTCanalReceta">
+                  <option value="5" selected="selected">Canal Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Canal</th>
+                      <th class="centrarhoz">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of ListaCanalesReceta | modalpuntosrecetaingart: searchStringTCanalReceta | paginate: { itemsPerPage: itempageTCanalReceta, currentPage: tcr, id: 'tablacanalreceta' };  let i = index ">
+                      <td>{{data.nombre}}</td>
+                      <td class="centrarhoz">
+                        <a (click)="QuitarCanal(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top"
+                          title="Eliminar">
+                          <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tcr = $event" id="tablacanalreceta"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <form #recetaForm="ngForm">
+          <div class="row" *ngIf="DataCliente.receta_dif_canal">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="nombre">Nombre Receta
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" class="form-control" name="DataNewReceta.nombreReceta" [(ngModel)]="DataNewReceta.nombreReceta" #nameRec="ngModel"
+                  minlength="2" maxlength="100" required
+                  [ngClass]="{'is-invalid': !nameRec.valid && (nameRec.dirty || nameRec.touched)}"/>
+                <span class="invalid-feedback" *ngIf="nameRec.errors && (nameRec.dirty || nameRec.touched)">
+                  <li *ngIf=nameRec.errors.required>
+                    El campo Nombre Receta es obligatorio
+                  </li>
+                  <li *ngIf="nameRec.errors.minlength">
+                    El campo Nombre Receta debe ser mayor a 2 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="nombre">Receta para
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" class="form-control" name="DataNewReceta.cantidadReceta" [(ngModel)]="DataNewReceta.cantidadReceta" #canRec="ngModel"
+                  (keypress)="kPNumerosPuntos($event)" minlength="1" maxlength="100" required
+                  [ngClass]="{'is-invalid': !canRec.valid && (canRec.dirty || canRec.touched)}"/>
+                <span class="invalid-feedback" *ngIf="canRec.errors && (canRec.dirty || canRec.touched)">
+                  <li *ngIf=canRec.errors.required>
+                    El campo Receta para es obligatorio
+                  </li>
+                  <li *ngIf="canRec.errors.minlength">
+                    El campo Receta para debe ser mayor a 1 caracter*
+                  </li>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="nombre">Unidad
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" name="DataNewReceta.idUnidad" [(ngModel)]="DataNewReceta.idUnidad" #uniBase="ngModel"
+                required [ngClass]="{'is-invalid': !uniBase.valid && (uniBase.dirty || uniBase.touched)}">
+                  <option [value]=""></option>
+                  <option [value]="unid.id" *ngFor="let unid of DataArrayUnidades">{{unid.nombre}}</option>
+                </select>
+                <span class="invalid-feedback" *ngIf="uniBase.errors && (uniBase.dirty || uniBase.touched)">
+                  <li *ngIf="uniBase.errors.required">
+                    El campo unidad de Base es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Ingredientes</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <a (click)="LimpiarFormIngredientes()" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Ingredientes"
+                data-placement="top" title="Ingredientes">
+                <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+              </a>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row" *ngIf="tablaIngredientes">
+            <div class="col-md-12">
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringTIngredientes" placeholder="Buscar" [(ngModel)]="searchStringTIngredientes">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageTIngredientes" [(ngModel)]="itempageTIngredientes">
+                  <option value="5" selected="selected">Ingredientes Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Articulo</th>
+                      <th>Cantidad</th>
+                      <th>Unidad</th>
+                      <th class="center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd gradeX" *ngFor="let data of ListaIngredientes | modalingredientesrecetaingart: searchStringTIngredientes | paginate: { itemsPerPage: itempageTIngredientes, currentPage: ti, id: 'tablaingre' };  let i = index ">
+                      <td>{{data.nombre_articulo}}</td>
+                      <td>{{data.cantidad}}</td>
+                      <td>{{data.nom_unidad}}</td>
+                      <td class="center">
+                        <a (click)="BindingIngrediente(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#ModificarIngrediente"
+                          data-placement="top" title="Modificar">
+                          <img src="assets/images/editar.png" width="35" height="35" class="btnReportes">
+                        </a>
+                        <a (click)="QuitarIngrediente(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top"
+                          title="Inactivar">
+                          <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="ti = $event" id="tablaingre"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="Preparacion">Preparacion:</label>
+              <textarea rows="6" name="DataNewReceta.preparacion" class="form-control" [(ngModel)]="DataNewReceta.preparacion" #prep="ngModel"
+              [ngClass]="{'is-invalid': !prep.valid && (prep.dirty || prep.touched)}"></textarea>
+              <span class="invalid-feedback" *ngIf="prep.errors && (prep.dirty || prep.touched)">
+                <li *ngIf=prep.errors.required>
+                  El campo preparacion es obligatorio
+                </li>
+                <li *ngIf="prep.errors.minlength">
+                  El campo preparacion debe ser mayor a 2 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="centrar">
+          <button (click)="Regresar()" type="button" class="btnbutton button">Anterior</button>
+          <button (click)="onSubmit(DataNewReceta)" [disabled]="!recetaForm.valid || ListaIngredientes.length === 0  || (DataCliente.receta_dif_canal && ListaCanalesReceta.length === 0)"
+            type="button" class="btnbutton button">Guardar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ************************** Modal Canales Receta **************************** -->
+
+<div id="CanalReceta" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Canales</h4>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringCanales" placeholder="Buscar" [(ngModel)]="searchStringCanales">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageCanales" [(ngModel)]="itempageCanales">
+                <option value="5" selected="selected">Canales Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Canal</th>
+                    <th class="center">
+                      Seleccionar Todo
+                      <input type="checkbox" [checked]="TodoRecCanal" name="checkAllMax" (change)="onChangeAllCanalesReceta(DataJsonClienteCanal, $event.target.checked)">
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="onChangeCanalReceta(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonClienteCanal | modalcanalesingresarreceta: searchStringCanales | paginate: { itemsPerPage: itempageCanales, currentPage: mcr, id:'modalcanalrec' }">
+                    <td>{{data.nombre_canal}}</td>
+                    <td class="center">
+                      <input type="checkbox" name="checkMax" [checked]="data.checkedRec" (change)="onChangeCanalReceta(data, $event.target.checked)">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mcr = $event" id="modalcanalrec"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="MostrarCanalesRec()" [disabled]="ListaCanalRec.length === 0" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" (click)="LimpiarFormCanalesReceta()" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ************************ Fin Modal Canales Receta ************************** -->
+
+<!-- *********************** Modal Ingredientes Receta ************************** -->
+
+<div id="Ingredientes" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Ingredientes</h4>
+      </div>
+
+      <div class="modal-body">
+
+
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringArtInv" placeholder="Buscar" [(ngModel)]="searchStringArtInv">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageArtInv" [(ngModel)]="itempageArtInv">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Articulo</th>
+                    <th class="center">
+                      Seleccionar </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaIngredientes(data.id_articulo);selUnidadKardex(DataIngredientes.id_articulo);" class="odd gradeX" *ngFor="let data of DataJsonArtInventario | modalingredientesrecetaingreceta: searchStringArtInv | paginate: { itemsPerPage: itempageArtInv, currentPage: mai, id:'modalArtInv' }">
+                    <td>{{data.nombre_articulo}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataIngredientes.id_articulo" value="{{data.id_articulo}}" [(ngModel)]="DataIngredientes.id_articulo"
+                      (change)="selUnidadKardex(DataIngredientes.id_articulo);" required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mai = $event" id="modalArtInv"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form #IngredientesForm="ngForm">
+          <div class="row">
+              <div class="col-md-12">
+            <div class="form-group">
+              <label for="unidad">Cantidad
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" name="DataIngredientes.cantidadIngrediente" [(ngModel)]="DataIngredientes.cantidadIngrediente"
+                #cantIngr="ngModel" (keypress)="kPNumerosPuntos($event)" required
+                [ngClass]="{'is-invalid': !cantIngr.valid && (cantIngr.dirty || cantIngr.touched)}"/>
+              <span class="invalid-feedback" *ngIf="cantIngr.errors && (cantIngr.dirty || cantIngr.touched)">
+                <li *ngIf=cantIngr.errors.required>
+                  El campo cantidad es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+            <!-- <div class="form-group" [ngClass]="{'is-invalid': !uniEquiv.valid && (uniEquiv.dirty || uniEquiv.touched)}">
+                <label for="unidad">Unidad
+                  <b class="asterisco">*</b>:</label>
+                <input name="DataIngredientes.unidad" [(ngModel)]="DataIngredientes.unidad" class="form-control" (ngModelChange)="ValidarUnidadIngrediente($event)"
+                  list="ingredientes" name="ingredientes" #uniEquiv="ngModel" required>
+                <datalist id="ingredientes">
+                  <option [value]="unEqui.nombre" required *ngFor="let unEqui of DataJsonEquivalenciaUnidad"></option>
+                </datalist>
+                <span class="invalid-feedback" *ngIf="uniEquiv.errors && (uniEquiv.dirty || uniEquiv.touched)">
+                  <li *ngIf="uniEquiv.errors.required">
+                    El campo unidad es obligatorio
+                  </li>
+                </span>
+              </div> -->
+            <div class="form-group">
+              <label for="nombre">Unidad
+                <b class="asterisco">*</b>:</label>
+              <select class="form-control" name="DataIngredientes.unidad" [(ngModel)]="DataIngredientes.unidad" #uniEquiv="ngModel"
+              required [ngClass]="{'is-invalid': !uniEquiv.valid && (uniEquiv.dirty || uniEquiv.touched)}"
+              (change)="consultarTablaConversion(DataIngredientes.idUniKardex, DataIngredientes.unidad)">
+                <option [value]=""></option>
+                <option [value]="unEqui.id" *ngFor="let unEqui of DataJsonUndKardexIngredientes">{{unEqui.nombre}}</option>
+              </select>
+              <span class="invalid-feedback" *ngIf="uniEquiv.errors && (uniEquiv.dirty || uniEquiv.touched)">
+                <li *ngIf="uniEquiv.errors.required">
+                  El campo unidad es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+
+
+          <!-- <div class="row" *ngIf="crearCon">
+            <div class="col-md-4">
+              <label for="fac">Factor conversion
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="fac" name="DataIngredientes.crearoperando"
+                [(ngModel)]="DataIngredientes.crearoperando" value='M' required>
+              <b>Multiplica</b>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="fac" name="DataIngredientes.crearoperando"
+                [(ngModel)]="DataIngredientes.crearoperando" value='D' required>
+              <b>Divide</b>
+            </div>
+          </div> -->
+
+          <div class="row" *ngIf="crearCon">
+            <div class="col-md-2 spaddi">
+              <div class="form-group">
+                <label for="cant">Cantidad:</label>
+                <input type="text" class="form-control" name="DataIngredientes.cantConvKardex"
+                  [(ngModel)]="DataIngredientes.cantConvKardex" required>
+              </div>
+            </div>
+            <div class="col-md-3 spaddi">
+              <div class="form-group">
+                <label for="con">Und de kardex:</label>
+                <input type="text" readonly class="form-control" name="DataIngredientes.nombreUniKardex"
+                  [(ngModel)]="DataIngredientes.nombreUniKardex">
+              </div>
+            </div>
+            <div class="col-md-1 spaddi">
+              <div class="form-group">
+                <label for="con">Igual:</label>
+                <br>
+                <label class="topcenter"> =</label>
+              </div>
+            </div>
+            <div class="col-md-2 spaddi">
+              <div class="form-group">
+                <label for="cant">Cantidad:</label>
+                <input type="text" class="form-control" name="DataIngredientes.cantConvCompra"
+                  [(ngModel)]="DataIngredientes.cantConvCompra" required>
+              </div>
+            </div>
+            <div class="col-md-3 spaddi">
+              <div class="form-group">
+                <label for="con">Und conversión:</label>
+                <br>
+                <label class="topcenter" for="uni">{{DataIngredientes.nom_unidad}}</label>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="MostrarIngredientes(DataIngredientes)"
+          [disabled]="!IngredientesForm.valid || existeIngrediente || !DataIngredientes.id_articulo || ConsultaConversion"
+            class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" (click)="LimpiarFormIngredientes()" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************* Fin Modal Ingredientes Receta ************************ -->
+
+
+<!-- ****************** Modal Modificar Ingrediente Receta  ********************* -->
+
+<div id="ModificarIngrediente" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Ingrediente</h4>
+      </div>
+
+      <div class="modal-body">
+
+
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringEditArtInv" placeholder="Buscar" [(ngModel)]="searchStringEditArtInv">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageEditArtInv" [(ngModel)]="itempageEditArtInv">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                <thead>
+                  <tr>
+                    <th>Nombre Articulo</th>
+                    <th class="center">
+                      Seleccionar </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaIngredienteEdit(data.id_articulo); selUnidadKardexEdit(dataEditIngrediente.id_articulo);" class="odd gradeX" *ngFor="let data of DataJsonArtInventario | modaleditingredientesrecetaingart: searchStringEditArtInv | paginate: { itemsPerPage: itempageEditArtInv, currentPage: meai, id:'modalEditArtInv' }">
+                    <td>{{data.nombre_articulo}}</td>
+                    <td class="center">
+                      <input type="radio" name="dataEditIngrediente.id_articulo" value="{{data.id_articulo}}" [(ngModel)]="dataEditIngrediente.id_articulo"
+                      (change)="selUnidadKardexEdit(dataEditIngrediente.id_articulo);" required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="meai = $event" id="modalEditArtInv"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form #IngredientesEditForm="ngForm">
+          <div class="row">
+              <div class="col-md-12">
+            <div class="form-group">
+              <label for="unidad">Cantidad
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" name="dataEditIngrediente.cantidadIngre" [(ngModel)]="dataEditIngrediente.cantidadIngre"
+                #cantIngre="ngModel" (keypress)="kPNumerosPuntos($event)" required
+                [ngClass]="{'is-invalid': !cantIngre.valid && (cantIngre.dirty || cantIngre.touched)}"/>
+              <span class="invalid-feedback" *ngIf="cantIngre.errors && (cantIngre.dirty || cantIngre.touched)">
+                <li *ngIf=cantIngre.errors.required>
+                  El campo cantidad es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+            <!-- <div class="form-group" [ngClass]="{'is-invalid': !uniEquiva.valid && (uniEquiva.dirty || uniEquiva.touched)}">
+                <label for="unidad">Unidad
+                  <b class="asterisco">*</b>:</label>
+                <input name="dataEditIngrediente.nombre_unidad" [(ngModel)]="dataEditIngrediente.nombre_unidad" class="form-control" (ngModelChange)="ValidarUnidadIngrediente($event)"
+                  list="ingredientes" name="ingredientes" #uniEquiva="ngModel" required>
+                <datalist id="ingredientes">
+                  <option [value]="unEqui.nombre" required *ngFor="let unEqui of DataJsonEquivalenciaUnidad"></option>
+                </datalist>
+                <span class="invalid-feedback" *ngIf="uniEquiva.errors && (uniEquiva.dirty || uniEquiva.touched)">
+                  <li *ngIf="uniEquiva.errors.required">
+                    El campo unidad es obligatorio
+                  </li>
+                </span>
+              </div> -->
+            <div class="form-group">
+              <label for="nombre">Unidad
+                <b class="asterisco">*</b>:</label>
+              <select class="form-control" name="dataEditIngrediente.unidad" [(ngModel)]="dataEditIngrediente.unidad" #uniEquiva="ngModel"
+              (change)="consultarTablaConversionEdit(dataEditIngrediente.idUniKardex, dataEditIngrediente.unidad)"
+                required [ngClass]="{'is-invalid': !uniEquiva.valid && (uniEquiva.dirty || uniEquiva.touched)}">
+                <option [value]=""></option>
+                <option [value]="unEqui.id" *ngFor="let unEqui of DataJsonUndKardexIngredientes">{{unEqui.nombre}}</option>
+              </select>
+              <span class="invalid-feedback" *ngIf="uniEquiva.errors && (uniEquiva.dirty || uniEquiva.touched)">
+                <li *ngIf="uniEquiva.errors.required">
+                  El campo unidad es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+
+
+         <!--  <div class="row" *ngIf="crearCon">
+            <div class="col-md-4">
+              <label for="fac">Factor conversion
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="fac" name="dataEditIngrediente.crearoperando"
+                [(ngModel)]="dataEditIngrediente.crearoperando" value='M' required>
+              <b>Multiplica</b>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="fac" name="dataEditIngrediente.crearoperando"
+                [(ngModel)]="dataEditIngrediente.crearoperando" value='D' required>
+              <b>Divide</b>
+            </div>
+          </div> -->
+
+          <div class="row" *ngIf="crearCon">
+            <div class="col-md-2 spaddi">
+              <div class="form-group">
+                <label for="cant">Cantidad:</label>
+                <input type="text" class="form-control" name="dataEditIngrediente.cantConvKardex"
+                  [(ngModel)]="dataEditIngrediente.cantConvKardex" required>
+              </div>
+            </div>
+            <div class="col-md-3 spaddi">
+              <div class="form-group">
+                <label for="con">Und de kardex:</label>
+                <input type="text" readonly class="form-control" name="dataEditIngrediente.nombreUniKardex"
+                  [(ngModel)]="dataEditIngrediente.nombreUniKardex">
+              </div>
+            </div>
+            <div class="col-md-1 spaddi">
+              <div class="form-group">
+                <label for="con">Igual:</label>
+                <br>
+                <label class="topcenter"> =</label>
+              </div>
+            </div>
+            <div class="col-md-2 spaddi">
+              <div class="form-group">
+                <label for="cant">Cantidad:</label>
+                <input type="text" class="form-control" name="dataEditIngrediente.cantConvCompra"
+                  [(ngModel)]="dataEditIngrediente.cantConvCompra" required>
+              </div>
+            </div>
+            <div class="col-md-3 spaddi">
+              <div class="form-group">
+                <label for="con">Und conversión:</label>
+                <br>
+                <label class="topcenter" for="uni">{{dataEditIngrediente.nom_unidad}}</label>
+              </div>
+            </div>
+          </div>
+
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" (click)="ModificarIngrediente(dataEditIngrediente)"
+          [disabled]="!IngredientesEditForm.valid || existeIngredienteEdit || !dataEditIngrediente.id_articulo || ConsultaConversionEdit"
+            class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- **************** Fin Modal Modificar Ingrediente Receta  ******************* -->

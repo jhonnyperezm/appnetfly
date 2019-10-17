@@ -1,0 +1,104 @@
+<div class="row">
+    <div class="container-fluid contenedorcompras">
+
+      <div class="row color_compras1">
+        <div class="col-lg-12" align="center">
+          <h1>Proveedores Inactivos</h1>
+        </div>
+      </div>
+
+      <div class="row centrar">
+        <div class="col-md-12">
+          <div class="btnrouterlink" [routerLink]="['/compras/proveedores']">
+            <a>
+              <span class="pull-left">
+                <i class="fa fa-arrow-circle-left"></i>
+              </span>
+              <span class="pull-right">Proveedores</span>
+              <div class="clearfix"></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tablacompras">
+          <div class="centrar buscar-paginacion">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" [(ngModel)]="itempage">
+                <option value="5" selected="selected">Proveedores Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Proveedor</th>
+                  <th>Codigo / Nit</th>
+                  <th>Direccion</th>
+                  <th>Telefono</th>
+                  <th>e-mail</th>
+                  <th class="center" *ngIf="sidebarComponent.contienePermiso(126)">Activar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let data of DataArray | proveedoresinactivos : searchString | paginate: { itemsPerPage: 10, currentPage: p }">
+                  <td>{{data.razon_comercial}}</td>
+                  <td>{{data.nit}}</td>
+                  <td>{{data.direccion}}</td>
+                  <td>{{data.telefono}}</td>
+                  <td>{{data.email}}</td>
+
+                  <td class="center" *ngIf="sidebarComponent.contienePermiso(126)">
+                    <a (click)="bindingDataProveedor(data.id,data.razon_comercial)" uiSrefActive="active"
+                      role="button" data-toggle="modal" data-target="#Activar" data-placement="top" title="Activar">
+                      <img src="assets/images/active.png" width="30" height="30" class="btnReportes">
+                      <!-- <img src="assets/images/active.png" width="30" height="30" class="btnReportes"> -->
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--****************************************Modal activar*******************************************************-->
+
+
+  <div class="modal fade" id="Activar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content modalconfirmacion">
+        <div class="modal-header centrarmodal">
+          <h3>Confirmacion</h3>
+        </div>
+        <div class="modal-body">
+          Esta Seguro de Activar el proveedor {{nombreProveedor}} con id {{idProveedor}}
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="ActivarProveedor(idProveedor, nombreProveedor);" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--**************************************** Fin Modal activar*******************************************************-->

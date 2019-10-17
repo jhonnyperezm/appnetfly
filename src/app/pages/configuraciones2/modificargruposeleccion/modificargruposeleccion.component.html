@@ -1,0 +1,481 @@
+<div class="row">
+
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Grupo de selección</h1>
+      </div>
+    </div>
+
+    <p></p>
+    <br>
+    <form #grupoSelForm="ngForm">
+      <div class="caja_cliente">
+        <div class="row">
+          <span class="tiulocaja-configuraciones">Datos Grupo</span>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="grupo">Nombre grupo selección
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataNewGrupo.nombre" class="form-control" [(ngModel)]="DataNewGrupo.nombre" #grupo="ngModel" minlength="1"
+                maxlength="100" required [ngClass]="{'is-invalid': !grupo.valid && (grupo.dirty || grupo.touched)}"/>
+              <span class="invalid-feedback" *ngIf="grupo.errors && (grupo.dirty || grupo.touched)">
+                <li *ngIf=grupo.errors.required>
+                  El campo Nombre grupo es obligatorio
+                </li>
+                <li *ngIf="grupo.errors.minlength">
+                  El campo Nombre grupo debe ser mayor a 1 caracter*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="caja_cliente">
+        <span class="tiulocaja-configuraciones"> Caracteristica de precios</span>
+        <div class="row">
+          <div class="col-md-3">
+            <input type="radio" id="carinart" checked name="DataNewGrupo.caracteristica" [(ngModel)]="DataNewGrupo.caracteristica" [value]=1 required>
+            <label for="carinart">Incremento por articulo</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="caringru"  name="DataNewGrupo.caracteristica" [(ngModel)]="DataNewGrupo.caracteristica" [value]=2 required>
+            <label for="caringru">Incremento por grupo</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="carprmal"  name="DataNewGrupo.caracteristica" [(ngModel)]="DataNewGrupo.caracteristica" [value]=3 required>
+            <label for="carprmal">Precio mas alto</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="carna"  name="DataNewGrupo.caracteristica" [(ngModel)]="DataNewGrupo.caracteristica" [value]=4 required>
+            <label for="carna">No aplica</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewGrupo.caracteristica === 2">
+          <div class="col-md-3">
+            <label for="grupo">Incremento de grupo
+              <b class="asterisco">*</b>:</label>
+          </div>
+          <div class="col-md-4">
+            <input type="text" (keypress)="kPNumeros($event)" name="DataNewGrupo.valorincgrupo" class="form-control" [(ngModel)]="DataNewGrupo.valorincgrupo"
+              #incgrupo="ngModel" minlength="1" maxlength="6" required
+              [ngClass]="{'is-invalid': !incgrupo.valid && (incgrupo.dirty || incgrupo.touched)}"/>
+            <span class="invalid-feedback" *ngIf="incgrupo.errors && (incgrupo.dirty || incgrupo.touched)">
+              <li *ngIf=incgrupo.errors.required>
+                El campo Incremento de grupo es obligatorio
+              </li>
+              <li *ngIf="incgrupo.errors.minlength">
+                El campo Incremento de grupo debe ser mayor a 1 caracter*
+              </li>
+            </span>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="caja_cliente">
+        <div class="row">
+          <span class="tiulocaja-configuraciones"> Tipo Selección</span>
+          <div class="col-md-3">
+            <input type="radio" id="tiposelab"  checked name="DataNewGrupo.tiposel" [(ngModel)]="DataNewGrupo.tiposel" [value]=0 required>
+            <label for="tiposelab">Abierta</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="tiposelce" name="DataNewGrupo.tiposel" [(ngModel)]="DataNewGrupo.tiposel" [value]=1 required>
+            <label for="tiposelce">Cerrada</label>
+          </div>
+        </div>
+      </div>
+
+       <!--Maneja Orden-->
+       <div class="caja_cliente my-5">
+        <span class="tiulocaja-configuraciones"> Maneja Orden</span>
+        <div class="row">
+          <div class="col-md-3">
+            <input type="radio" id="manordensi" checked name="DataNewGrupo.manOrden" [(ngModel)]="DataNewGrupo.manOrden" [value]=1 required>
+            <label for="manordensi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="manordenno"  checked name="DataNewGrupo.manOrden" [(ngModel)]="DataNewGrupo.manOrden" [value]=0 required>
+            <label for="manordenno">No</label>
+          </div>
+          </div>
+       </div>
+
+      <br>
+      <br>
+      <div class="caja_cliente">
+        <span class="tiulocaja-configuraciones">Articulos</span>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Articulos Selección</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <a uiSrefActive="active" (click)="LimpiarFormArticulos()" role="button" data-toggle="modal" data-target="#ArticulosModal"
+                data-placement="top" title="Articulos">
+                <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="tablaArticulosGrupo">
+          <div class="col-md-12">
+            <div class="tablaconfig">
+              <div class="centrar buscar-paginacionconfig">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringTablaArt" placeholder="Buscar" [(ngModel)]="searchStringTablaArt">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempageTablaArt" [(ngModel)]="itempageTablaArt">
+                    <option value="5" selected="selected">Articulos Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <div class="panel-body table-responsive">
+                  <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                    <thead>
+                      <tr>
+                        <th>Articulo</th>
+                        <th>Descarga Kardex</th>
+                        <th>Unidad Kardex</th>
+                        <th *ngIf="DataNewGrupo.caracteristica === 1">Incrementa</th>
+                        <th>Unidad venta</th>
+                        <th>Imprimir</th>
+                        <th>Ver</th>
+                        <th colspan="2" class="center">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="odd gradeX" *ngFor="let data of DataJsonArticulosGrupo | modificargruposeleccion: searchStringTablaArt | paginate: { itemsPerPage: itempageTablaArt, currentPage: tart, id: 'tablaart' };  let i = index">
+                        <td>{{data.nombre}}</td>
+                        <td>{{data.descarga_kardex}}</td>
+                        <td>{{data.nombre_uni_kardex}}</td>
+                        <td *ngIf="DataNewGrupo.caracteristica === 1">{{data.incremento}}</td>
+                        <td>{{data.nombre_uni_venta}}</td>
+                        <td>{{data.imprimir}}</td>
+                        <td>{{data.ver}}</td>
+                        <td class="center">
+                          <a (click)="BindingDataArticulo(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#ModificarArticulo"
+                            data-placement="top" title="Modificar">
+                            <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                          </a>
+                          <a (click)="BindingDataArticulo(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#BorrarArticulo"
+                            data-placement="top" title="Eliminar">
+                            <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                          </a>
+                        </td>
+                        <td *ngIf="DataNewGrupo.manOrden === 1" class="center">
+                          <a (click)="Ascender(data)" uiSrefActive="active" role="button" data-toggle="top" data-placement="top" title="Ascender">
+                            <img src="assets/images/up.png" width="30" height="30" class="btnReportes">
+                          </a>
+                          <a (click)="Descender(data)" uiSrefActive="active" role="button" data-toggle="top" data-placement="top" title="Descender">
+                            <img src="assets/images/down.png" width="30" height="30" class="btnReportes">
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="centrarpaginacion">
+                    <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="tart = $event" id="tablaart"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="centrar">
+      <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+      <button type="submit" (click)="onSubmit(DataNewGrupo)" class="btnbutton button" [disabled]="!grupoSelForm.valid || DataJsonArticulosGrupo.length === 0">Guardar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ************************* Modal seleccionar Articulo ************************* -->
+
+<div id="ArticulosModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Artículos </h3>
+          <h5>Grupo: {{DataNewGrupo.nombre}}</h5>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringArt" placeholder="Buscar" [(ngModel)]="searchStringArt">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageArt" [(ngModel)]="itempageArt">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Articulo</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="clickFila(data.id)" class="odd gradeX" *ngFor="let data of DataJsonArticulos | modalarticuloseditgruposel: searchStringArt | paginate: { itemsPerPage: itempageArt, currentPage: art ,id: 'articulo'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="radio" (change)="cargarUnidadKardex(DataNewArticulo.id_articulo)" name="DataNewArticulo.id_articulo" value="{{data.id}}"
+                      [(ngModel)]="DataNewArticulo.id_articulo" required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="art = $event" id="articulo"></pagination-controls>
+          </div>
+        </div>
+        <form #artSelForm="ngForm">
+          <div class="row">
+            <div class="col-md-4" *ngIf="DataNewArticulo.inventario && !DataNewArticulo.receta">
+              <div class="form-group">
+                <label for="grupo">Descarga Kardex
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewArticulo.descargaKardex" class="form-control" id="grupo" [(ngModel)]="DataNewArticulo.descargaKardex"
+                  #deskar="ngModel" (keypress)="kPNumerosPunto($event)" minlength="1" maxlength="6" required
+                  [ngClass]="{'is-invalid': !deskar.valid && (deskar.dirty || deskar.touched)}"/>
+                <span class="invalid-feedback" *ngIf="deskar.errors && (deskar.dirty || deskar.touched)">
+                  <li *ngIf=deskar.errors.required>
+                    El campo Descarga Kardex es obligatorio
+                  </li>
+                  <li *ngIf="deskar.errors.minlength">
+                    El campo Descarga Kardex debe ser mayor a 1 caracter*
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="DataNewArticulo.inventario && !DataNewArticulo.receta">
+              <div class="form-group">
+                <label for="grupo">Unidad Kardex
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewArticulo.unikardex" class="form-control" id="grupo" [(ngModel)]="DataNewArticulo.unikardex"
+                  #unikar="ngModel" minlength="2" maxlength="100" required readonly
+                  [ngClass]="{'is-invalid': !unikar.valid && (unikar.dirty || unikar.touched)}"/>
+                <span class="invalid-feedback" *ngIf="unikar.errors && (unikar.dirty || unikar.touched)">
+                  <li *ngIf=unikar.errors.required>
+                    El campo Unidad Kardex es obligatorio
+                  </li>
+                  <li *ngIf="unikar.errors.minlength">
+                    El campo Unidad Kardex debe ser mayor a 2 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="DataNewGrupo.caracteristica === 1">
+              <div class="form-group">
+                <label for="grupo">Incrementa
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewArticulo.incarticulo" class="form-control" id="grupo" [(ngModel)]="DataNewArticulo.incarticulo"
+                  #incart="ngModel" (keypress)="kPNumeros($event)" maxlength="6" required
+                  [ngClass]="{'is-invalid': !incart.valid && (incart.dirty || incart.touched)}"/>
+                <span class="invalid-feedback" *ngIf="incart.errors && (incart.dirty || incart.touched)">
+                  <li *ngIf=incart.errors.required>
+                    El campo Incrementa es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="MostrarArticuloSel(DataNewArticulo)" [disabled]="!artSelForm.valid" data-dismiss="modal" class="btnbutton">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ************************* Fin Modal seleccionar Articulo ************************* -->
+
+
+<!-- ************************* Modal Borrar Articulo ************************* -->
+
+<div id="BorrarArticulo" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Confirmación</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="centrarmodal">
+          <h4>Esta seguro de Eliminar El Articulo {{nombreEliminar}}</h4>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button data-dismiss="modal" class="btnbutton" (click)="QuitarArticulo(idEliminar);">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ************************* Fin Modal Modificar Articulo ************************* -->
+
+
+<!-- ************************* Modal Modificar Articulo ************************* -->
+
+<div id="ModificarArticulo" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Artículos </h3>
+          <h5>Grupo: {{DataNewGrupo.nombre}}</h5>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringArt" placeholder="Buscar" [(ngModel)]="searchStringArt">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageArt" [(ngModel)]="itempageArt">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Articulo</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let data of DataJsonArticulos | modalarticuloseditgruposel: searchStringArt | paginate: { itemsPerPage: itempageArt, currentPage: art ,id: 'articulo'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="radio" (change)="cargarUnidadKardex(DataEditArticulo.id_art)" name="DataEditArticulo.id_art" value="{{data.id}}"
+                      [(ngModel)]="DataEditArticulo.id_art" required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="art = $event" id="articulo"></pagination-controls>
+          </div>
+        </div>
+        <form #artEditSelForm="ngForm">
+          <div class="row">
+            <div class="col-md-4" *ngIf="DataEditArticulo.inventario && !DataEditArticulo.receta">
+              <div class="form-group">
+                <label for="grupo">Descarga Kardex
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataEditArticulo.des_kard" class="form-control" id="grupo" [(ngModel)]="DataEditArticulo.des_kard"
+                  #deskard="ngModel" (keypress)="kPNumerosPunto($event)" minlength="2" maxlength="100" required
+                  [ngClass]="{'is-invalid': !deskard.valid && (deskard.dirty || deskard.touched)}"/>
+                <span class="invalid-feedback" *ngIf="deskard.errors && (deskard.dirty || deskard.touched)">
+                  <li *ngIf=deskard.errors.required>
+                    El campo Descarga Kardex es obligatorio
+                  </li>
+                  <li *ngIf="deskard.errors.minlength">
+                    El campo Descarga Kardex debe ser mayor a 2 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="DataEditArticulo.inventario && !DataEditArticulo.receta">
+              <div class="form-group">
+                <label for="grupo">Unidad Kardex
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataEditArticulo.nom_uni_kard" class="form-control" id="grupo" [(ngModel)]="DataEditArticulo.nom_uni_kard"
+                  #unidkar="ngModel" minlength="2" maxlength="100" required readonly
+                  [ngClass]="{'is-invalid': !unidkar.valid && (unidkar.dirty || unidkar.touched)}"/>
+                <span class="invalid-feedback" *ngIf="unidkar.errors && (unidkar.dirty || unidkar.touched)">
+                  <li *ngIf=unidkar.errors.required>
+                    El campo Unidad Kardex es obligatorio
+                  </li>
+                  <li *ngIf="unidkar.errors.minlength">
+                    El campo Unidad Kardex debe ser mayor a 2 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="DataNewGrupo.caracteristica === 1">
+              <div class="form-group">
+                <label for="grupo">Incrementa
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataEditArticulo.incre" class="form-control" id="grupo" [(ngModel)]="DataEditArticulo.incre" #increart="ngModel"
+                  (keypress)="kPNumeros($event)" minlength="2" maxlength="20" required
+                  [ngClass]="{'is-invalid': !increart.valid && (increart.dirty || increart.touched)}"/>
+                <span class="invalid-feedback" *ngIf="increart.errors && (increart.dirty || increart.touched)">
+                  <li *ngIf=increart.errors.required>
+                    El campo Incrementa es obligatorio
+                  </li>
+                  <li *ngIf="increart.errors.minlength">
+                    El campo Incrementa debe ser mayor a 2 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="ModificarArticulo(DataEditArticulo)" [disabled]="!artEditSelForm.valid" data-dismiss="modal" class="btnbutton">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ************************* Fin Modal Modificar Articulo ************************* -->

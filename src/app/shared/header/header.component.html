@@ -1,0 +1,319 @@
+<header>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-header">
+            <!-- <img class="capa-imagen" src="assets/images/Logo_gamasoft-dashboard-01x150.png" alt="Logo">
+            <img class="config-imagen" src="assets/images/settings-icon.png" alt="Logo"> -->
+            <ul class="ulme">
+                <li class="dropdown" id="menubig">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        <img class="capa-imagen" src="assets/images/Logo_gamasoft-dashboard-01x150.png" alt="Logo">
+                        <img class="config-imagen" src="assets/images/settings-icon.png" alt="Logo">
+                    </a>
+                    <!-- <ul class="dropdown-menu dropdown-menubig">
+                        <li>
+                            <div class="row">
+                                <div class="col-md-4 btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(2) && logConf == '1'"
+                                        [attr.data-toggle]="accesoAplicacion(2) && logConf == '1' ? 'collapse': ''"
+                                        data-target="#configuracion">
+                                        <img src="assets/images/barra/PNG 52 X 52/azul/configuracion 52x52.png"
+                                            width="50" height="50" title="Configuraciones"><br>
+                                        <label>Configuraciones</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(4) && logConf == '1'"
+                                        [attr.data-toggle]="accesoAplicacion(4) && logConf == '1' ? 'collapse': ''"
+                                        data-target="#compras">
+                                        <img src="assets/images/barra/PNG 52 X 52/azul/compras 52x52.png" width="50"
+                                            height="50" title="Compras"><br>
+                                        <label>Gestión Compras</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(4) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(4) && logConf == '1' ? 'collapse': ''"
+                                        data-target="#reportes">
+                                        <img src="assets/images/barra/PNG 52 X 52/azul/reportes 52x52.png" width="50"
+                                            height="50" title="Reportes"><br>
+                                        <label>Reportes</label>
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(3) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(3) && logConf == '1' ? 'collapse': ''"
+                                        data-target="#requisicion">
+                                        <img class="capa-imagen"
+                                            src="assets/images/barra/PNG 52 X 52/azul/requisicion planta 52x52.png"
+                                            width="50" height="50" title="Requisición Planta"><br>
+                                        <label>Requisición Planta</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(10) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(10) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#campana">
+                                        <img class="capa-imagen"
+                                            src="assets/images/barra/PNG 52 X 52/azul/descuentos 52x52.png" width="50"
+                                            height="50" title="Descuentos"><br>
+                                        <label>Descuentos</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(11) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(11) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#cartera">
+                                        <img class="capa-imagen"
+                                            src="assets/images/barra/PNG 52 X 52/azul/cartera 52x52.png" width="50"
+                                            height="50" title="Cartera"><br>
+                                        <label>Cartera</label>
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(7) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(7) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#Gestor">
+                                        <img class="capa-imagen"
+                                            src="assets/images/barra/PNG 52 X 52/azul/gestor-comercial 52x52.png"
+                                            width="50" height="50" title="Gestor Gerencial"><br>
+                                        <label>Gestor Gerencial</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(14) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(14) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#franquicias">
+                                        <i class="fas fa-sitemap fa-3x bg-des btnFont" title="Franquicias"></i><br>
+                                        <label>Franquicias</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(15) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(15) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#fidelizacion">
+                                        <i class="far fa-handshake fa-3x bg-des btnFont" title="fidelizacion"></i><br>
+                                        <label>Fidelización</label>
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(7) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(7) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#listados">
+                                        <i class="fas fa-chart-pie fa-3x bg-des btnFont"
+                                            title="Listados de venta"></i><br>
+                                        <label>Listados de venta</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(5) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(5) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#inventarios">
+                                        <img class="capa-imagen"
+                                            src="assets/images/barra/PNG 52 X 52/azul/inventarios 52x52.png" width="50"
+                                            height="50" title="Inventarios"><br>
+                                        <label>Inventarios</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(12) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(12) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#desposte">
+                                        <i class="fas fa-cut fa-3x bg-des btnFont" title="Desposte"></i>
+                                        <br>
+                                        <label>Desposte</label>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(2) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(2) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#listadosBD">
+                                        <i class="fas fa-chart-bar fa-3x bg-des btnFont" title="Listados BD"></i><br>
+                                        <label>Listados BD</label>
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4  btn-mb">
+                                    <button class="btn-menu" [disabled]="!accesoAplicacion(13) && logConf === '1'"
+                                        [attr.data-toggle]="accesoAplicacion(13) && logConf === '1' ? 'collapse': ''"
+                                        data-target="#dispositivosAdicionales">
+                                        <i class="fas fa-tablet-alt fa-3x bg-des btnFont"
+                                            title="Otros Dispositivos"></i><br>
+                                        <label>Otros Dispositivos</label>
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul> -->
+                </li>
+            </ul>
+        </div>
+        <a class="navbar-toggle btn" data-toggle="collapse" data-target=".menu" aria-expanded="true">
+            <i class="fa fa-bars"></i>
+        </a>
+
+        <ul class="navbar-top-links navbar-right">
+            <li class="dropdown" id="messages">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-envelope fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-messages">
+                    <li>
+                        <a href="#">
+                            <div>
+                                <strong>John Smith</strong>
+                                <span class="pull-right text-muted">
+                                    <em>Yesterday</em>
+                                </span>
+                            </div>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <strong>John Smith</strong>
+                                <span class="pull-right text-muted">
+                                    <em>Yesterday</em>
+                                </span>
+                            </div>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <strong>John Smith</strong>
+                                <span class="pull-right text-muted">
+                                    <em>Yesterday</em>
+                                </span>
+                            </div>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="text-center">
+                        <a href="#">
+                            <strong>Read All Messages</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+
+            </li>
+            <li class="dropdown" id="alerts">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bell fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-alerts">
+                    <li>
+                        <a href="#">
+                            <div>
+                                <i class="fa fa-comment fa-fw"></i> New Comment
+                                <span class="pull-right text-muted small">4 minutes ago</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                <span class="pull-right text-muted small">12 minutes ago</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                <span class="pull-right text-muted small">4 minutes ago</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <i class="fa fa-tasks fa-fw"></i> New Task
+                                <span class="pull-right text-muted small">4 minutes ago</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                <span class="pull-right text-muted small">4 minutes ago</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="text-center">
+                        <a href="#">
+                            <strong>See All Alerts</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown" id="search">
+                <!-- <div>
+                <input type="text" name="usuario" placeholder="Buscar ..">
+                <i class="imgse fas fa-search"></i>
+              </div> -->
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+
+                    <span>
+
+                        <!-- <img alt="image" class="img-circle-header" src="assets/images/default-user.png" /> -->
+
+                        <!-- <b> {{user}}</b> -->
+                        <i class="fa fa-caret-down"></i>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-user fa-fw"></i> User Profile</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li (click)="CerrarSession();">
+                        <a>
+                            <i class="fas fa-sign-out-alt fa-fw"></i> Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</header>

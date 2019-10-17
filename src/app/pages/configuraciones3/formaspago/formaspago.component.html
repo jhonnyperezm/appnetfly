@@ -1,0 +1,484 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Formas pago</h1>
+        <h6>Grupo: {{nombreGrupoFP}}</h6>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+        <div class="btnrouterlinkconfig" [routerLink]="['/configuraciones/gruposformaspago']" data-placement="top" title="CrearClases">
+          <a>
+            <span class="pull-left">
+              <i class="fa fa-arrow-circle-left"></i>
+            </span>
+            <span class="pull-right">Grupos de formas de pago</span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(204)"  [routerLink]="['ingresarformapago', idGrupoFP, nombreGrupoFP]" title="Crear Forma pago">
+          <a>
+            <span class="pull-left">Crear Forma pago</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(205)" [routerLink]="['formaspagoinactivas', idGrupoFP, nombreGrupoFP]">
+          <a>
+            <span class="pull-left">Formas pago Inactivas</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempage" [(ngModel)]="itempage">
+            <option value="5" selected="selected">Formas pago Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="loader">
+        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+      </div>
+
+      <div class="loadError" *ngIf="LoadError">
+        <div class="alert alert-danger">{{error}}</div>
+      </div>
+      <div *ngIf="LoadTabla && !noHayRegistros">
+        <div class="panel-body table-responsive">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th *ngIf="sidebarComponent.contienePermiso(206)" width="10%" class="center">Inactivar</th>
+                <th *ngIf="sidebarComponent.contienePermiso(207)" width="10%" class="center">Modificar</th>
+                <th *ngIf="sidebarComponent.contienePermiso(208)" width="10%" class="center">Consignaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let data of DataJson | formaspago: searchString | paginate: { itemsPerPage: itempage, currentPage: p }">
+                <td>{{data.nombre}}</td>
+                <td class="center" *ngIf="sidebarComponent.contienePermiso(206)" >
+                  <a *ngIf="data.idClienteConf != 0" (click)="bindingDataInactivar(data.id,data.nombre)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar"
+                    data-placement="top" title="Inactivar">
+                    <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                  </a></td>
+                  <td class="center" *ngIf="sidebarComponent.contienePermiso(207)" >
+                  <a *ngIf="data.idClienteConf != 0" [routerLink]="['modificarformapago', data.id, data.nombre, idGrupoFP, nombreGrupoFP]" uiSrefActive="active"
+                    role="button" data-toggle="tooltip" data-placement="top" title="Modificar">
+                    <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                  </a></td>
+                  <td class="center" *ngIf="sidebarComponent.contienePermiso(208)" >
+                  <a (click)="mostrarConsignaciones(data)" uiSrefActive="active" role="button" data-toggle="modal" data-placement="top" data-target="#VerConsiganciones"
+                    title="Consignaciones">
+                    <img src="assets/images/payment.png" width="30" height="30" class="btnReportes">
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+        <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="odd gradeX">
+              <td colspan="1" class="center">No hay Registros</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!--*************************Modal Inactivar***********************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar Forma de pago </h4>
+      </div>
+
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Esta seguro que desea Inactivar la forma de pago: {{nombreInactivar}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="Inactivar(idInactivar, nombreInactivar);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar*************************************-->
+
+<!-- ********************** Modal Consignaciones **********************-->
+
+<div id="VerConsiganciones" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrar">
+          <h5 class="modal-title">
+            <b>Consignaciones Forma Pago</b>
+          </h5>
+          <h6 class="modal-title">Codigo: {{DataEditFormaPago.codigo}}</h6>
+          <h6 class="modal-title">Nombre: {{DataEditFormaPago.nombre}}</h6>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3">
+            <button (click)="Habilitar('CB')" class="btnGeneral">Comisión Bancos</button>
+          </div>
+          <div class="col-md-3 centerCelda">
+            <button (click)="Habilitar('RICA')" class="btnGeneral">Reteica</button>
+          </div>
+          <div class="col-md-3 centerCelda">
+            <button (click)="Habilitar('RIVA')" class="btnGeneral">Reteiva</button>
+          </div>
+          <div class="col-md-3 centerCelda">
+            <button (click)="Habilitar('RF')" class="btnGeneral">Retefuente</button>
+          </div>
+        </div>
+
+        <div *ngIf="comBancos === true">
+          <div class="row center">
+            <h4>
+              <b>Comisión Bancos</b>
+            </h4>
+          </div>
+          <form #comisionBancosForm="ngForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="fbcom">Forma de la Base
+                    <b class="asterisco">*</b>:</label>
+                  <select class="form-control" id="fbcom" name="DataEditFormaPago.fobase" [(ngModel)]="DataEditFormaPago.fobase" #fbcb="ngModel"
+                    required [ngClass]="{'is-invalid': !fbcb.valid && (fbcb.dirty || fbcb.touched)}">
+                    <option [value]=""></option>
+                    <option [value]="1">Consumo</option>
+                    <option [value]="2">Consumo + Propina</option>
+                    <option [value]="3">% Consumo</option>
+                    <option [value]="4">% (Consumo + propina)</option>
+                    <option [value]="5">IVA</option>
+                    <option [value]="6">% IVA</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="fbcb.errors && (fbcb.dirty || fbcb.touched)">
+                    <li *ngIf="fbcb.errors.required">
+                      El campo Forma de la Base es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaBaseComB">Porcentaje de la Base:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" class="form-control" id="porcentaBaseCom" name="DataEditFormaPago.porbas" [(ngModel)]="DataEditFormaPago.porbas"
+                      #pbcb="ngModel" minlength="1" maxlength="100" required readonly
+                      [ngClass]="{'is-invalid': !pbcb.valid && (pbcb.dirty || pbcb.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pbcb.errors && (pbcb.dirty || pbcb.touched)">
+                      <li *ngIf="pbcb.errors.minlength">
+                        El campo Porcentaje de la Base debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaComB">Porcentaje de la Comisión:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" (click)="kPNumerosPuntos($event)" class="form-control" id="porcentaComB" name="DataEditFormaPago.porcom"
+                      [(ngModel)]="DataEditFormaPago.porcom" #pccb="ngModel" minlength="1" maxlength="100" required
+                      [ngClass]="{'is-invalid': !pccb.valid && (pccb.dirty || pccb.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pccb.errors && (pccb.dirty || pccb.touched)">
+                      <li *ngIf="pccb.errors.minlength">
+                        El campo Porcentaje de la Comisión debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <div class="centrar">
+              <button data-dismiss="modal" class="btnbutton" [disabled]="!comisionBancosForm.valid" (click)="updateFormaPago(DataEditFormaPago);">Aceptar</button>
+              <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div *ngIf="reteica">
+          <form #reteicaForm="ngForm">
+            <div class="row center">
+              <h4>
+                <b>Reteica</b>
+              </h4>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="fbrica">Forma de la Base
+                    <b class="asterisco">*</b>:</label>
+                  <select class="form-control" id="fbrica" name="DataEditFormaPago.ricfoba" [(ngModel)]="DataEditFormaPago.ricfoba" #fbric="ngModel"
+                    required [ngClass]="{'is-invalid': !fbric.valid && (fbric.dirty || fbric.touched)}">
+                    <option [value]=""></option>
+                    <option [value]="1">Consumo</option>
+                    <option [value]="2">Consumo + Propina</option>
+                    <option [value]="3">% Consumo</option>
+                    <option [value]="4">% (Consumo + propina)</option>
+                    <option [value]="5">IVA</option>
+                    <option [value]="6">% IVA</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="fbric.errors && (fbric.dirty || fbric.touched)">
+                    <li *ngIf="fbric.errors.required">
+                      El campo Forma de la Base es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaBaseRica">Porcentaje de la Base:</label>
+                 <!--  <div class="form-inline"> -->
+                    <input type="text" class="form-control" id="porcentaBaseRica" name="DataEditFormaPago.ricpoba" [(ngModel)]="DataEditFormaPago.ricpoba"
+                      #pbric="ngModel" minlength="1" maxlength="100" required readonly
+                      [ngClass]="{'is-invalid': !pbric.valid && (pbric.dirty || pbric.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pbric.errors && (pbric.dirty || pbric.touched)">
+                      <li *ngIf="pbric.errors.minlength">
+                        El campo Porcentaje de la Base debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaRica">Porcentaje de la Comisión:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" (click)="kPNumerosPuntos($event)" class="form-control" id="porcentaRica" name="DataEditFormaPago.ricpoco"
+                      [(ngModel)]="DataEditFormaPago.ricpoco" #pcric="ngModel" minlength="1" maxlength="100" required
+                      [ngClass]="{'is-invalid': !pcric.valid && (pcric.dirty || pcric.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pcric.errors && (pcric.dirty || pcric.touched)">
+                      <li *ngIf="pcric.errors.minlength">
+                        El campo Porcentaje de la Comisión debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <div class="centrar">
+              <button data-dismiss="modal" class="btnbutton" [disabled]="!reteicaForm.valid" (click)="updateFormaPago(DataEditFormaPago);">Aceptar</button>
+              <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div *ngIf="reteiva">
+          <form #reteivaForm="ngForm">
+            <div class="row center">
+              <h4>
+                <b>Reteiva</b>
+              </h4>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="fbriva">Forma de la Base
+                    <b class="asterisco">*</b>:</label>
+                  <select class="form-control" id="fbriva" name="DataEditFormaPago.rifoba" [(ngModel)]="DataEditFormaPago.rifoba" #fbriv="ngModel"
+                    required [ngClass]="{'is-invalid': !fbriv.valid && (fbriv.dirty || fbriv.touched)}">
+                    <option [value]=""></option>
+                    <option [value]="1">Consumo</option>
+                    <option [value]="2">Consumo + Propina</option>
+                    <option [value]="3">% Consumo</option>
+                    <option [value]="4">% (Consumo + propina)</option>
+                    <option [value]="5">IVA</option>
+                    <option [value]="6">% IVA</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="fbriv.errors && (fbriv.dirty || fbriv.touched)">
+                    <li *ngIf="fbriv.errors.required">
+                      El campo Forma de la Base es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaBaseRiva">Porcentaje de la Base:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" class="form-control" id="porcentaBaseRiva" name="DataEditFormaPago.ripoba" [(ngModel)]="DataEditFormaPago.ripoba"
+                      #pbriv="ngModel" minlength="1" maxlength="100" required readonly
+                      [ngClass]="{'is-invalid': !pbriv.valid && (pbriv.dirty || pbriv.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pbriv.errors && (pbriv.dirty || pbriv.touched)">
+                      <li *ngIf="pbriv.errors.minlength">
+                        El campo Porcentaje de la Base debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaRiva">Porcentaje de la Comisión:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" (click)="kPNumerosPuntos($event)" class="form-control" id="porcentaRiva" name="DataEditFormaPago.ripoco"
+                      [(ngModel)]="DataEditFormaPago.ripoco" #pcriv="ngModel" minlength="1" maxlength="100" required
+                      [ngClass]="{'is-invalid': !pcriv.valid && (pcriv.dirty || pcriv.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pcriv.errors && (pcriv.dirty || pcriv.touched)">
+                      <li *ngIf="pcriv.errors.minlength">
+                        El campo Porcentaje de la Comisión debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <div class="centrar">
+              <button data-dismiss="modal" class="btnbutton" [disabled]="!reteivaForm.valid" (click)="updateFormaPago(DataEditFormaPago);">Aceptar</button>
+              <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div *ngIf="retefuente">
+          <form #retefuenteForm="ngForm">
+            <div class="row center">
+              <h4>
+                <b>Retefuente</b>
+              </h4>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="fbrfu">Forma de la Base
+                    <b class="asterisco">*</b>:</label>
+                  <select class="form-control" id="fbrfu" name="DataEditFormaPago.rffoba" [(ngModel)]="DataEditFormaPago.rffoba" #fbrf="ngModel"
+                    required [ngClass]="{'is-invalid': !fbrf.valid && (fbrf.dirty || fbrf.touched)}">
+                    <option [value]=""></option>
+                    <option [value]="1">Consumo</option>
+                    <option [value]="2">Consumo + Propina</option>
+                    <option [value]="3">% Consumo</option>
+                    <option [value]="4">% (Consumo + propina)</option>
+                    <option [value]="5">IVA</option>
+                    <option [value]="6">% IVA</option>
+                  </select>
+                  <span class="invalid-feedback" *ngIf="fbrf.errors && (fbrf.dirty || fbrf.touched)">
+                    <li *ngIf="fbrf.errors.required">
+                      El campo Forma de la Base es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaBaseRf">Porcentaje de la Base:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" class="form-control" id="porcentaBaseRf" name="DataEditFormaPago.rfpoba" [(ngModel)]="DataEditFormaPago.rfpoba"
+                      #pbrf="ngModel" minlength="1" maxlength="100" required readonly
+                      [ngClass]="{'is-invalid': !pbrf.valid && (pbrf.dirty || pbrf.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pbrf.errors && (pbrf.dirty || pbrf.touched)">
+                      <li *ngIf="pbrf.errors.minlength">
+                        El campo Porcentaje de la Base debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="porcentaRf">Porcentaje de la Comisión:</label>
+                  <!-- <div class="form-inline"> -->
+                    <input type="text" (click)="kPNumerosPuntos($event)" class="form-control" id="porcentaRf" name="DataEditFormaPago.rfpoco"
+                      [(ngModel)]="DataEditFormaPago.rfpoco" #pcrf="ngModel" minlength="1" maxlength="100" required
+                      [ngClass]="{'is-invalid': !pcrf.valid && (pcrf.dirty || pcrf.touched)}"/>
+                    <span class="invalid-feedback" *ngIf="pcrf.errors && (pcrf.dirty || pcrf.touched)">
+                      <li *ngIf="pcrf.errors.minlength">
+                        El campo Porcentaje de la Comisión debe ser mayor a 1 caracter*
+                      </li>
+                    </span>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <div class="centrar">
+              <button data-dismiss="modal" class="btnbutton" [disabled]="!retefuenteForm.valid" (click)="updateFormaPago(DataEditFormaPago);">Aceptar</button>
+              <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Fin Consignaciones ********************** -->

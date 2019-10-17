@@ -1,0 +1,436 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Impuesto Venta</h1>
+      </div>
+    </div>
+
+    <div>
+      <p></p>
+      <div class="caja_cliente">
+        <form #impvenForm="ngForm">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="articulo">Clase
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewImp.clase" role="button" data-toggle="modal" data-target="#clasesModal" [(ngModel)]="DataNewImp.clase"
+                  class="form-control" #cla="ngModel" (ngModelChange)="LoadGrupos($event)" readonly="true" required [ngClass]="{'is-invalid': !cla.valid && (cla.dirty || cla.touched)}">
+                <span class="invalid-feedback" *ngIf="cla.errors && (cla.dirty || cla.touched)">
+                  <li *ngIf=cla.errors.required>
+                    La clase es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="formaAsig === '2'">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="articulo">Grupo
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" name="DataNewImp.grupo" role="button" data-toggle="modal" data-target="#gruposModal" [(ngModel)]="DataNewImp.grupo"
+                  class="form-control" #gru="ngModel" readonly="true" required [ngClass]="{'is-invalid': !gru.valid && (gru.dirty || gru.touched)}">
+                <span class="invalid-feedback" *ngIf="gru.errors && (gru.dirty || gru.touched)">
+                  <li *ngIf=gru.errors.required>
+                    El grupo es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <br>
+          <div class="row" *ngIf="DataCliente.impuesto_dif_canal === true">
+            <div class="col-md-4">
+              <label>Desea configurar impuesto diferencial</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="imdifsi" (click)="LimpiarFormTodosCanales()" name="DataNewImp.impdif" [(ngModel)]="DataNewImp.impdif" [value]=0
+                required>
+              <label for="imdifsi">SI</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="imdifno"  (click)="LimpiarTablaDifCanal()" name="DataNewImp.impdif" [(ngModel)]="DataNewImp.impdif" [value]=1 required>
+              <label for="imdifno">NO</label>
+            </div>
+          </div>
+        </form>
+        <form #todosCanalForm="ngForm">
+          <div class="row" *ngIf="DataNewImp.impdif === 0">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Impuesto diferencial por canal</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <a uiSrefActive="active" (click)="LimpiarFormDifCanal()" role="button" data-toggle="modal" data-target="#ImpuestoDiferente"
+                  data-placement="top" title="Impuesto">
+                  <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="DataCliente.impuesto_dif_canal === false || DataNewImp.impdif === 1">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>TODOS LOS CANALES</label>{{DataNewImp.impdif}}
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="DataCliente.impuesto_dif_canal === false || DataNewImp.impdif === 1">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Impuesto</label>
+                <select class="form-control" name="DataNewImp.id_impuesto" [(ngModel)]="DataNewImp.id_impuesto" #idImp="ngModel" required>
+                  <option [value]=""></option>
+                  <option [value]="datosImp.id_impuesto" *ngFor="let datosImp of DataArrayImpuesto">{{datosImp.nombre_impuesto}}</option>
+                </select>
+              </div>
+            </div>
+            <!-- </div>
+            <div class="row"> -->
+            <!-- <div class="col-md-3">
+                <label>Tarifa</label>
+              </div> -->
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Tarifa</label>
+                <select class="form-control" name="DataNewImp.id_tarifa" [(ngModel)]="DataNewImp.id_tarifa" #tar="ngModel" required>
+                  <option [value]=""></option>
+                  <option [value]="tar.id_tarifa" *ngFor="let tar of DataTarifas">{{tar.valor_tarifa}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+            </div>
+          </div>
+          <!-- <div class="col-md-4">
+            <div class="form-group">
+              <a uiSrefActive="active" role="button" data-toggle="modal" data-target="#TodosCanales" data-placement="top" title="Impuesto">
+                <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+              </a>
+            </div>
+          </div> -->
+          <!-- </div> -->
+          <div class="row" *ngIf="canalInstitucional === true && (DataCliente.impuesto_dif_canal === false || DataNewImp.impdif === 1)">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>CANAL INSTITUCIONAL</label>
+              </div>
+            </div>
+            <!-- <div class="col-md-4">
+            <div class="form-group">
+              <a uiSrefActive="active" role="button" data-toggle="modal" data-target="#CanalInstitucional" data-placement="top" title="Impuesto">
+                <img src="assets/images/plus.png" width="25" height="25" class="btnReportes">
+              </a>
+            </div>
+          </div> -->
+          </div>
+
+          <div class="row" *ngIf="canalInstitucional === true && (DataCliente.impuesto_dif_canal === false || DataNewImp.impdif === 1)">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Impuesto</label>
+                <select class="form-control" name="DataNewImp.id_impuestoIns" [(ngModel)]="DataNewImp.id_impuestoIns" #idImpIns="ngModel"
+                  required>
+                  <option [value]=""></option>
+                  <option [value]="datosImp.id_impuesto" *ngFor="let datosImp of DataArrayImpuesto">{{datosImp.nombre_impuesto}}</option>
+                </select>
+              </div>
+            </div>
+            <!-- </div>
+          <div class="row"> -->
+            <!--  <div class="col-md-3">
+              <label>Tarifa</label>
+            </div> -->
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Tarifa</label>
+                <select class="form-control" name="DataNewImp.id_tarifaIns" [(ngModel)]="DataNewImp.id_tarifaIns" #tarIns="ngModel" required>
+                  <option [value]=""></option>
+                  <option [value]="tar.id_tarifa" *ngFor="let tar of DataTarifas">{{tar.valor_tarifa}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+            </div>
+          </div>
+        </form>
+
+        <div class="row" *ngIf="DataNewImp.impdif === 0 && DataImpuestosVentaClase.length >= 1">
+
+          <div class="col-md-12">
+            <div class="tablaconfig">
+              <div class="centrar buscar-paginacionconfig">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringTI" placeholder="Buscar" [(ngModel)]="searchStringTI">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempageTI" [(ngModel)]="itempageTI">
+                    <option value="5" selected="selected">Impuesto Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+
+                <div class="panel-body table-responsive">
+                  <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                    <thead>
+                      <tr>
+                        <!-- <th>Clase</th>
+                      <th *ngIf="formaAsig === '2'">Grupo</th> -->
+                        <th>Canal</th>
+                        <th>Impuesto</th>
+                        <th>Tarifa</th>
+                        <th class="center">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="odd gradeX" *ngFor="let data of DataImpuestosVentaClase | ingresarimpuestoventas : searchStringTI | paginate: { itemsPerPage: itempageTI, currentPage: ti, id:'tablaimpuestos' }">
+                        <!-- <td>{{data.clase}}</td>
+                      <td *ngIf="formaAsig === '2'">{{data.grupo}}</td> -->
+                        <td>{{data.canal}}</td>
+                        <td>{{data.impuesto}}</td>
+                        <td>{{data.valor_tarifa}}</td>
+                        <td class="center">
+                          <a (click)="QuitarCanalImpuesto(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top"
+                            title="Inactivar">
+                            <img src="assets/images/delete.png" width="35" height="35" class="btnReportes">
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="centrarpaginacion">
+                    <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="ti = $event" id="tablaimpuestos"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="centrar">
+          <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+          <button (click)="onSubmit(DataNewImp)" [disabled]="!impvenForm.valid ||
+          (DataCliente.impuesto_dif_canal === true && DataNewImp.impdif === 1 && !todosCanalForm.valid ) ||
+          (DataCliente.impuesto_dif_canal === true && DataNewImp.impdif === 0 && DataImpuestosVentaClase.length === 0) ||
+          (DataCliente.impuesto_dif_canal === false && !todosCanalForm.valid)" type="submit" class="btnbutton button">Guardar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ************************* Seleccion de clases **************************** -->
+
+<div id="clasesModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Clases</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringClases" placeholder="Buscar" [(ngModel)]="searchStringClases">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageClases" [(ngModel)]="itempageClases">
+                <option value="5" selected="selected">Clases Por Página</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="clickFilaClases(data.id)" class="odd gradeX" *ngFor="let data of DataJsonClases | modalclasesingimpven: searchStringClases | paginate: { itemsPerPage: itempageClases, currentPage: mc ,id: 'modalclases'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="radio" name="DataNewImp.id_clase" value="{{data.id}}" [(ngModel)]="DataNewImp.id_clase" required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mc = $event" id="modalclases"></pagination-controls>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="GuardarClase(DataNewImp.id_clase)" [disabled]="!DataNewImp.id_clase" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" (click)="LimpiarFormClases()" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ****************************** Fin Seleccion de clases ********************************** -->
+
+
+<!-- ************************* Seleccion de grupos **************************** -->
+
+<div id="gruposModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Grupos</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringGrupos" placeholder="Buscar" [(ngModel)]="searchStringGrupos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageGrupos" [(ngModel)]="itempageGrupos">
+                <option value="5" selected="selected">Grupos Por Página</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="clickFilaGrupo(data.id)" class="odd gradeX" *ngFor="let data of DataJsonGrupos | modalgruposingimpven: searchStringGrupos | paginate: { itemsPerPage: itempageGrupos, currentPage: mg ,id: 'modalgrupos'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="radio" name="DataNewImp.id_grupo" value="{{data.id}}" [(ngModel)]="DataNewImp.id_grupo" required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mg = $event" id="modalgrupos"></pagination-controls>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="GuardarGrupo(DataNewImp.id_grupo)" [disabled]="!DataNewImp.id_grupo" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarFormGrupo()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ****************************** Fin Seleccion de grupos ********************************** -->
+
+<!-- *************************** Modal Impuesto Diferente Canal ********************************** -->
+
+<div id="ImpuestoDiferente" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Impuesto</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #difCanalForm="ngForm">
+          <div class="row">
+            <div class="col-md-3">
+              <label>Canal</label>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <select class="form-control" name="DataImpuestoDif.id_canal" [(ngModel)]="DataImpuestoDif.id_canal" #idCanDif="ngModel" required>
+                  <option [value]=""></option>
+                  <option [value]="can.id" *ngFor="let can of DataCanales">{{can.nombre}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label>Impuesto</label>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <select class="form-control" name="DataImpuestoDif.id_impuesto" [(ngModel)]="DataImpuestoDif.id_impuesto" #idImpDif="ngModel"
+                  required>
+                  <option [value]=""></option>
+                  <option [value]="datosImp.id_impuesto" *ngFor="let datosImp of DataArrayImpuesto">{{datosImp.nombre_impuesto}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label>Tarifa</label>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <select class="form-control" name="DataImpuestoDif.id_tarifa" [(ngModel)]="DataImpuestoDif.id_tarifa" #tarDif="ngModel" required>
+                  <option [value]=""></option>
+                  <option [value]="tar.id_tarifa" *ngFor="let tar of DataTarifas">{{tar.valor_tarifa}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="MostarCanalDiferente(DataImpuestoDif, DataNewImp)" [disabled]="!difCanalForm.valid" data-dismiss="modal"
+            class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ******************************** Fin Impuesto Diferente Canal ****************************** -->

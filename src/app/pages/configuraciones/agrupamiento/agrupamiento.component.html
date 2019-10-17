@@ -1,0 +1,397 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Agrupamiento puntos</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+        <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(216)"
+        uiSrefActive="active" role="button" data-toggle="modal" data-placement="top"
+        (click)="LimpiarFormAgrupacion()" data-target="#CrearAgrupacion" title="Crear Agrupacion">
+          <a>
+            <span class="pull-left">Crear Agrupacion</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <!-- <div class="btnrouterlinkconfig">
+      <a [routerLink]="['/dashboard/inactivos']">
+        <span class="pull-left">Inactivos</span>
+        <span class="pull-right">
+          <i class="fa fa-arrow-circle-right"></i>
+        </span>
+        <div class="clearfix"></div>
+      </a>
+    </div> -->
+
+      </div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempage" [(ngModel)]="itempage">
+            <option value="5" selected="selected">Agrupacion Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+
+        <div class="loading" *ngIf="loader">
+          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        </div>
+
+        <div class="loadError" *ngIf="LoadError">
+          <div class="alert alert-danger">{{error}}</div>
+        </div>
+        <div *ngIf="LoadTabla && !noHayRegistros">
+          <div class="panel-body table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Nombre Agrupacion</th>
+                  <th class="center" *ngIf="SidebarComponent.contienePermiso(217)" >Modificar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let data of DataJson | agrupamiento : searchString | paginate: { itemsPerPage: itempage, currentPage: p , id: 'roles'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center" *ngIf="SidebarComponent.contienePermiso(217)" >
+                    <div>
+                      <!-- <a (click)="bindingData(data.id,data.nombre)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar"
+                      data-placement="top" title="Inactivar">
+                      <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                    </a> -->
+                      <a (click)="bindingDataModificar(data)" uiSrefActive="active" role="button" data-toggle="modal" data-placement="top" data-target="#Modificar"
+                        title="Modificar">
+                        <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event" id="roles"></pagination-controls>
+            </div>
+          </div>
+
+        </div>
+        <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Agrupacion</th>
+                <th class="center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX">
+                <td colspan="2" class="center">No hay Registros</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--*************************Modal Crear**************************-->
+
+
+<div id="CrearAgrupacion" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear Agrupación</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #agrupacionForm="ngForm">
+
+          <div class="form-group">
+            <label for="nombre">Nombre Agrupamiento
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="nombre" name="DataAgrupacion.nombre" [(ngModel)]="DataAgrupacion.nombre" #nameAgr="ngModel"
+              (keypress)="kPLetras($event);" minlength="5" maxlength="80" required
+              [ngClass]="{'is-invalid': !nameAgr.valid && (nameAgr.dirty || nameAgr.touched)}"/>
+            <span class="invalid-feedback" *ngIf="nameAgr.errors && (nameAgr.dirty || nameAgr.touched)">
+              <li *ngIf="nameAgr.errors.required">
+                El campo nombre Agrupamiento es obligatorio
+              </li>
+              <li *ngIf="nameAgr.errors.minlength">
+                El campo nombre Agrupamiento debe tener mas de 5 caracteres
+              </li>
+              <li *ngIf="nameAgr.errors.maxlength">
+                El campo nombre Agrupamiento no puede ser mayor a 20 caracteres
+              </li>
+            </span>
+          </div>
+
+        </form>
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringPuntos" placeholder="Buscar" [(ngModel)]="searchStringPuntos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempagePuntos" [(ngModel)]="itempagePuntos">
+                <option value="5" selected="selected">Puntos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-body table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="puntos">
+              <thead>
+                <tr>
+                  <th>Punto</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="onChange(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonPuntos | modalpuntosagrup: searchStringPuntos | paginate: { itemsPerPage: itempagePuntos, currentPage: per ,id: 'checkPuntos'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="checkbox" [checked]="data.checked" (change)="onChange(data, $event.target.checked)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="per = $event" id="checkPuntos"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmit(DataAgrupacion);" [disabled]="!agrupacionForm.valid || DataJsonPuntosSel.length === 0" data-dismiss="modal"
+            class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--************************* Fin Modal Crear******************************-->
+
+<!--*************************Modal Inactivar***********************************-->
+
+<!-- <div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar</h4>
+      </div>
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Seguro desea Inactivar con Id: {{id}} con Nombre: {{nombre}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="Inactivar(id, nombre);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+
+<!--********************** Fin Modal Inactivar*************************************-->
+
+<!--********************** Inicio Modal Modificar*************************************-->
+
+<div id="Modificar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Agrupación</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #editAgrupacionForm="ngForm">
+
+          <div class="form-group">
+            <label for="nombre">Nombre Agrupamiento
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="nombre" name="DataEditAgrupacion.nombre_agrupacion" [(ngModel)]="DataEditAgrupacion.nombre_agrupacion"
+              #nameAgru="ngModel" (keypress)="kPLetras($event);" minlength="5" maxlength="80" required
+              [ngClass]="{'is-invalid': !nameAgru.valid && (nameAgru.dirty || nameAgru.touched)}"/>
+            <span class="invalid-feedback" *ngIf="nameAgru.errors && (nameAgru.dirty || nameAgru.touched)">
+              <li *ngIf="nameAgru.errors.required">
+                El campo nombre Agrupamiento es obligatorio
+              </li>
+              <li *ngIf="nameAgru.errors.minlength">
+                El campo nombre Agrupamiento debe tener mas de 5 caracteres
+              </li>
+              <li *ngIf="nameAgru.errors.maxlength">
+                El campo nombre Agrupamiento no puede ser mayor a 20 caracteres
+              </li>
+            </span>
+          </div>
+
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringEditAgrupacion" placeholder="Buscar" [(ngModel)]="searchStringEditAgrupacion">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageEditAgrupacion" [(ngModel)]="itempageEditAgrupacion">
+                  <option value="5" selected="selected">Puntos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="Puntos">
+                <thead>
+                  <tr>
+                    <th>Permiso</th>
+                    <th class="center">Seleccionar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="onChange(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataJsonPuntos | permisos: searchStringEditAgrupacion | paginate: { itemsPerPage: itempageEditAgrupacion, currentPage: y ,id: 'checkPuntosMod'}">
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="checkbox" [checked]="data.checked" (change)="onChange(data, $event.target.checked)">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="y = $event" id="checkPuntosMod"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitModificar(DataEditAgrupacion);" [disabled]="!editAgrupacionForm.valid" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--
+<div id="Modificar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Rol</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #editRolesForm="ngForm">
+
+          <div class="form-group" [ngClass]="{'is-invalid': !nameRol.valid && (nameRol.dirty || nameRol.touched)}">
+            <label for="nombre">Nombre Rol
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="nombre" name="DataRol.nombre" [(ngModel)]="DataRol.nombre" #nameRol="ngModel"
+              (keypress)="kPLetras($event);" minlength="5" maxlength="80" required/>
+            <span class="invalid-feedback" *ngIf="nameRol.errors && (nameRol.dirty || nameRol.touched)">
+              <li *ngIf="nameRol.errors.required">
+                El campo nombre de Rol es obligatorio
+              </li>
+              <li *ngIf="nameRol.errors.minlength">
+                El campo nombre de Rol debe tener mas de 5 caracteres
+              </li>
+              <li *ngIf="nameRol.errors.maxlength">
+                El campo nombre de Rol no puede ser mayor a 20 caracteres
+              </li>
+            </span>
+          </div>
+
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringEditPermisos" placeholder="Buscar" [(ngModel)]="searchStringEditPermisos">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageEditPermisos" [(ngModel)]="itempageEditPermisos">
+                  <option value="5" selected="selected">Permisos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <table width="100%" class="table table-striped table-hover" id="permisos">
+              <thead>
+                <tr>
+                  <th>Permiso</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let data of DataPermisosRol | permisos: searchStringEditPermisos | paginate: { itemsPerPage: itempageEditPermisos, currentPage: y ,id: 'checkPermisoMod'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="checkbox" [checked]="data.checked" (change)="onChangeEdit(data.id, $event.target.checked)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls (pageChange)="y = $event" id="checkPermisoMod"></pagination-controls>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitModificar(DataRol);" [disabled]="!editRolesForm.valid" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LoadRoles()">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+
+<!--************************** Fin Modal Modificar**********************************-->

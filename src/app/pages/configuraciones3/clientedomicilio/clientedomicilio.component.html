@@ -1,0 +1,490 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+  <div class="row color_config">
+    <div class="col-lg-12" align="center">
+      <h1>Clientes Domicilio</h1>
+    </div>
+  </div>
+
+  <div class="row centrar">
+      <div class="col-md-12">
+    <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(187)"  uiSrefActive="active" (click)="LimpiarFormClienteDomicilio()" role="button" data-toggle="modal" data-target="#CrearClienteDomicilio"
+    data-placement="top" title="Crear Cliente Domicilio">
+      <a>
+        <span class="pull-left">Crear Clientes Domicilio</span>
+        <span class="pull-right">
+          <i class="fa fa-arrow-circle-right"></i>
+        </span>
+        <div class="clearfix"></div>
+      </a>
+    </div>
+    <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(188)"  [routerLink]="['clientedomicilioinactivos']">
+      <a>
+        <span class="pull-left">Clientes Domicilio Inactivos</span>
+        <span class="pull-right">
+          <i class="fa fa-arrow-circle-right"></i>
+        </span>
+        <div class="clearfix"></div>
+      </a>
+    </div>
+    </div>
+  </div>
+
+  <div class="tablaconfig">
+    <div class="centrar buscar-paginacionconfig">
+      <div class="buscar-paginacion2">
+        <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+      </div>
+      <div class="buscar-paginacion2">
+        <select class="form-control" [(ngModel)]="itempage">
+          <option value="5" selected="selected">Clientes Domicilio Por Página</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+
+      <div class="loading" *ngIf="loader">
+        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+      </div>
+
+      <div class="loadError" *ngIf="LoadError">
+        <div class="alert alert-danger">{{error}}</div>
+      </div>
+      <div *ngIf="LoadTabla && !noHayRegistros">
+        <div class="panel-body table-responsive">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Nit</th>
+                <th>Teléfono</th>
+                <th>Extension</th>
+                <th class="center" *ngIf="sidebarComponent.contienePermiso(189)">Inactivar</th>
+                <th class="center" *ngIf="sidebarComponent.contienePermiso(189)">Modificar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let data of DataClientesDomicilio | clientedomicilio : searchString | paginate: { itemsPerPage: itempage, currentPage: p }">
+                <td>{{data.nombre}}</td>
+                <td>{{data.nit}}</td>
+                <td>{{data.telefono}}</td>
+                <td>{{data.extension}}</td>
+                <td class="center" *ngIf="sidebarComponent.contienePermiso(189)">
+                    <a  (click)="bindingDataClienteDomicilio(data.id,data.nombre)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#Inactivar"
+                      data-placement="top" title="Inactivar">
+                      <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                    </a></td>
+                    <td class="center" *ngIf="sidebarComponent.contienePermiso(189)">
+                    <a  (click)="UpdateClienteDomicilio(data)" uiSrefActive="active" role="button" data-toggle="modal" data-target="#ModificarClienteDomicilio"
+                      data-placement="top" title="Modificar Cliente Domicilio">
+                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                    </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+        <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Nit</th>
+              <th>Teléfono</th>
+              <th>Extension</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="odd gradeX">
+              <td colspan="4" class="center">No hay Registros</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!--*************************Modal Inactivar***************************************************************************************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar Cliente Domicilio</h4>
+      </div>
+
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Esta seguro que desea Inactivar el Cliente Domicilio {{nombreCliente}}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="InactivarClienteDomicilio(idCliente, nombreCliente);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar***********************************************************************************-->
+
+
+
+<!--****************************************Modal Crear Cliente Domicilio*******************************************************-->
+
+<div id="CrearClienteDomicilio" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear Cliente Domicilio</h4>
+      </div>
+      <div class="modal-body">
+        <form #cliDomForm="ngForm">
+
+          <div class="row">
+              <div class="col-md-12 spadd">
+            <div class="form-group">
+              <label for="nombre">Nombre
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" id="nombre" name="DataClienteDom.nombre" [(ngModel)]="DataClienteDom.nombre" #nom="ngModel"
+                required [ngClass]="{'is-invalid': !nom.valid && (nom.dirty || nom.touched)}">
+              <span class="invalid-feedback" *ngIf="nom.errors && (nom.dirty || nom.touched)">
+                <li *ngIf=nom.errors.required>
+                  El campo Nombre es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12 spadd">
+            <div class="form-group">
+              <label for="direccion">Dirección
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" id="direccion" name="DataClienteDom.direccion" [(ngModel)]="DataClienteDom.direccion"
+                #dir="ngModel" required [ngClass]="{'is-invalid': !dir.valid && (dir.dirty || dir.touched)}">
+              <span class="invalid-feedback" *ngIf="dir.errors && (dir.dirty || dir.touched)">
+                <li *ngIf=dir.errors.required>
+                  El campo Dirección es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="telefono">Telefono
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="telefono" name="DataClienteDom.telefono" [(ngModel)]="DataClienteDom.telefono"
+                  #tel="ngModel" minlength="7" maxlength="10" required
+                  [ngClass]="{'is-invalid': !tel.valid && (tel.dirty || tel.touched)}">
+                <span class="invalid-feedback" *ngIf="tel.errors && (tel.dirty || tel.touched)">
+                  <li *ngIf=tel.errors.required>
+                    El campo Telefono es obligatorio
+                  </li>
+                  <li *ngIf="tel.errors.minlength">
+                    El campo Telefono debe ser mayor a 7 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="extension">Extension:</label>
+                <input type="text" class="form-control" id="extension" name="DataClienteDom.extension" [(ngModel)]="DataClienteDom.extension">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="telefono2">Telefono 2:</label>
+                <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="telefono2" name="DataClienteDom.telefono2" [(ngModel)]="DataClienteDom.telefono2"
+                  minlength="7" maxlength="10">
+              </div>
+            </div>
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="extension2">Extension 2:</label>
+                <input type="text" class="form-control" id="extension2" name="DataClienteDom.extension2" [(ngModel)]="DataClienteDom.extension2">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="cel">Celular:</label>
+                <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="cel" name="DataClienteDom.celular" [(ngModel)]="DataClienteDom.celular"
+                  minlength="7" maxlength="10">
+              </div>
+            </div>
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="fecnac">Fecha Nacimiento</label>
+                <my-date-picker class="valid" aria-placeholder="Fecha nacimiento" name="DataClienteDom.fecha" id="fecnac" [options]="myDatePickerOptions"
+                  [(ngModel)]="DataClienteDom.fecha" (dateChanged)="onDateChanged($event)" >
+                </my-date-picker>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="nit">Nit:</label>
+                <input type="text" (keypress)="kPNumerosPuntos($event)" class="form-control" id="nit" name="DataClienteDom.nit" #nit="ngModel"
+                  [(ngModel)]="DataClienteDom.nit"
+                  [ngClass]="{'is-invalid': !nit.valid && (nit.dirty || nit.touched)}">
+                <span class="invalid-feedback" *ngIf="nit.errors && (nit.dirty || nit.touched)">
+                  <li *ngIf=nit.errors.required>
+                    El campo Nit es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-md-8 spadd">
+              <div class="form-group" >
+                <label for="ema">Email:</label>
+                <input type="email" class="form-control" id="ema" name="DataClienteDom.email" [(ngModel)]="DataClienteDom.email"
+                #emai="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50"
+                [ngClass]="{'is-invalid': !emai.valid && (emai.dirty || emai.touched)}">
+                <span class="invalid-feedback" *ngIf="emai.errors && (emai.dirty || emai.touched)">
+                  <li *ngIf=emai.errors.required>
+                    El campo email es obligatorio
+                  </li>
+                  <li *ngIf=emai.errors.email>
+                    El campo email es invalido
+                  </li>
+                  <li *ngIf=emai.errors.minlength>
+                    El campo email debe ser mayor a 5 caracteres*
+                  </li>
+                  <li *ngIf="emai.errors">
+                    El campo email debe ser de la forma
+                    <i>ejemplo@dominio.com</i>
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="barrio">Barrio:</label>
+                <input type="text" class="form-control" id="barrio" name="DataClienteDom.barrio" [(ngModel)]="DataClienteDom.barrio">
+              </div>
+            </div>
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="senales">Señales:</label>
+                <input type="text" class="form-control" id="senales" name="DataClienteDom.senales" [(ngModel)]="DataClienteDom.senales">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmit(DataClienteDom);" [disabled]="!cliDomForm.valid" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--**************************************** Fin Modal Crear Cliente Domicilio*******************************************************-->
+
+<!--****************************************Modal Modificar Cliente Domicilio*******************************************************-->
+
+<div id="ModificarClienteDomicilio" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Cliente Domicilio</h4>
+      </div>
+      <div class="modal-body">
+        <form #cliDomEditForm="ngForm">
+          <div class="row">
+              <div class="col-md-12 spadd">
+            <div class="form-group">
+              <label for="nombre">Nombre
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" id="nombre" name="DataNewClienteDom.newNombre" [(ngModel)]="DataNewClienteDom.newNombre"
+                #nomb="ngModel" required [ngClass]="{'is-invalid': !nomb.valid && (nomb.dirty || nomb.touched)}">
+              <span class="invalid-feedback" *ngIf="nomb.errors && (nomb.dirty || nomb.touched)">
+                <li *ngIf=nomb.errors.required>
+                  El campo Nombre es obligatorio
+                </li>
+              </span>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12 spadd">
+            <div class="form-group">
+              <label for="direccion">Direccion
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" id="direccion" name="DataNewClienteDom.direccion" [(ngModel)]="DataNewClienteDom.direccion"
+                #dire="ngModel" required [ngClass]="{'is-invalid': !dire.valid && (dire.dirty || dire.touched)}">
+              <span class="invalid-feedback" *ngIf="dire.errors && (dire.dirty || dire.touched)">
+                <li *ngIf=dire.errors.required>
+                  El campo Dirección es obligatorio
+                </li>
+              </span>
+            </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="telefono">Telefono
+                  <b class="asterisco">*</b>:</label>
+                <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="telefono" name="DataNewClienteDom.newTelefono"
+                  [(ngModel)]="DataNewClienteDom.newTelefono" #tele="ngModel" minlength="7" maxlength="10" required
+                  [ngClass]="{'is-invalid': !tele.valid && (tele.dirty || tele.touched)}">
+                <span class="invalid-feedback" *ngIf="tele.errors && (tele.dirty || tele.touched)">
+                  <li *ngIf=tele.errors.required>
+                    El campo Telefono es obligatorio
+                  </li>
+                  <li *ngIf="tele.errors.minlength">
+                    El campo Telefono debe ser mayor a 7 caracteres*
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="extension">Extension:</label>
+                <input type="text" class="form-control" id="extension" name="DataNewClienteDom.newExtension" [(ngModel)]="DataNewClienteDom.newExtension">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="telefono2">Telefono 2:</label>
+                <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="telefono2" name="DataNewClienteDom.telefono2"
+                  [(ngModel)]="DataNewClienteDom.telefono2" minlength="7" maxlength="10">
+              </div>
+            </div>
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="extension2">Extension 2:</label>
+                <input type="text" class="form-control" id="extension2" name="DataNewClienteDom.extension2" [(ngModel)]="DataNewClienteDom.extension2">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="cel">Celular:</label>
+                <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="cel" name="DataNewClienteDom.celular" [(ngModel)]="DataNewClienteDom.celular"
+                  minlength="7" maxlength="10">
+              </div>
+            </div>
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="fecnac">Fecha Nacimiento</label>
+                <my-date-picker class="valid" aria-placeholder="Fecha nacimiento" name="DataNewClienteDom.fecha" id="fecnac" [options]="myDatePickerOptions"
+                  [(ngModel)]="DataNewClienteDom.fecha" (dateChanged)="onDateChanged2($event)" >
+                </my-date-picker>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="nit">Nit:</label>
+                <input type="text" (keypress)="kPNumerosPuntos($event)" class="form-control" id="nit" name="DataNewClienteDom.newNit" [(ngModel)]="DataNewClienteDom.newNit"
+                  #newnit="ngModel" [ngClass]="{'is-invalid': !newnit.valid && (newnit.dirty || newnit.touched)}">
+                <span class="invalid-feedback" *ngIf="newnit.errors && (newnit.dirty || newnit.touched)">
+                  <li *ngIf=newnit.errors.required>
+                    El campo Nit es obligatorio
+                  </li>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-8 spadd">
+              <div class="form-group" >
+                <label for="ema">Email:</label>
+                <input type="email" class="form-control" id="ema" name="DataNewClienteDom.email" [(ngModel)]="DataNewClienteDom.email"
+                #emal="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50"
+                [ngClass]="{'is-invalid': !emal.valid && (emal.dirty || emal.touched)}">
+                <span class="invalid-feedback" *ngIf="emal.errors && (emal.dirty || emal.touched)">
+                  <li *ngIf=emal.errors.required>
+                    El campo email es obligatorio
+                  </li>
+                  <li *ngIf=emal.errors.email>
+                    El campo email es invalido
+                  </li>
+                  <li *ngIf=emal.errors.minlength>
+                    El campo email debe ser mayor a 5 caracteres*
+                  </li>
+                  <li *ngIf="emal.errors">
+                    El campo email debe ser de la forma
+                    <i>ejemplo@dominio.com</i>
+                  </li>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 spadd">
+              <div class="form-group">
+                <label for="barrio">Barrio:</label>
+                <input type="text" class="form-control" id="barrio" name="DataNewClienteDom.barrio" [(ngModel)]="DataNewClienteDom.barrio">
+              </div>
+            </div>
+            <div class="col-md-8 spadd">
+              <div class="form-group">
+                <label for="senales">Señales:</label>
+                <input type="text" class="form-control" id="senales" name="DataNewClienteDom.senales" [(ngModel)]="DataNewClienteDom.senales">
+              </div>
+            </div>
+          </div>
+        </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="onSubmitUpdate(DataNewClienteDom);" data-dismiss="modal" [disabled]="!cliDomEditForm.valid" class="btnbutton">Modificar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--**************************************** Fin Modal Modificar Cliente Domicilio*******************************************************-->

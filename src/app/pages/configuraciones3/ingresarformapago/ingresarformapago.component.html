@@ -1,0 +1,211 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Forma de pago</h1>
+        <h6>Grupo: {{nombreGrupoFP}}</h6>
+      </div>
+    </div>
+
+    <form #formapagoForm="ngForm">
+      <br>
+      <div class="caja_cliente">
+        <div class="row">
+          <span class="tiulocaja-configuraciones">Nombre</span>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="nombre">Nombre
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataNewFormaPago.nombre" class="form-control" id="nombre" [(ngModel)]="DataNewFormaPago.nombre"
+                #nombre="ngModel" minlength="2" maxlength="100" required
+                [ngClass]="{'is-invalid': !nombre.valid && (nombre.dirty || nombre.touched)}"/>
+              <span class="invalid-feedback" *ngIf="nombre.errors && (nombre.dirty || nombre.touched)">
+                <li *ngIf=nombre.errors.required>
+                  El campo Nombre es obligatorio
+                </li>
+                <li *ngIf="nombre.errors.minlength">
+                  El campo Nombre debe ser mayor a 2 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="cambio">1. El cambio va a otros ingresos
+              <b class="asterisco">*</b>:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="cambotringsi" name="DataNewFormaPago.cambioOtrosIng" [(ngModel)]="DataNewFormaPago.cambioOtrosIng" [value]=1
+              required>
+            <label for="cambotringsi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="cambotringno" name="DataNewFormaPago.cambioOtrosIng" [(ngModel)]="DataNewFormaPago.cambioOtrosIng" [value]=0
+              required>
+            <label for="cambotringno">No</label>
+          </div>
+        </div>
+        <br>
+        <div>
+          <div class="row" *ngIf="DataNewFormaPago.cambioOtrosIng === 0">
+            <div class="col-md-4">
+              <label for="entrega">
+                <li>Entrega cambio de vueltas?
+                  <b class="asterisco">*</b>:</li>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="entcambiosi" name="DataNewFormaPago.entregaCambio" [(ngModel)]="DataNewFormaPago.entregaCambio" [value]=1
+                required>
+              <label for="entcambiosi">Si</label>
+            </div>
+            <div class="col-md-3">
+              <input type="radio" id="entcambiono" name="DataNewFormaPago.entregaCambio" [(ngModel)]="DataNewFormaPago.entregaCambio" [value]=0
+                required>
+              <label for="entcambiono">No</label>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="conver">2. Requiere conversión a pesos?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="conversi" name="DataNewFormaPago.conversion" [(ngModel)]="DataNewFormaPago.conversion" [value]=1 required>
+            <label for="conversi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="converno" name="DataNewFormaPago.conversion" [(ngModel)]="DataNewFormaPago.conversion" [value]=0 required>
+            <label for="converno">No</label>
+          </div>
+        </div>
+        <br>
+        <div class="row" *ngIf="DataNewFormaPago.conversion === 1">
+          <div class="col-md-4">
+            <label for="cajconver">3. El cajero asigna la conversion?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="cajconversi" name="DataNewFormaPago.cajeroconversion" [(ngModel)]="DataNewFormaPago.cajeroconversion"
+              [value]=1 required>
+            <label for="cajconversi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="cajconverno" name="DataNewFormaPago.cajeroconversion" [(ngModel)]="DataNewFormaPago.cajeroconversion"
+              [value]=0 required>
+            <label for="cajconverno">No</label>
+          </div>
+        </div>
+        <div class="row" *ngIf="DataNewFormaPago.conversion === 1 && DataNewFormaPago.cajeroconversion === 0">
+          <div class="col-md-4">
+            <label for="tasa"> Tasa:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="text" (keypress)="kPNumeros($event)" class="form-control" id="tasa" name="DataNewFormaPago.tasa" [(ngModel)]="DataNewFormaPago.tasa"
+              minlength="1" maxlength="16" required>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="comple">4. Con datos complementarios?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="complesi" name="DataNewFormaPago.complementarios" [(ngModel)]="DataNewFormaPago.complementarios" [value]=1
+              required>
+            <label for="complesi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="compleno" name="DataNewFormaPago.complementarios" [(ngModel)]="DataNewFormaPago.complementarios" [value]=0
+              required>
+            <label for="compleno">No</label>
+          </div>
+        </div>
+        <div *ngIf="DataNewFormaPago.complementarios === 1">
+          <br>
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <label for="dato1">
+                <li>dato 1:</li>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="dato1" name="DataNewFormaPago.dato1" [(ngModel)]="DataNewFormaPago.dato1">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <label for="dato2">
+                <li>dato 2:</li>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="dato2" name="DataNewFormaPago.dato2" [(ngModel)]="DataNewFormaPago.dato2">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <label for="dato3">
+                <li>dato 3:</li>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="dato3" name="DataNewFormaPago.dato3" [(ngModel)]="DataNewFormaPago.dato3">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <label for="dato4">
+                <li>dato 4:</li>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="dato4" name="DataNewFormaPago.dato4" [(ngModel)]="DataNewFormaPago.dato4">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <label for="dato5">
+                <li>dato 5:</li>
+              </label>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="dato5" name="DataNewFormaPago.dato5" [(ngModel)]="DataNewFormaPago.dato5">
+            </div>
+          </div>
+          <br>
+        </div>
+        <div class="row" *ngIf="DataNewFormaPago.complementarios === 1">
+          <div class="col-md-4">
+            <label for="impre">5. Imprime los datos en factura?:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="impresi" name="DataNewFormaPago.impresion" [(ngModel)]="DataNewFormaPago.impresion" [value]=1 required>
+            <label for="impresi">Si</label>
+          </div>
+          <div class="col-md-3">
+            <input type="radio" id="impreno" name="DataNewFormaPago.impresion" [(ngModel)]="DataNewFormaPago.impresion" [value]=0 required>
+            <label for="impreno">No</label>
+          </div>
+        </div>
+
+      </div>
+
+
+    </form>
+
+    <div class="centrar">
+      <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+      <button type="submit" (click)="onSubmit(DataNewFormaPago)" [disabled]="!formapagoForm.valid || (DataNewFormaPago.complementarios === 1 && (!DataNewFormaPago.dato1 && !DataNewFormaPago.dato2 && !DataNewFormaPago.dato3 && !DataNewFormaPago.dato4 && !DataNewFormaPago.dato5))"
+        class="btnbutton button">Guardar</button>
+    </div>
+  </div>
+</div>

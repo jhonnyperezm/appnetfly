@@ -1,0 +1,345 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Grupos de empaque</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(93)" (click)="LimpiarFormGrupoEmpaque()" uiSrefActive="active" role="button" data-toggle="modal" data-target="#CrearGrupoEmp"
+        data-placement="top" title="Crear Grupo">
+          <a>
+            <span class="pull-left">Crear Grupo de empaque</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(94)" [routerLink]="['gruposempaqueinactivos']">
+          <a>
+            <span class="pull-left">Grupos de empaque Inactivos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchStringGrupo" placeholder="Buscar" [(ngModel)]="searchStringGrupo">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempageGrupo" [(ngModel)]="itempageGrupo">
+            <option value="5" selected="selected">Grupos de empaque Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+
+        <div class="loading" *ngIf="loader">
+          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        </div>
+
+        <div class="loadError" *ngIf="LoadError">
+          <div class="alert alert-danger">{{error}}</div>
+        </div>
+        <div *ngIf="LoadTabla && !noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Grupo</th>
+                <th class="center" *ngIf="sidebarComponent.contienePermiso(98)">Inactivar</th>
+                <th class="center" *ngIf="sidebarComponent.contienePermiso(96)">Modificar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let data of DataJson | gruposempaque: searchStringGrupo | paginate: { itemsPerPage: itempageGrupo, currentPage: p }">
+                <td>{{data.nombre}}</td>
+                <td class="center" *ngIf="sidebarComponent.contienePermiso(98)">
+                    <a (click)="bindingDataInactivar(data.id,data.nombre)" uiSrefActive="active"
+                      role="button" data-toggle="modal" data-target="#Inactivar" data-placement="top" title="Inactivar">
+                      <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                    </a></td>
+                    <td class="center" *ngIf="sidebarComponent.contienePermiso(96)">
+                    <a (click)="bindingDataModificar(data)" uiSrefActive="active" role="button"
+                      data-toggle="modal" data-target="#ModificarGrupoEmp" title="Modificar">
+                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                    </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+        <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Grupo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX">
+                <td colspan="1" class="center">No hay Registros</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--*************************Modal Inactivar***********************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar grupo de empaque</h4>
+      </div>
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Seguro desea Inactivar el grupo de empaque con Id: {{ idInactivar }} con Nombre: {{ nombreInactivar }}</b>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="Inactivar(idInactivar, nombreInactivar);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar*************************************-->
+
+
+<!--*************************Modal Crear**************************-->
+
+<div id="CrearGrupoEmp" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear Grupo de empaque</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #articulosForm="ngForm">
+
+          <div class="row">
+            <div class="col-md-8">
+              <label for="nombre">Nombre Grupo de Empaque
+                <b class="asterisco">*</b>:</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+
+                <input type="text" class="form-control" id="nombre" name="DataNewGrupoEmp.nombre" [(ngModel)]="DataNewGrupoEmp.nombre" #nameGrupoEmp="ngModel"
+                  minlength="5" maxlength="80" required
+                  [ngClass]="{'is-invalid': !nameGrupoEmp.valid && (nameGrupoEmp.dirty || nameGrupoEmp.touched)}"/>
+                <span class="invalid-feedback" *ngIf="nameGrupoEmp.errors && (nameGrupoEmp.dirty || nameGrupoEmp.touched)">
+                  <li *ngIf="nameGrupoEmp.errors.required">
+                    El campo nombre Grupo de Empaque es obligatorio
+                  </li>
+                  <li *ngIf="nameGrupoEmp.errors.minlength">
+                    El campo nombre Grupo de Empaque debe tener mas de 5 caracteres
+                  </li>
+                  <li *ngIf="nameGrupoEmp.errors.maxlength">
+                    El campo nombre Grupo de Empaque no puede ser mayor a 20 caracteres
+                  </li>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <button *ngIf="sidebarComponent.contienePermiso(95)" (click)="clickBotonImportar();" [disabled]="!DataNewGrupoEmp.nombre"
+                class=" btnbutton">Importar</button>
+            </div>
+          </div>
+          <div class="row" *ngIf="clickImportar">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="nombre">Grupos de Empaque
+                  <b class="asterisco">*</b>:</label>
+                <select class="form-control" name="DataNewGrupoEmp.grupo_importar" [(ngModel)]="DataNewGrupoEmp.grupo_importar" #gruimpo="ngModel"
+                  required>
+                  <option [value]=""></option>
+                  <option [value]="gru.id" *ngFor="let gru of DataJson">{{gru.nombre}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br>
+        <div class="tablaconfig" *ngIf="!clickImportar">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringArtGrupo" placeholder="Buscar" [(ngModel)]="searchStringArtGrupo">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageArtGrupo" [(ngModel)]="itempageArtGrupo">
+                <option value="5" selected="selected">Articulos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-body table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="permisos">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Cantidad</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let data of DataJsonArticulos | modalarticulosgru: searchStringArtGrupo | paginate: { itemsPerPage: itempageArtGrupo, currentPage: ag ,id: 'artgrupo'}">
+                  <td>{{data.nombre}}</td>
+                  <td contenteditable="true" class="texttable" (keypress)="kPNumeros($event)" (blur)="updateProductoModal(data, 'cantidad', $event)">{{data.cantidad}}
+                  </td>
+                  <td class="center">
+                    <input type="checkbox" [disabled]="data.cantidad==''|| data.cantidad == 0" [checked]="data.checked" (change)="onChange(data, $event.target.checked)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="ag = $event" id="artgrupo"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button *ngIf="clickImportar" (click)="onSubmit(DataNewGrupoEmp, 1);" [disabled]="!articulosForm.valid" data-dismiss="modal"
+            class=" btnbutton">Aceptar</button>
+          <button *ngIf="!clickImportar" (click)="onSubmit(DataNewGrupoEmp, 0);" [disabled]="!articulosForm.valid || DataJsonArtSel.length === 0"
+            data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--************************* Fin Modal Crear******************************-->
+
+
+<!--********************** Inicio Modal Modificar*************************************-->
+
+<div id="ModificarGrupoEmp" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Grupo de empaque</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #editGruposForm="ngForm">
+
+          <div class="form-group">
+            <label for="nombre">Nombre Grupo de Empaque
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" id="nombre" name="DataModificar.nombreGrupo" [(ngModel)]="DataModificar.nombreGrupo"
+              #nameGrupoEmpa="ngModel" minlength="5" maxlength="80" required
+              [ngClass]="{'is-invalid': !nameGrupoEmpa.valid && (nameGrupoEmpa.dirty || nameGrupoEmpa.touched)}"/>
+            <span class="invalid-feedback" *ngIf="nameGrupoEmpa.errors && (nameGrupoEmpa.dirty || nameGrupoEmpa.touched)">
+              <li *ngIf="nameGrupoEmpa.errors.required">
+                El campo nombre Grupo de Empaque es obligatorio
+              </li>
+              <li *ngIf="nameGrupoEmpa.errors.minlength">
+                El campo nombre Grupo de Empaque debe tener mas de 5 caracteres
+              </li>
+              <li *ngIf="nameGrupoEmpa.errors.maxlength">
+                El campo nombre Grupo de Empaque no puede ser mayor a 20 caracteres
+              </li>
+            </span>
+          </div>
+
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringEditGrupo" placeholder="Buscar" [(ngModel)]="searchStringEditGrupo">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageEditGrupo" [(ngModel)]="itempageEditGrupo">
+                  <option value="5" selected="selected">Articulos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="panel-body table-responsive">
+              <table width="100%" class="table table-striped table-hover" id="permisos">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th class="center">Seleccionar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="odd gradeX" *ngFor="let data of DataArticulosGrupo |  paginate: { itemsPerPage: itempageEditGrupo, currentPage: eg ,id: 'editgrupo'}">
+                    <td>{{data.nombre}}</td>
+                    <td contenteditable="true" class="texttable" (keypress)="kPNumeros($event)" (blur)="updateEditProductoModal(data, 'cantidad', $event)">{{data.cantidad}}
+                    </td>
+                    <td class="center">
+                      <input type="checkbox" [disabled]="data.cantidad==''|| data.cantidad == 0" [checked]="data.checked" (change)="onChangeEdit(data, $event.target.checked)">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="eg = $event" id="editgrupo"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitModificar(DataModificar);" [disabled]="!editGruposForm.valid" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LoadGruposEmpaque()">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--************************** Fin Modal Modificar**********************************-->

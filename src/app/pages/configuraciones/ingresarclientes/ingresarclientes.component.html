@@ -1,0 +1,955 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Clientes</h1>
+      </div>
+    </div>
+
+    <p></p>
+    <!-- <div>
+      <div class="caja_cliente"> -->
+    <form #clienteUnoForm="ngForm" (ngSubmit)="Siguiente();">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="razon">Razon social
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.razonsocial" class="form-control" id="razon"
+              [(ngModel)]="DataNewCliente.razonsocial" #razon="ngModel" minlength="2" maxlength="100" required
+              [ngClass]="{'is-invalid': !razon.valid && (razon.dirty || razon.touched)}" />
+            <span class="invalid-feedback" *ngIf="razon.errors && (razon.dirty || razon.touched)">
+              <li *ngIf=razon.errors.required>
+                El campo razon social es obligatorio
+              </li>
+              <li *ngIf="razon.errors.minlength">
+                El campo razon social debe ser mayor a 2 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="nit">Nit
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.nit" class="form-control" id="DataNewCliente.nit"
+              [(ngModel)]="DataNewCliente.nit"
+              (ngModelChange)="colocarPuntos(DataNewCliente.nit=$event);calcularDigito(DataNewCliente.nit)"
+              #nitcliente="ngModel" (keypress)="kPNumeros($event)" minlength="4" maxlength="15" required
+              [ngClass]="{'is-invalid': !nitcliente.valid && (nitcliente.dirty ||nitcliente.touched)}">
+
+            <span class="invalid-feedback" *ngIf="nitcliente.errors && (nitcliente.dirty || nitcliente.touched)">
+              <li *ngIf=nitcliente.errors.required>
+                El campo Nit es obligatorio
+              </li>
+              <li *ngIf="nitcliente.errors.minlength">
+                El campo Nit debe ser mayor a 4 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="div">Div
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.digito" class="form-control" id="digito"
+              [(ngModel)]="DataNewCliente.digito" #dig="ngModel" (keypress)="kPNumeros($event)" minlength="1"
+              maxlength="1" required [ngClass]="{'is-invalid': !dig.valid && (dig.dirty ||dig.touched)}">
+            <span class="invalid-feedback" *ngIf="dig.errors && (dig.dirty || dig.touched)">
+              <li *ngIf=dig.errors.required>
+                El campo digito es obligatorio
+              </li>
+              <li *ngIf="dig.errors.minlength">
+                El campo digito debe ser de 1 caracter*
+              </li>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="correo">Correo Electronico
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.correo" class="form-control" id="correo"
+              [(ngModel)]="DataNewCliente.correo" #cor="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+              minlength="5" maxlength="50" required
+              [ngClass]="{'is-invalid': !cor.valid && (cor.dirty || cor.touched)}" />
+            <span class="invalid-feedback" *ngIf="cor.errors && (cor.dirty || cor.touched)">
+              <li *ngIf=cor.errors.required>
+                El campo correo es obligatorio
+              </li>
+              <li *ngIf=cor.errors.minlength>
+                El campo correo debe ser mayor a 5 caracteres*
+              </li>
+              <li *ngIf="cor.errors">
+                El campo correo debe ser de la forma
+                <i>ejemplo@dominio.com</i>
+              </li>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="direccion">Dirección
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.direccion" class="form-control" id="direccion"
+              [(ngModel)]="DataNewCliente.direccion" #dir="ngModel" minlength="6" maxlength="100"
+              (focus)="focusDireccion()" data-toggle="modal" data-target="#MyModal" readonly required
+              [ngClass]="{'is-invalid': !dir.valid && (dir.dirty || dir.touched)}" />
+            <span class="invalid-feedback" *ngIf="dir.errors && (dir.dirty || dir.touched)">
+              <li *ngIf=dir.errors.required>
+                El campo Direccion es obligatorio
+              </li>
+              <li *ngIf=dir.errors.minlength>
+                El campo Direccion debe ser mayor a 6 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="tel">Telefono (Fijo / Celular)
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.telefono" class="form-control" id="telefono"
+              [(ngModel)]="DataNewCliente.telefono" #tel="ngModel" minlength="7" maxlength="10"
+              (keypress)="kPNumeros($event)" required
+              [ngClass]="{'is-invalid': !tel.valid && (tel.dirty || tel.touched)}" />
+            <span class="invalid-feedback" *ngIf="tel.errors && (tel.dirty || tel.touched)">
+              <li *ngIf=tel.errors.required>
+                El campo telefono es obligatorio
+              </li>
+              <li *ngIf=tel.errors.minlength>
+                El campo telefono debe ser mayor a 6 caracteres*
+              </li>
+              <li *ngIf=tel.errors.maxlength>
+                El campo telefono no debe ser mayor a 7 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <!-- <div class="col-md-2">
+              <div class="form-group">
+                <label for="extension">Extension:</label>
+                <input type="text" name="DataNewCliente.extension" class="form-control" id="extension"
+                  [(ngModel)]="DataNewCliente.extension" min="0" max="999999999999" (keypress)="kPNumeros($event)" />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="celular">Celular:</label>
+                <input type="text" name="DataNewCliente.celular" class="form-control" id="celular"
+                  [(ngModel)]="DataNewCliente.celular" #cel="ngModel" (keypress)="kPNumeros($event)" minlength="10"
+                  maxlength="10" [ngClass]="{'is-invalid': !cel.valid && (cel.dirty || cel.touched)}" />
+                <span class="invalid-feedback" *ngIf="cel.errors && (cel.dirty || cel.touched)">
+                  <li *ngIf=cel.errors.minlength>
+                    El campo celular debe ser mayor a 10 digitos*
+                  </li>
+                  <li *ngIf=cel.errors.maxlength>
+                    El campo celular no debe ser mayor a 10 digitos*
+                  </li>
+                </span>
+              </div>
+            </div> -->
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="propietario">Nombre del Propietario o Gerente:</label>
+            <input type="text" name="DataNewCliente.propietario" class="form-control" id="propietario"
+              [(ngModel)]="DataNewCliente.propietario" #pro="ngModel" minlength="3" maxlength="100"
+              [ngClass]="{'is-invalid': !pro.valid && (pro.dirty || pro.touched)}" />
+            <span class="invalid-feedback" *ngIf="pro.errors && (pro.dirty || pro.touched)">
+              <li *ngIf=pro.errors.required>
+                El campo nombre del propietario es obligatorio
+              </li>
+              <li *ngIf=pro.errors.minlength>
+                El campo nombre del propietario debe ser mayor a 6 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="celular">Correo del Propietario:</label>
+            <input type="text" name="DataNewCliente.correo_propietario" class="form-control" id="correo_propietario"
+              #corpro="ngModel" minlength="5" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" maxlength="50"
+              [(ngModel)]="DataNewCliente.correo_propietario"
+              [ngClass]="{'is-invalid': !corpro.valid && (corpro.dirty || corpro.touched)}" />
+            <span class="invalid-feedback" *ngIf="corpro.errors && (corpro.dirty || corpro.touched)">
+              <li *ngIf=corpro.errors.minlength>
+                El campo correo del propietario debe ser mayor a 6 caracteres*
+              </li>
+              <li *ngIf="corpro.errors">
+                El campo correo del propietario debe ser de la forma
+                <i>ejemplo@dominio.com</i>
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="celular">Telefono del Propietario:</label>
+            <input type="text" name="DataNewCliente.telefono_propietario" class="form-control" minlength="7"
+              maxlength="13" #telpro="ngModel" (keypress)="kPNumeros($event)"
+              [(ngModel)]="DataNewCliente.telefono_propietario"
+              [ngClass]="{'is-invalid': !telpro.valid && (telpro.dirty || telpro.touched)}" />
+            <span class="invalid-feedback" *ngIf="telpro.errors && (telpro.dirty || telpro.touched)">
+              <li *ngIf=telpro.errors.minlength>
+                El campo telefono del propietario debe ser mayor a 6 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="representantelegal">Nombre del Representante Legal
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.representantelegal" class="form-control" id="representantelegal"
+              minlength="3" maxlength="100" [(ngModel)]="DataNewCliente.representantelegal" #rep="ngModel" required
+              [ngClass]="{'is-invalid': !rep.valid && (rep.dirty || rep.touched)}" />
+            <span class="invalid-feedback" *ngIf="rep.errors && (rep.dirty || rep.touched)">
+              <li *ngIf=rep.errors.required>
+                El campo nombre de representante legal es obligatorio
+              </li>
+              <li *ngIf=rep.errors.minlength>
+                El campo nombre de representante debe ser mayor a 6 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="documento_representantelegal">Documento del Representante
+              <b class="asterisco">*</b>:</label>
+            <input type="text" name="DataNewCliente.documento_representantelegal" class="form-control"
+              id="documento_representantelegal" (keypress)="kPNumeros($event)" minlength="6" maxlength="11"
+              [(ngModel)]="DataNewCliente.documento_representantelegal" #docrep="ngModel" required
+              [ngClass]="{'is-invalid': !docrep.valid && (docrep.dirty || docrep.touched)}" />
+            <span class="invalid-feedback" *ngIf="docrep.errors && (docrep.dirty ||docrep.touched)">
+              <li *ngIf=docrep.errors.required>
+                El campo documento de representante legal es obligatorio
+              </li>
+              <li *ngIf=docrep.errors.minlength>
+                El campo documento de representante debe ser mayor a 6 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="Pais">Pais
+              <b class="asterisco">*</b>:</label>
+            <select class="form-control" [(ngModel)]="DataNewCliente.id_pais" name="DataNewCliente.id_pais"
+              (change)="loadDepartamento(DataNewCliente.id_pais)" #pais="ngModel" required
+              [ngClass]="{'is-invalid': !pais.valid && (pais.dirty || pais.touched)}">
+              <option [value]=""></option>
+              <option [value]="paises.id" *ngFor="let paises of DataArrayPaises">{{paises.nombre}}</option>
+            </select>
+            <span class="invalid-feedback" *ngIf="pais.errors && (pais.dirty || pais.touched)">
+              <li *ngIf="pais.errors.required">
+                El campo Pais es obligatorio
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="departamento">Departamento
+              <b class="asterisco">*</b>:</label>
+            <select class="form-control" id="id_departamento" [(ngModel)]="DataNewCliente.id_departamento"
+              name="DataNewCliente.id_departamento" (ngModelChange)="loadMunicipio($event)" #dep="ngModel" required
+              [ngClass]="{'is-invalid': !dep.valid && (dep.dirty || dep.touched)}">
+              <option [value]=""></option>
+              <option *ngFor="let departamentos of DataArrayDepartamentos" [value]="departamentos.id">
+                {{departamentos.nombre}}</option>
+            </select>
+            <span class="invalid-feedback" *ngIf="dep.errors && (dep.dirty || dep.touched)">
+              <li *ngIf=dep.errors.required>
+                El campo Departamento es obligatorio
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="municipio">Municipio
+              <b class="asterisco">*</b>:</label>
+            <select class="form-control" id="id_municipio" [(ngModel)]="DataNewCliente.id_municipio"
+              name="DataNewCliente.id_municipio" #mun="ngModel" required
+              [ngClass]="{'is-invalid': !mun.valid && (mun.dirty || mun.touched)}">
+              <option [value]=""></option>
+              <option *ngFor="let municipios of DataArrayMunicipios" [value]="municipios.id">{{municipios.nombre}}
+              </option>
+            </select>
+            <span class="invalid-feedback" *ngIf="mun.errors && (mun.dirty || mun.touched)">
+              <li *ngIf=mun.errors.required>
+                El campo Municipio es obligatorio
+              </li>
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <!--******************* Datos tokenEmpresa y tokenPassword ***********************-->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="tokenEmpresa">Token Empresa</label>
+
+            <input type="text" name="DataNewCliente.tokenEmpresa" class="form-control" id="tokenEmpresa" minlength="3"
+              maxlength="100" [(ngModel)]="DataNewCliente.tokenEmpresa" #tke="ngModel"
+              [ngClass]="{'is-invalid': !tke.valid && (tke.dirty || tke.touched)}" />
+            <span class="invalid-feedback" *ngIf="tke.errors && (tke.dirty || tke.touched)">
+
+              <li *ngIf=tke.errors.minlength>
+                El campo Token Empresa debe ser mayor a 3 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="tokenEmpresa">Token Password</label>
+
+            <input type="text" name="DataNewCliente.tokenPassword" class="form-control" id="tokenPassdword"
+              minlength="3" maxlength="100" [(ngModel)]="DataNewCliente.tokenPassword" #tkp="ngModel"
+              [ngClass]="{'is-invalid': !tkp.valid && (tkp.dirty || tkp.touched)}" />
+            <span class="invalid-feedback" *ngIf="tkp.errors && (tkp.dirty || tkp.touched)">
+
+              <li *ngIf=tkp.errors.minlength>
+                El campo Token Password debe ser mayor a 3 caracteres*
+              </li>
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <div>
+        <div class="caja_cliente">
+          <div class="row">
+            <div class="col-md-4">
+              <label>Es franquiciador?
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="frdorsi" (change)="validarFranquiciador(DataNewCliente.franquiciador)"
+                name="DataNewCliente.franquiciador" [(ngModel)]="DataNewCliente.franquiciador"
+                [disabled]="DataNewCliente.franquiciado == 1" [value]=1 required>
+              <label for="frdorsi">Si</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="frdorno" (change)="validarFranquiciador(DataNewCliente.franquiciador)"
+                name="DataNewCliente.franquiciador" [(ngModel)]="DataNewCliente.franquiciador"
+                [disabled]="DataNewCliente.franquiciado == 1" [value]=0 required>
+              <label for="frdorno">No</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label>Es franquiciado?
+                <b class="asterisco">*</b>:</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="fransi" (change)="validarFranquiciado(DataNewCliente.franquiciado)"
+                name="DataNewCliente.franquiciado" [(ngModel)]="DataNewCliente.franquiciado"
+                [disabled]="DataNewCliente.franquiciador == 1" [value]=1 required>
+              <label for="fransi">Si</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="franno" (change)="validarFranquiciado(DataNewCliente.franquiciado)"
+                name="DataNewCliente.franquiciado" [(ngModel)]="DataNewCliente.franquiciado"
+                [disabled]="DataNewCliente.franquiciador == 1" [value]=0 required>
+              <label for="franno">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+
+      <div class="caja_cliente">
+        <span class="tiulocaja-configuraciones">Marcas</span>
+
+        <div class="row">
+          <div class="botonesActivar">
+            <div class="btnrouterlinkconfig" (click)="LimpiarFormMarcas()" data-toggle="modal" data-target="#CrearMarca" title="Crear Marca">
+              <a>
+                <span class="pull-center">Crear</span>
+              </a>
+            </div>
+            <div (click)="SetMarcasInactivas()" class="btnrouterlinkconfig" *ngIf="!MarcasInactivas">
+              <a>
+                <span class="pull-center">Activas</span>
+              </a>
+            </div>
+            <div (click)="SetMarcasInactivas()" class="btnrouterlinkconfig" *ngIf="MarcasInactivas">
+              <a>
+                <span class="pull-center">Inactivas</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="ListaMarcas.length>=1">
+          <div class="col-md-12">
+            <div class="tablaconfig">
+              <div class="centrar buscar-paginacionconfig">
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchStringTMarcas" placeholder="Buscar"
+                    [(ngModel)]="searchStringTMarcas">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="itempageTMarcas" [(ngModel)]="itempageTMarcas">
+                    <option value="5" selected>Marcas Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <!-- <div class="loading" *ngIf="loader">
+                  <img src="assets/images/loader.gif" width="10%" height="10%">
+                </div>
+                <div class="loadError" *ngIf="LoadError">
+                  <div class="alert alert-danger">{{error}}</div>
+                </div>
+                <div *ngIf="LoadTabla"> -->
+                  <div class="panel-body table-responsive" *ngIf="MarcasInactivas">
+                    <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                      <thead>
+                        <tr>
+                          <th>Marcas</th>
+                          <th class="center">Modificar</th>
+                          <th class="center">Inactivar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="odd gradeX"
+                          *ngFor="let data of ListaMarcas | tablemarcasingcli : searchStringTMarcas | paginate: { itemsPerPage: itempageTMarcas, currentPage: tm, id:'tablaMarcas' }">
+                          <td>{{data.nombre}}</td>
+                          <td class="center">
+                            <a (click)="bindingDataModificarMarca(data)" uiSrefActive="active" role="button"
+                              data-toggle="modal" data-placement="top" data-target="#ModificarMarca"
+                              title="Modificar Marca">
+                              <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                            </a>
+                          </td>
+                          <td class="center">
+                            <a (click)="bindingInactivarMarca(data)" uiSrefActive="active" role="button"
+                              data-toggle="modal" data-target="#InactivarMarca" data-placement="top" title="Inactivar">
+                              <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="centrarpaginacion">
+                      <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" previousLabel="Anterior"
+                        nextLabel="Siguiente" (pageChange)="tm = $event" id="tablaMarcas"></pagination-controls>
+                    </div>
+                  </div>
+
+                  <div class="panel-body table-responsive" *ngIf="!MarcasInactivas">
+                      <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                        <thead>
+                          <tr>
+                            <th>Marcas</th>
+                            <th class="center">Activar</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="odd gradeX"
+                            *ngFor="let data of ListaMarcasInactivas | tablemarcasingcli : searchStringTMarcas | paginate: { itemsPerPage: itempageTMarcas, currentPage: tm, id:'tablaMarcas' }">
+                            <td>{{data.nombre}}</td>
+                            <td class="center">
+                              <a (click)="activarMarca(data)" uiSrefActive="active" role="button"
+                                data-toggle="modal" data-target="#Activar" data-placement="top" title="Activar">
+                                <img src="assets/images/active.png" width="30" height="30" class="btnReportes">
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="centrarpaginacion">
+                        <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" previousLabel="Anterior"
+                          nextLabel="Siguiente" (pageChange)="tm = $event" id="tablaMarcas"></pagination-controls>
+                      </div>
+                    </div>
+                </div>
+              <!-- </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <!--  contactos cliente-->
+      <div class="caja_cliente">
+        <span class="tiulocaja-configuraciones">Contactos del cliente</span>
+        <div class="row centrar">
+          <div class="col-md-3">
+
+            <div class="form-group">
+              <label for="nombre_contacto">Nombre del contacto
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataNewContacto.nombre_contacto" class="form-control"
+                [(ngModel)]="DataNewContacto.nombre_contacto" #nom="ngModel"
+                [ngClass]="{'is-invalid': !nom.valid && (nom.dirty || nom.touched)}">
+              <span class="invalid-feedback" *ngIf="nom.errors && (nom.dirty || nom.touched)">
+                <li *ngIf=nom.errors.required>
+                  El campo Nombre Contacto es obligatorio
+                </li>
+              </span>
+            </div>
+
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="cargo_contacto">Cargo:</label>
+              <input type="text" name="DataNewContacto.cargo_contacto" class="form-control"
+                [(ngModel)]="DataNewContacto.cargo_contacto">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="telefono_contacto">Telefono
+                <b class="asterisco">*</b>:</label>
+              <input type="text" name="DataNewContacto.telefono_contacto" class="form-control"
+                [(ngModel)]="DataNewContacto.telefono_contacto" #tel="ngModel" minlength="6" maxlength="11"
+                (keypress)="kPNumeros($event)" [ngClass]="{'is-invalid': !tel.valid && (tel.dirty || tel.touched)}">
+              <span class="invalid-feedback" *ngIf="tel.errors && (tel.dirty || tel.touched)">
+                <li *ngIf=tel.errors.required>
+                  El campo telefono es obligatorio
+                </li>
+                <li *ngIf=tel.errors.minlength>
+                  El campo correo debe ser mayor a 5 caracteres*
+                </li>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="correo_contacto">Correo:</label>
+              <input type="email" name="DataNewContacto.correo_contacto" class="form-control"
+                [(ngModel)]="DataNewContacto.correo_contacto" #corcont="ngModel"
+                pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" minlength="5" maxlength="50"
+                [ngClass]="{'is-invalid': !corcont.valid && (corcont.dirty || corcont.touched)}">
+              <span class="invalid-feedback" *ngIf="corcont.errors && (corcont.dirty || corcont.touched)">
+                <li *ngIf=corcont.errors.required>
+                  El campo correo es obligatorio
+                </li>
+                <li *ngIf=corcont.errors.email>
+                  El campo correo es invalido
+                </li>
+                <li *ngIf=corcont.errors.minlength>
+                  El campo correo debe ser mayor a 5 caracteres*
+                </li>
+                <li *ngIf="corcont.errors">
+                  El campo correo debe ser de la forma
+                  <i>ejemplo@dominio.com</i>
+                </li>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="centrar_proveedor">
+          <button class="btnbuttoncompras" type="button"
+            (click)="ValidationEmailContact('agregar',DataNewContacto.idcontacto, DataNewContacto)" *ngIf="btn_agregar"
+            [disabled]="!DataNewContacto.nombre_contacto || !DataNewContacto.telefono_contacto ">
+            Adicionar </button>
+          <button class="btnbuttoncompras" type="button"
+            (click)="ValidationEmailContact('actualizar',DataNewContacto.idcontacto, DataNewContacto)"
+            *ngIf="btn_actualizar"
+            [disabled]="!DataNewContacto.nombre_contacto || !DataNewContacto.telefono_contacto">Actualizar </button>
+        </div>
+        <br>
+
+        <div class="tablaconfig" *ngIf="ListaContactos.length>0">
+          <div class="centrar_proveedor buscar-paginacionconfig">
+            Listado de contactos
+          </div>
+
+          <br>
+          <br>
+          <div class="table-responsive panel-body">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Cargo</th>
+                  <th>Telefono</th>
+                  <th>Correo</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let contacto of ListaContactos; let i = index">
+                  <td>{{contacto.nombre}}</td>
+                  <td>{{contacto.cargo}}</td>
+                  <td>{{contacto.telefono}}</td>
+                  <td>{{contacto.correo}}</td>
+                  <td>
+                    <a (click)="EditarContacto(contacto)" uiSrefActive="active" role="button" data-toggle="tooltip"
+                      data-placement="top" title="Modificar">
+                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                    </a>
+                    <a (click)="EliminarContacto(i)" uiSrefActive="active" role="button" data-toggle="tooltip"
+                      data-placement="top" title="Eliminar">
+                      <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                    </a>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="centrar">
+        <button type="button" class="btnbutton button" (click)="Regresar()">Anterior</button>
+        <button type="submit" (click)="ValidaNit(DataNewCliente)" class="btnbutton button"
+          [disabled]="!clienteUnoForm.valid || ListaMarcas.length == 0">Guardar</button>
+      </div>
+    </form>
+    <!--  </div>
+    </div> -->
+
+  </div>
+
+</div>
+
+
+<!-- **********************  Modal Direccion *************************** -->
+
+<div id="MyModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="centrarmodal">
+          <h3>Seleccionar Direccion</h3>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-lg-12" align="center">
+            <label>Selección Ingreso de Dirección</label>
+          </div>
+          <div class="col-lg-6">
+            <label for="mas">Mascara De Dirección</label>
+            <input type="radio" id="mas" class="checkbox-custom checkbox-inline" name="direccion2"
+              [(ngModel)]="direccion2" value="1" (value)="1" />
+          </div>
+          <div class="col-lg-6">
+            <label for="dig">Digitada</label>
+            <input type="radio" id="dig" class="checkbox-custom checkbox-inline" name="direccion2"
+              [(ngModel)]="direccion2" value="2" (value)="2" />
+          </div>
+        </div>
+        <br>
+        <div [hidden]="direccion2 != '1'">
+          <div class="row">
+            <div class="col-xs-4 col-md-4">
+              <label for="">Tipo Via*</label>
+              <select name="" id="" class="form-control" id="via" name="via" [(ngModel)]="via">
+                <option value=""></option>
+                <option value="AC">Avenida calle</option>
+                <option value="AK">Avenida carrera</option>
+                <option value="AU">Autopista</option>
+                <option value="AN">Autopista Norte</option>
+                <option value="AS">Autopista Sur</option>
+                <option value="AV">Avenida</option>
+                <option value="CI">Circular</option>
+                <option value="Cll">Calle</option>
+                <option value="DG">Diagonal</option>
+                <option value="CR">Carrera</option>
+                <option value="TR">Transversal</option>
+                <option value="KR">Kilometro</option>
+              </select>
+            </div>
+            <div class="col-xs-3 col-md-2">
+              <label for="">Numero*</label>
+              <input type="number" class="form-control" id="numero" name="numero" [(ngModel)]="numero">
+            </div>
+            <div class="col-md-1">
+              <label for="">bis</label>
+              <input type="checkbox" class="form-control" id="bis" name="bis" [(ngModel)]="bis" />
+            </div>
+            <div class="col-md-2">
+              <label for="">letra</label>
+              <select name="" id="" class="form-control" id="letra" name="letra" [(ngModel)]="letra">
+                <option value=""></option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G</option>
+                <option value="H">H</option>
+                <option value="I">I</option>
+                <option value="J">J</option>
+                <option value="K">K</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="N">N</option>
+                <option value="O">O</option>
+                <option value="P">P</option>
+                <option value="Q">Q</option>
+                <option value="R">R</option>
+                <option value="S">S</option>
+                <option value="T">T</option>
+                <option value="U">U</option>
+                <option value="V">V</option>
+                <option value="W">W</option>
+                <option value="X">X</option>
+                <option value="Y">Y</option>
+                <option value="Z">Z</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="">cuadrante</label>
+              <select name="" id="" class="form-control" id="cuadrante" name="cuadrante" [(ngModel)]="cuadrante">
+                <option value=""></option>
+                <option value="Norte">Norte</option>
+                <option value="Oeste">Oeste</option>
+                <option value="Este">Este</option>
+                <option value="Sur">Sur</option>
+              </select>
+            </div>
+          </div>
+          <br />
+          <label for="">
+            <h6>Vía Generadora</h6>
+          </label>
+          <br />
+          <div class="row">
+            <div class="col-md-2">
+              <label for="">Numero</label>
+              <input type="number" class="form-control" id="numero2" name="numero2" [(ngModel)]="numero2">
+            </div>
+            <div class="col-md-2">
+              <label for="">Letra</label>
+              <select name="" id="" class="form-control" id="letra2" name="letra2" [(ngModel)]="letra2">
+                <option value=""></option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G</option>
+                <option value="H">H</option>
+                <option value="I">I</option>
+                <option value="J">J</option>
+                <option value="K">K</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="N">N</option>
+                <option value="O">O</option>
+                <option value="P">P</option>
+                <option value="Q">Q</option>
+                <option value="R">R</option>
+                <option value="S">S</option>
+                <option value="T">T</option>
+                <option value="U">U</option>
+                <option value="V">V</option>
+                <option value="W">W</option>
+                <option value="X">X</option>
+                <option value="Y">Y</option>
+                <option value="Z">Z</option>
+
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="">placa</label>
+              <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="placa">
+            </div>
+            <div class="col-md-3">
+              <label for="">Cuadrante</label>
+              <select name="" id="" class="form-control" id="cuadrante2" name="cuadrante2" [(ngModel)]="cuadrante2">
+                <option value=""></option>
+                <option value="Norte">Norte</option>
+                <option value="Oeste">Oeste</option>
+                <option value="Este">Este</option>
+                <option value="Sur">Sur</option>
+              </select>
+            </div>
+            <br>
+            <div class="col-md-12">
+              <label for="">Señas Particulares</label>
+              <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2
+                maxlength=150 [(ngModel)]="senas">
+                   </textarea>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div [hidden]="direccion2 != '2'">
+
+          <div class="row">
+            <div class="col-md-12">
+              <label for="">Descripciones Particulares</label>
+              <textarea rows="3" cols="40" input type="text" id="senas" name="senas" class="form-control" minlength=2
+                maxlength=150 [(ngModel)]="descripcion">
+                           </textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button *ngIf="direccion2 == 1 " class="btnbutton"
+            (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas, descripcion)"
+            [disabled]="!via || !numero || !numero2 || !placa">Guardar</button>
+
+          <button *ngIf="direccion2 == 2" class="btnbutton"
+            (click)="GuardarDireccion(via,numero,bis,letra,cuadrante,numero2,letra2,placa,cuadrante2,senas, descripcion)"
+            [disabled]="!descripcion" data-dismiss="modal">Guardar</button>
+          <button class="btnbuttoncerrar" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ****************************  Fin Modal Direccion **************************** -->
+
+<!--   ********************************* Modal Crear marca ************************************** -->
+
+<div id="CrearMarca" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear marca</h4>
+      </div>
+
+      <div class="modal-body">
+        <form  #marcasForm="ngForm">
+          <div class="row">
+              <div class="col-md-12">
+            <div class="form-group">
+              <label>Nombre marca:</label>
+              <input type="text" class="form-control" name="DataNewMarca.nombre" [(ngModel)]="DataNewMarca.nombre">
+            </div>
+          </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="GuardarMarca(DataNewMarca)" [disabled]="!marcasForm.valid" data-dismiss="modal"
+            class="btnbutton">Aceptar</button>
+          <!-- <button (click)="MostrarMarcas()" [disabled]="ListaSelMarcas.length === 0" data-dismiss="modal" class="btnbutton">Aceptar</button> -->
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--   ************************* Fin Modal Crear marca ********************************** -->
+
+<!--   ********************************* Modal Modificar marca ************************************** -->
+
+<div id="ModificarMarca" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar marca</h4>
+      </div>
+
+      <div class="modal-body">
+        <form  #marcasEditForm="ngForm">
+          <div class="row">
+              <div class="col-md-12">
+            <div class="form-group">
+              <label>Nombre marca:</label>
+              <input type="text" class="form-control" name="DataEditMarca.nombre_marca" [(ngModel)]="DataEditMarca.nombre_marca">
+            </div>
+          </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="modificarMarca(DataEditMarca)" [disabled]="!marcasEditForm.valid" data-dismiss="modal"
+            class="btnbutton">Aceptar</button>
+          <!-- <button (click)="MostrarMarcas()" [disabled]="ListaSelMarcas.length === 0" data-dismiss="modal" class="btnbutton">Aceptar</button> -->
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--   ************************* Fin Modal Modificar marca ********************************** -->
+
+
+
+
+<!--   ********************************* Modal Inactivar marca ************************************** -->
+
+<div id="InactivarMarca" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Confirmación</h4>
+        </div>
+
+        <div class="modal-body">
+          <form  #marcasEditForm="ngForm">
+            <div class="row">
+                <div class="col-md-12">
+                <label>Esta seguro de que desea inactivar la marca {{DataInactivarMarca.nombre}}?</label>
+            </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="inactivarMarca(DataInactivarMarca)" [disabled]="!marcasEditForm.valid" data-dismiss="modal"
+              class="btnbutton">Aceptar</button>
+            <!-- <button (click)="MostrarMarcas()" [disabled]="ListaSelMarcas.length === 0" data-dismiss="modal" class="btnbutton">Aceptar</button> -->
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--   ************************* Fin Modal Inactivar marca ********************************** -->

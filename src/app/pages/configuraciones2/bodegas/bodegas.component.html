@@ -1,0 +1,361 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Sitios de almacenaje</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+        <div class="btnrouterlinkconfig" *ngIf="sidebarComponent.contienePermiso(46)" uiSrefActive="active" (click)="LimpiarFormBodegas();" role="button" data-toggle="modal" data-target="#CrearBodega" data-placement="top"
+        title="CrearBodega">
+          <a>
+            <span class="pull-left">Crear sitio de almacenaje</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+        <div class="btnrouterlinkconfig"*ngIf="sidebarComponent.contienePermiso(48)" [routerLink]="['bodegasinactivas']">
+          <a>
+            <span class="pull-left">Sitios de almacenaje Inactivos</span>
+            <span class="pull-right">
+              <i class="fa fa-arrow-circle-right"></i>
+            </span>
+            <div class="clearfix"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchStringTBodegas" placeholder="Buscar" [(ngModel)]="searchStringTBodegas">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempageTBodegas" [(ngModel)]="itempageTBodegas">
+            <option value="5" selected="selected">Sitio de almacenaje Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+
+        <div class="loading" *ngIf="loader">
+          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        </div>
+
+        <div class="loadError" *ngIf="LoadError">
+          <div class="alert alert-danger">{{error}}</div>
+        </div>
+        <div *ngIf="LoadTabla && !noHayRegistros">
+          <div class="panel-body table-responsive">
+            <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+              <thead>
+                <tr>
+                  <th>Nombre sitio de almacenaje</th>
+                  <th>Nombre Punto</th>
+                  <th>Permite facturar</th>
+                  <th class="center" *ngIf="sidebarComponent.contienePermiso(49)">Inactivar</th>
+                  <th class="center" *ngIf="sidebarComponent.contienePermiso(47)">Modificar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd gradeX" *ngFor="let data of DataJson | bodegas: searchStringTBodegas | paginate: { itemsPerPage: itempageTBodegas, currentPage: p }">
+                  <td>{{data.nombre_bodega}}</td>
+                  <td>{{data.nombre_punto}}</td>
+                  <td *ngIf="data.permite_facturar">Si</td>
+                  <td *ngIf="!data.permite_facturar">No</td>
+                  <td class="center" *ngIf="sidebarComponent.contienePermiso(49)">
+                      <a (click)="bindingDataInactivar(data.id_bodega,data.nombre_bodega)" uiSrefActive="active" role="button" data-toggle="modal"
+                        data-target="#Inactivar" data-placement="top" title="Inactivar">
+                        <img src="assets/images/close.png" width="30" height="30" class="btnReportes">
+                      </a></td>
+                      <td class="center" *ngIf="sidebarComponent.contienePermiso(47)">
+                      <a (click)="bindingDataModificar(data)" uiSrefActive="active" role="button" data-toggle="modal" data-placement="top" data-target="#Modificar"
+                        title="Modificar">
+                        <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                      </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre sitio de almacenaje</th>
+                  <th>Nombre Punto</th>
+                  <th>Permite facturar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX">
+                <td colspan="3" class="center">No hay Registros</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!--*************************Modal Crear**************************-->
+
+<div id="CrearBodega" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear sitio de almacenaje</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #bodegasForm="ngForm">
+          <div class="form-group">
+            <label for="nombre">Nombre sitio de almacenaje
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" name="DataNew.nombre" [(ngModel)]="DataNew.nombre" #nameBod="ngModel" minlength="3"
+              maxlength="30" required  [ngClass]="{'is-invalid': !nameBod.valid && (nameBod.dirty || nameBod.touched)}"/>
+            <span class="invalid-feedback" *ngIf="nameBod.errors && (nameBod.dirty || nameBod.touched)">
+              <li *ngIf="nameBod.errors.required">
+                El campo nombre sitio de almacenaje es obligatorio
+              </li>
+              <li *ngIf="nameBod.errors.minlength">
+                El campo nombre sitio de almacenaje debe tener mas de 3 caracteres
+              </li>
+              <li *ngIf="nameBod.errors.maxlength">
+                El campo nombre sitio de almacenaje no puede ser mayor a 30 caracteres
+              </li>
+            </span>
+          </div>
+
+          <!-- <div class="form-group">
+            <label for="fact">¿Desea facturar de este sitio de almacenaje?</label>
+
+            <div *ngIf="DataNew.facturar === true">
+              <input type="checkbox" name="DataNew.facturar" checked id="fact" [(ngModel)]="DataNew.facturar"/> Si
+            </div>
+            <div *ngIf="DataNew.facturar === false">
+              <input type="checkbox" name="DataNew.facturar" id="fact" [(ngModel)]="DataNew.facturar"/> No
+            </div>
+          </div> -->
+          <div class="row">
+            <div class="col-md-7 spadd">
+              <label for="fact">¿Desea facturar de este sitio de almacenaje?</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="factsi" name="DataNew.facturar" [(ngModel)]="DataNew.facturar" [value]=1 required>
+              <label for="factsi">Si</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="factno" name="DataNew.facturar" [(ngModel)]="DataNew.facturar" [value]=0 required>
+              <label for="factno">No</label>
+            </div>
+          </div>
+        </form>
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringTPuntos" placeholder="Buscar" [(ngModel)]="searchStringTPuntos">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageTPuntos" [(ngModel)]="itempageTPuntos">
+                <option value="5" selected="selected">Puntos Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <table width="100%" class="table table-striped table-hover" id="Puntos">
+            <thead>
+              <tr>
+                <th>Punto</th>
+                <th class="center">Seleccionar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr (click)="clickFilaBodega(data.id_punto)" class="odd gradeX" *ngFor="let data of DataJsonPunto | puntosbodegas: searchStringTPuntos | paginate: { itemsPerPage: itempageTPuntos, currentPage: q ,id: 'checkPunto'}">
+                <td>{{data.nombre}}</td>
+                <td class="center">
+                  <input type="radio" value="{{data.id_punto}}" name="DataNew.idPunto" [(ngModel)]="DataNew.idPunto" required />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="q = $event" id="checkPunto"></pagination-controls>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmit(DataNew);" [disabled]="!bodegasForm.valid || !DataNew.idPunto" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarFormBodegas()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--************************* Fin Modal Crear******************************-->
+
+<!--*************************Modal Inactivar***********************************-->
+
+<div id="Inactivar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmación para Inactivar Sitio de almacenaje</h4>
+      </div>
+      <div class="modal-body">
+        <p style="color:#FF0000">
+          <b> Seguro desea Inactivar el Sitio de almacenaje con Id: {{ idInactivar }} con Nombre: {{ nombreInactivar }}</b>
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="Inactivar(idInactivar, nombreInactivar);" data-dismiss="modal" class="btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--********************** Fin Modal Inactivar*************************************-->
+
+<!--********************** Inicio Modal Modificar*************************************-->
+
+<div id="Modificar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modificar Sitio de almacenaje</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #bodegasEditForm="ngForm">
+
+          <div class="form-group">
+            <label for="nombre">Nombre sitio de almacenaje
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" name="DataModificar.bodega" [(ngModel)]="DataModificar.bodega" #nameBodega="ngModel"
+              minlength="3" maxlength="30" required [ngClass]="{'is-invalid': !nameBodega.valid && (nameBodega.dirty || nameBodega.touched)}"/>
+            <span class="invalid-feedback" *ngIf="nameBodega.errors && (nameBodega.dirty || nameBodega.touched)">
+              <li *ngIf="nameBodega.errors.required">
+                El campo nombre sitio de almacenaje es obligatorio
+              </li>
+              <li *ngIf="nameBodega.errors.minlength">
+                El campo nombre sitio de almacenaje debe tener mas de 3 caracteres
+              </li>
+              <li *ngIf="nameBodega.errors.maxlength">
+                El campo nombre sitio de almacenaje no puede ser mayor a 30 caracteres
+              </li>
+            </span>
+          </div>
+
+          <!-- <div class="form-group">
+            <label for="fact">¿Desea facturar de este sitio de almacenaje?</label>
+
+            <div *ngIf="DataModificar.facturar === true">
+              <input type="checkbox" name="DataModificar.facturar" checked id="fact" [(ngModel)]="DataModificar.facturar"/> Si
+            </div>
+            <div *ngIf="DataModificar.facturar === false">
+              <input type="checkbox" name="DataModificar.facturar" id="fact" [(ngModel)]="DataModificar.facturar"/> No
+            </div>
+          </div> -->
+
+
+          <div class="row">
+            <div class="col-md-7 spadd">
+              <label for="fact">¿Desea facturar de este sitio de almacenaje?</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="factusi" name="DataModificar.facturar" [(ngModel)]="DataModificar.facturar" [value]=1 required>
+              <label for="factusi">Si</label>
+            </div>
+            <div class="col-md-2">
+              <input type="radio" id="factuno" name="DataModificar.facturar" [(ngModel)]="DataModificar.facturar" [value]=0 required>
+              <label for="factuno">No</label>
+            </div>
+          </div>
+
+          <div class="tablaconfig">
+            <div class="centrar buscar-paginacionconfig">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringTEditPuntos" placeholder="Buscar" [(ngModel)]="searchStringTEditPuntos">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageTEditPuntos" [(ngModel)]="itempageTEditPuntos">
+                  <option value="5" selected="selected">Puntos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <table width="100%" class="table table-striped table-hover" id="Puntos">
+              <thead>
+                <tr>
+                  <th>Punto</th>
+                  <th class="center">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="clickFilaBodegaEdit(data.id_punto)" class="odd gradeX" *ngFor="let data of DataJsonPunto | puntosbodegas: searchStringTEditPuntos | paginate: { itemsPerPage: itempageTEditPuntos, currentPage: pu ,id: 'checkEditPunto'}">
+                  <td>{{data.nombre}}</td>
+                  <td class="center">
+                    <input type="radio" [value]="data.id_punto" name="DataModificar.id_punto" [(ngModel)]="DataModificar.id_punto" required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="pu = $event" id="checkEditPunto"></pagination-controls>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitModificar(DataModificar);" [disabled]="!bodegasEditForm.valid" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--************************** Fin Modal Modificar**********************************-->

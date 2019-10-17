@@ -1,0 +1,110 @@
+
+<section id="sidebar">
+  <aside class="left">
+    <img class="img" src="assets/images/logo-gamasoft.png" />
+  </aside>
+  <aside class="right">
+    <img class="img" src="assets/images/logo-gamasab-blanco.png" />
+  </aside>
+</section>
+
+<div id="wrapper">
+  <section class="wrapper-intro fullscreen">
+    <div class="inner">
+      <div class="inner-left">
+        <img class="img-login" src="assets/images/login-image.jpg" />
+        <div class="txt-center">Hola
+          <br> Bienvenido.
+        </div>
+      </div>
+      <div class="inner-right">
+        <div class="container">
+          <div class="header">Inicio de sesión</div>
+          <br>
+          <form method="post" name="loginForm">
+            <input type="email" id="email" placeholder="Usuario" />
+            <input type="password" id="pass" placeholder="Contraseña" />
+            <br>
+            <br>
+            <div class="enlace" data-toggle="modal" data-target="#CambioClaveModal">
+              <a>
+                <b>¿Olvido su contraseña?</b>
+              </a>
+            </div>
+            <br>
+            <br>
+            <button class="boton boton-login" [routerLink]="[ '/dashboard' ]">Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="footer">
+      Bogota: Kra 70H # 122 - 22 pbx 2269296 | Barranquilla: calle 76 # 50 - 10 of 301 tels: 3600965 - 3686538 | Cali:
+      avenida
+      5ª # 17 - 98 of 603 tels: 3827115 - 3827941
+      <br>
+      <a href="http://www.gamasoftcol.com">
+        www.gamasoftcol.com
+      </a>
+      <br> Todos los derechos reservados 2019 - S.I.U S.A.S
+    </div>
+  </section>
+
+  <!-- **************************** Modal cambio clave **************************** -->
+
+  <div id="CambioClaveModal" class="modal fade font" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <!-- <div class="centrarmodal"> -->
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h3>Cambio de Clave</h3>
+          <!-- </div> -->
+        </div>
+
+        <div class="modal-body">
+          <form #UsuarioForm="ngForm">
+
+            <div class="row">
+              <div class="col-md-6">
+                <label for="nombre"><b>Usuario registrado</b>
+                  <b class="asterisco">*</b>:</label>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <!-- <label for="nombre">Nombre de Usuario
+                  <b class="asterisco">*</b>:</label> -->
+                  <input type="text" class="form-control" name="DataNewUser.nombre" [(ngModel)]="DataNewUser.nombre"
+                         #nameUser="ngModel" minlength="2" maxlength="100" required
+                         [ngClass]="{'is-invalid': !nameUser.valid && (nameUser.dirty || nameUser.touched)}" />
+                  <span class="invalid-feedback" *ngIf="nameUser.errors && (nameUser.dirty || nameUser.touched)">
+                  <li *ngIf=nameUser.errors.required>
+                    El campo Usuario es obligatorio
+                  </li>
+                  <li *ngIf="nameUser.errors.minlength">
+                    El campo Usuario debe ser mayor a 2 caracteres*
+                  </li>
+                </span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="CambiarClave(DataNewUser)" [disabled]="!UsuarioForm.valid" data-dismiss="modal"
+                    class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" (click)="LimpiarFormUsuarios()" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- **************************** Fin Modal cambio clave ***************************** -->
+
+</div>
+

@@ -1,0 +1,867 @@
+<div class="row">
+    <div class="container-fluid contenedorcompras">
+
+      <div class="row color_compras1">
+        <div class="col-lg-12" align="center">
+          <h1>Orden de Compra N° {{DataNewOrden.consecutivo}}</h1>
+        </div>
+      </div>
+
+      <aw-wizard #wizard navBarLayout="large-empty-symbols">
+        <aw-wizard-step stepTitle="PROVEEDORES" [navigationSymbol]="{ symbol: '1' }">
+          <div class="color_compras2">
+            <h3 class="h3">Seleccione Proveedor Y Fechas</h3>
+          </div>
+          <br>
+          <form #ordenesUnoForm="ngForm" (ngSubmit)="Siguiente();">
+
+            <!-- ***********************************FECHAS******************************************************************** -->
+            <div class="row centrar">
+              <div class="col-md-6">
+                <div class="form-group row" [ngClass]="{'has-error': !fecped.valid && (fecped.dirty || fecped.touched)}">
+                  <label class="control-label" for="example-date-input">Fecha de Pedido
+                    <b class="asterisco">*</b>: </label>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Pedido" name="selectedDateNormal" #fecped="ngModel" [options]="myDatePickerOptions"
+                    (dateChanged)="onDateChanged2($event)" [(ngModel)]="selectedDateNormal" required readonly=""></my-date-picker>
+                  <span class="help-block" *ngIf="fecped.errors && (fecped.dirty || fecped.touched)">
+                    <li *ngIf=fecped.errors>
+                      El campo Fecha pedido es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row" [ngClass]="{'has-error': !fecent.valid && (fecent.dirty || fecent.touched)}">
+                  <label for="example-date-input">Fecha de Entrega
+                    <b class="asterisco">*</b>: </label>
+                  <my-date-picker class="valid" aria-placeholder="Fecha Entrega" name="selectedDateNormal2" #fecent="ngModel" [options]="myDatePickerOptions"
+                    (dateChanged)="onDateChanged($event)" [(ngModel)]="selectedDateNormal2" required readonly=""></my-date-picker>
+                  <span class="help-block" *ngIf="fecent.errors && (fecent.dirty || fecent.touched)">
+                    <li *ngIf=fecent.errors>
+                      El campo Fecha entrega es obligatorio
+                    </li>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tablacompras">
+              <div class="centrar buscar-paginacion">
+
+                <div class="buscar-paginacion2">
+                  <input type="text" class="form-control" name="searchProveedor" placeholder="Buscar" [(ngModel)]="searchProveedor">
+                </div>
+                <div class="buscar-paginacion2">
+                  <select class="form-control" name="Itempageproveedor" [(ngModel)]="Itempageproveedor">
+                    <option value="5" selected="selected">Proveedores Por Página</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <div class="table-responsive panel-body">
+                  <table width="100%" class="table">
+                    <thead>
+                      <tr>
+                        <th>Proveedor</th>
+                        <th>Código/Nit</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>E-mail</th>
+                        <th class="center">Ver</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr (click)="clickFilaPro(data.id);LoadUltimasOrdenes(data.id);LoadProveedorSeleccionado(data);" class="odd gradeX" *ngFor="let data of listaProveedores | ordencompraproveedor : searchProveedor | paginate: { itemsPerPage: Itempageproveedor, currentPage: n, id:'proveedor' }">
+                        <td>{{data.razon_social}}</td>
+                        <td>{{data.nit}}</td>
+                        <td>{{data.direccion}}</td>
+                        <td>{{data.telefono}}</td>
+                        <td nowrap>{{data.email}}</td>
+                        <td class="center">
+                          <input type="radio" class="radio-custom" name="DataNewOrden.id_pro" value="{{data.id}}" [(ngModel)]="DataNewOrden.id_pro"
+                            (click)="LoadUltimasOrdenes(data.id);LoadProveedorSeleccionado(data)" required>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="centrarpaginacion">
+                    <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="n = $event" id="proveedor"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="mostrarUltimasOrdenes" class="centrar">
+                <button type="button" class="btnbutton button" [disabled]="!ordenesUnoForm.valid" *ngIf="DataNewOrden.id_pro" role="button"
+                  data-toggle="modal" data-target="#ultimasOrdenes">Ultimas Ordenes de Compra </button>
+              </div>
+            </div>
+
+            <div class="centrar">
+              <button type="submit" (click)="validarAsignacionArticulos(DataNewOrden.id_pro)" class="btnbutton button" awNextStep [disabled]="!ordenesUnoForm.valid">Siguiente</button>
+            </div>
+          </form>
+          <!-- ********************** Inicio modal ultimasOrdenes ****************************** -->
+          <div class="modal fade" id="ultimasOrdenes" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <div class="centrarmodal">
+                    <h3> Ultimas Ordenes de compra </h3>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <div class="table-responsive panel-body">
+                    <table width="100%" class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th>Orden de Compra</th>
+                          <th># Factura Proveedor</th>
+                          <th>Fecha en Kardex</th>
+                          <th>Valor Total Estimado</th>
+                          <th>Ver</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr (click)="VerUltimaOrden(ultimaorden.id_orden)" class="odd gradeX" *ngFor="let ultimaorden of listaUltimasOrdenes | paginate: { itemsPerPage: itempageUltimas, currentPage: uo, id:'ultordenes' }">
+                          <td>{{ultimaorden.id_orden}}</td>
+                          <td>{{ultimaorden.num_factura}}</td>
+                          <td></td>
+                          <td>{{ultimaorden.total_orden| number:'1.2-2'}}</td>
+                          <td class="center">
+                            <a data-toggle="tooltip" data-placement="top" title="Ver Orden de Compra" role="button" (click)="VerUltimaOrden(ultimaorden.id_orden)">
+
+                              <img src="assets/images/eye.png" width="30" height="30" class="btnReportes">
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="centrarpaginacion">
+                      <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="uo = $event" id="ultordenes"></pagination-controls>
+                    </div>
+                  </div>
+
+
+                  <div *ngIf="ultimaordenarticulos">
+                    <div class="centrar">
+                      <h4>Datos de la Orden de Compra</h4>
+                    </div>
+                    <div class="table-responsive panel-body">
+                      <table width="100%" class="table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th>Articulo</th>
+                            <th>Unidad</th>
+                            <th>Cantidad</th>
+                            <th>Unidad Kardek</th>
+                            <th>Valor unitario</th>
+                            <th>Impuesto</th>
+                            <th>Valor Impuesto</th>
+                            <th>Tarifa</th>
+                            <th>Base</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="odd gradeX" *ngFor="let articulo of listaVerUltimaOrden | paginate: { itemsPerPage: itempageArtUltimas, currentPage: artuo, id:'artultordenes'  }">
+                            <td>{{articulo.nombreArticulo}}</td>
+                            <td>{{articulo.nom_unidad_compra}}</td>
+                            <td>{{articulo.cantidad}}</td>
+                            <td>{{articulo.nom_unidad_kardex}}</td>
+                            <td>{{articulo.precio_unitario | number:'1.2-2'}}</td>
+                            <td>{{articulo.nombreImpuesto}}</td>
+                            <td>{{articulo.valor_impuesto | number:'1.2-2'}}</td>
+                            <td>{{articulo.valor_tarifa}}</td>
+                            <td>{{articulo.base | number:'1.2-2'}}</td>
+                            <td>{{articulo.total | number:'1.2-2'}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="centrarpaginacion">
+                      <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="artuo = $event" id="artultordenes"></pagination-controls>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="centrar">
+                    <button class="btnbutton" data-dismiss="modal" (click)="AgregarArticuloUltimaOrden(listaVerUltimaOrden);validarAsignacionArticulos(DataNewOrden.id_pro)"
+                      awNextStep>Agregar articulos</button>
+                    <button class="btnbuttoncerrar" data-dismiss="modal">Cerrar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ********************** Fin modal ultimasOrdenes ****************************** -->
+        </aw-wizard-step>
+
+        <aw-wizard-step stepTitle="ARTICULOS" [navigationSymbol]="{ symbol: '2' }">
+          <form #ordenesDosForm="ngForm" (ngSubmit)="Siguiente();">
+
+              <form #ordenesArtForm="ngForm" (ngSubmit)="Siguiente();">
+            <div class="caja">
+              <span class="tiulocaja">Datos de Articulos</span>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="articulo">Articulo
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" name="DataNewArticulo.nombreArticulo" role="button" data-toggle="modal" data-target="#ArticulosModal"
+                      [(ngModel)]="DataNewArticulo.nombreArticulo" class="form-control" #art="ngModel" readonly="true" required
+                      [ngClass]="{'is-invalid': !art.valid && (art.dirty || art.touched)}">
+                    <span class="invalid-feedback" *ngIf="art.errors && (art.dirty || art.touched)">
+                      <li *ngIf=art.errors.required>
+                        El articulo es obligatorio
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="id_unidad_compra">Unidad de compra
+                      <b class="asterisco">*</b>:</label>
+                    <select class="charge_select form-control" name="DataNewArticulo.id_unidad_compra" [(ngModel)]="DataNewArticulo.id_unidad_compra"
+                      #unidad="ngModel" required [ngClass]="{'is-invalid': !unidad.valid && (unidad.dirty || unidad.touched)}">
+                      <option></option>
+                      <option [value]="unidadcompra.id_unidad_compra" *ngFor="let unidadcompra of ListaUnidadesCompra">{{unidadcompra.nombre_unidad}} </option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="unidad.errors && (unidad.dirty || unidad.touched)">
+                      <li *ngIf=unidad.errors.required>
+                        El campo unidad de compra es obligatorio*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="cantidad">Cantidad
+                      <b class="asterisco">*</b>:</label>
+                    <input type="text" class="form-control" (keypress)="keyPress($event); CalculoValoresArticulo()" (change)="CalculoValoresArticulo()"
+                      name="DataNewArticulo.cantidad" [(ngModel)]="DataNewArticulo.cantidad" minlength="1" maxlength="6" #cant="ngModel"
+                      required [ngClass]="{'is-invalid': !cant.valid && (cant.dirty || cant.touched)}">
+                    <span class="invalid-feedback" *ngIf="cant.errors && (cant.dirty || cant.touched)">
+                      <li *ngIf="cant.errors.required">
+                        El campo cantidad es obligatorio*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="cantidad">Valor Ultima Compra</label>
+                    <input type="text" class="form-control" name="DataNewArticulo.ultimacompra" [(ngModel)]="DataNewArticulo.ultimacompra" readonly="true">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="caja">
+              <span class="tiulocaja">Valores del Articulo</span>
+              <div class="row">
+                <div class="col-md-2 spaddi">
+                  <div class="form-group">
+                    <label>Tipo Valor
+                      <b class="asterisco">*</b>:</label>
+                    <select class="form-control" name="DataNewArticulo.valor" [(ngModel)]="DataNewArticulo.valor" [ngModelOptions]="{standalone: true}">
+                      <option value="1" selected="selected">Valor Unitario</option>
+                      <option value="2">Valor Total</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2 spaddi">
+                  <div class="form-group" *ngIf="DataNewArticulo.valor == '1'">
+                    <label>Precio
+                      <b class="asterisco">*</b>:</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text igtsp" id="basic-addon1">
+                          <i class="fas fa-dollar-sign"></i>
+                        </span>
+
+                      </div>
+                      <input type="text" class="form-control" name="DataNewArticulo.precio_unitario" placeholder="Digite el valor unitario sin impuestos y sin descuentos"
+                        [(ngModel)]="DataNewArticulo.precio_unitario" #preciounitario="ngModel" (ngModelChange)="CalculoValoresArticulo()"
+                        (change)="ValidacionValorNegociado()" required [ngClass]="{'is-invalid': !preciounitario.valid && (preciounitario.dirty || preciounitario.touched)}"/>
+                    </div>
+                    <span class="invalid-feedback" *ngIf="preciounitario.errors && (preciounitario.dirty || preciounitario.touched)">
+                      <li *ngIf="preciounitario.errors.required">
+                        El precio unitario es obligatorio*
+                      </li>
+                    </span>
+                  </div>
+                  <div class="form-group" *ngIf="DataNewArticulo.valor == '2'|| DataNewArticulo.valor=='0'">
+                    <label>Precio
+                      <b class="asterisco">*</b>:</label>
+                    <div class="input-group">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text igtsp" id="basic-addon1">
+                          <i class="fas fa-dollar-sign"></i>
+                        </span>
+
+                      </div>
+                      <input type="text" class="form-control" name="DataNewArticulo.precio_total" placeholder="Digite el valor total sin impuestos y sin descuentos"
+                        [(ngModel)]="DataNewArticulo.precio_total" #preciototal="ngModel" [disabled]="blockprecio" (ngModelChange)="CalculoValoresArticulo()"
+                        (change)="ValidacionValorNegociado()" required [ngClass]="{'is-invalid': !preciototal.valid && (preciototal.dirty || preciototal.touched)}"/>
+                    </div>
+                    <span class="invalid-feedback" *ngIf="preciototal.errors && (preciototal.dirty || preciototal.touched)">
+                      <li *ngIf="preciototal.errors.required">
+                        El precio total es obligatorio*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-2 spaddi">
+                  <div class="form-group">
+                    <label for="impuesto">Impuesto
+                      <b class="asterisco">*</b>:</label>
+                    <select class="charge_select form-control" name="DataNewArticulo.impuesto" [(ngModel)]="DataNewArticulo.impuesto" (ngModelChange)="LoadTarifas($event)"
+                      #imp="ngModel" required [ngClass]="{'is-invalid': !imp.valid && (imp.dirty || imp.touched)}">
+                      <option value="" selected></option>
+                      <option [value]="imp.id_impuesto" *ngFor="let imp of ListaImpuestos">{{imp.nombre_imp}}</option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="imp.errors && (imp.dirty || imp.touched)">
+                      <li *ngIf="imp.errors.required">
+                        Seleccione un Impuesto*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-1 spaddi">
+                  <div class="form-group">
+                    <label for="tarifa">Tarifa
+                      <b class="asterisco">*</b>:</label>
+                    <select class="charge_select form-control" name="DataNewArticulo.tarifa" [(ngModel)]="DataNewArticulo.tarifa" (ngModelChange)="bindinTarifa($event);CalculoValoresArticulo()"
+                      #tari="ngModel" required [ngClass]="{'is-invalid':!tari.valid && (tari.dirty || tari.touched)}">
+                      <option value="" selected></option>
+                      <option [value]="tarifa.id_tarifa" *ngFor="let tarifa of ListaTarifas">{{tarifa.valor}}</option>
+                    </select>
+                    <span class="invalid-feedback" *ngIf="tari.errors && (tari.dirty || tari.touched)">
+                      <li *ngIf=tari.errors.required>
+                        Seleccione una tarifa*
+                      </li>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-2 spaddi form-group">
+                  <label>Base</label>
+                  <div class="input-group">
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1">
+                        <i class="fas fa-dollar-sign"></i>
+                      </span>
+
+                    </div>
+                    <input type="number" class="form-control" name="DataNewArticulo.base" [(ngModel)]="DataNewArticulo.base" readonly />
+                  </div>
+                </div>
+                <div class="col-md-2 spaddi form-group">
+                  <label>Total</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1">
+                        <i class="fas fa-dollar-sign"></i>
+                      </span>
+                    </div>
+                    <input type="number" class="form-control" name="DataNewArticulo.total" [(ngModel)]="DataNewArticulo.total" readonly />
+                  </div>
+                </div>
+              </div>
+            </div>
+            </form>
+
+            <div class="centrar">
+              <input type="submit" aria-hidden="true" *ngIf="btn_adicionar_articulo" name="AdicionarArticulo" (click)="AgregarArticulo();"
+                class="btnbuttoncompras" [disabled]="!ordenesArtForm.valid" value="Adicionar Articulo">
+              <input type="submit" aria-hidden="true" *ngIf="btn_modificar_articulo" name="ModificarArticulo" (click)="EditArticulo(DataNewArticulo);"
+                class="btnbuttoncompras" [disabled]="!ordenesArtForm.valid" value="Modificar Articulo">
+              <input type="submit" aria-hidden="true" *ngIf="btn_modificar_articulo2" name="ModificarArticulo" (click)="EditArticulo(DataNewArticulo);"
+                class="btnbuttoncompras" [disabled]="!ordenesArtForm.valid" value="Modificar Articulo" awNextStep>
+            </div>
+          </form>
+
+          <div>
+            <div *ngIf="tablaadicionados">
+              <div class="centrar">
+                <h3 class="h3">Listado de Articulos Agregados</h3>
+              </div>
+
+              <div class="tablacompras">
+                <div class="centrar buscar-paginacion">
+                  <div class="buscar-paginacion2">
+                    <input type="text" class="form-control" name="searcharticulosagregados" placeholder="Buscar" [(ngModel)]="searcharticulosagregados">
+                  </div>
+                  <div class="buscar-paginacion2">
+                    <select class="form-control" name="itempagearticulosagregados" [(ngModel)]="itempagearticulosagregados">
+                      <option value="5" selected="selected">Articulos Por Página</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="table-responsive panel-body">
+                  <table width="100%" class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+
+                        <th>Articulo</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>Unidad Kardex</th>
+                        <th>Valor Unitario</th>
+                        <th>Valor Base</th>
+                        <th>Valor Impuesto</th>
+                        <th>Valor Total</th>
+                        <th *ngIf="!btn_modificar_articulo" class="center">Modificar</th>
+                        <th *ngIf="!btn_modificar_articulo" class="center">Eliminar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="odd gradeX" *ngFor="let articulo of articulosAgregados  | articulosagregados : searcharticulosagregados | paginate: { itemsPerPage: itempagearticulosagregados, currentPage: s, id :'articulo_agregado'} ; let i=index">
+
+                        <td>{{articulo.nombreArticuloF}}</td>
+                        <td>{{articulo.nom_unidad_compraF}}</td>
+                        <td>{{articulo.cantidadF}}</td>
+                        <td>{{articulo.nom_unidad_kardexF}}</td>
+                        <td>{{articulo.precio_unitarioF | number:'1.2-2'}}</td>
+                        <td>{{articulo.baseF | number:'1.2-2'}}</td>
+                        <td>{{articulo.valor_impuestoF | number:'1.2-2'}}</td>
+                        <td>{{articulo.totalF | number:'1.2-2'}}</td>
+                        <td class="center" *ngIf="!btn_modificar_articulo">
+                          <a (click)="bindingEditarArticulo(articulo)" data-toggle="tooltip" data-placement="top" title="Modificar">
+                            <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                          </a>
+                          </td>
+                          <td class="center" *ngIf="!btn_modificar_articulo">
+                          <a (click)="bindingEliminarArticulo(articulo)" role="button" data-toggle="modal" data-target="#eliminarArt" data-placement="top"
+                            title="Eliminar">
+                            <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                          </a>
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="centrarpaginacion">
+                    <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="s = $event" id="articulo_agregado"></pagination-controls>
+                  </div>
+                  <br>
+                </div>
+              </div>
+
+              <div class="centrar">
+                <button type="button" class="btnbutton button" [disabled]="btn_modificar_articulo" awPreviousStep>Anterior</button>
+
+                <button type="submit" (click)="calcularTotales()" class="btnbutton button" awNextStep [disabled]="!articulosAgregados || btn_modificar_articulo">Siguiente</button>
+              </div>
+            </div>
+
+
+          </div>
+        </aw-wizard-step>
+
+        <aw-wizard-step stepTitle="ORDEN DE COMPRA" [navigationSymbol]="{ symbol: '3' }">
+
+          <div class="caja">
+            <span class="tiulocaja"> Datos Proveedor</span>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>Nombre: </label> {{DataNewOrden.nombre_proveedor}}
+              </div>
+              <div class="col-lg-3">
+                <label>Codigo o Nit: </label> {{DataNewOrden.nit_proveedor}}
+              </div>
+              <div class="col-lg-3">
+                <label>Dirección: </label> {{DataNewOrden.direccion_proveedor}}
+              </div>
+              <div class="col-lg-3">
+                <label>Teléfono: </label> {{DataNewOrden.telefono_proveedor}}
+              </div>
+            </div>
+          </div>
+
+          <div class="centrar">
+            <h3>Vista Previa de Orden de compra</h3>
+          </div>
+
+          <div class="tablacompras">
+            <div class="centrar buscar-paginacion">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searcharticulosagregados" placeholder="Buscar" [(ngModel)]="searcharticulosagregados">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempagearticulosagregados" [(ngModel)]="itempagearticulosagregados">
+                  <option value="5" selected="selected">Articulos Por Página</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive panel-body">
+              <table width="100%" class="table table-striped table-hover">
+                <thead>
+                  <tr>
+
+                    <th>Articulo</th>
+                    <th>Unidad</th>
+                    <th>Cantidad</th>
+                    <th>Unidad Kardex</th>
+                    <th>Valor Unitario</th>
+                    <th>Valor Base</th>
+                    <th>Valor Impuesto</th>
+                    <th>Valor Total</th>
+                    <th colspan="2">
+                      <a type="button" data-toggle="tooltip" data-placement="top" title="Agregar Articulo" (click)="Agregar_ArtPreview()" awPreviousStep>
+
+                        <img src="assets/images/add-art.png" width="30" height="30" class="btnReportes">
+                      </a>
+                      Agregar Articulo
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="odd gradeX" *ngFor="let articulo of articulosAgregados  | articulosagregados : searcharticulosagregados | paginate: { itemsPerPage: itempagearticulosagregados, currentPage: s2, id :'articulo_agregado2'} ; let i=index">
+
+                    <td>{{articulo.nombreArticulo}}</td>
+                    <td>{{articulo.nom_unidad_compra}}</td>
+                    <td>{{articulo.cantidad}}</td>
+                    <td>{{articulo.nom_unidad_kardex}}</td>
+                    <td>{{articulo.precio_unitario | number:'1.2-2'}}</td>
+                    <td>{{articulo.base | number:'1.2-2'}}</td>
+                    <td>{{articulo.valor_impuesto | number:'1.2-2'}}</td>
+                    <td>{{articulo.total | number:'1.2-2'}}</td>
+
+                    <td>
+                      <a (click)="Modificar_ArtPreview(articulo)" data-toggle="tooltip" data-placement="top" title="Modificar" awPreviousStep>
+                        <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                      </a>
+                      <a (click)="bindingEliminarArticulo(articulo)" role="button" data-toggle="modal" data-target="#eliminarArt" data-placement="top"
+                        title="Eliminar">
+                        <img src="assets/images/delete.png" width="30" height="30" class="btnReportes">
+                      </a>
+
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="centrarpaginacion">
+                <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="s2 = $event" id="articulo_agregado2"></pagination-controls>
+              </div>
+              <br>
+            </div>
+          </div>
+
+          <div class="caja">
+            <span class="tiulocaja"> Totales Orden Compra</span>
+            <div class="row">
+              <div class="col-lg-12 divcolor">
+                <div class="col-lg-4">
+                  <label>Subtotal</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1">
+                        <i class="fas fa-dollar-sign"></i>
+                      </span>
+                    </div>
+                    <input type="number" class="form-control alineacion" type="number" name="DataNewOrden.subtotal_orden" [(ngModel)]="DataNewOrden.subtotal_orden"
+                      readonly="true" />
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label>Impuestos</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1">
+                        <i class="fas fa-dollar-sign"></i>
+                      </span>
+                    </div>
+                    <input type="number" class="form-control alineacion" type="number" name="DataNewOrden.impuestos_orden" [(ngModel)]="DataNewOrden.impuestos_orden"
+                      readonly="true" />
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label>Total</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text igtsp" id="basic-addon1">
+                        <i class="fas fa-dollar-sign"></i>
+                      </span>
+                    </div>
+                    <input type="number" class="form-control alineacion" type="number" name="DataNewOrden.total_orden" [(ngModel)]="DataNewOrden.total_orden"
+                      readonly="true" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form #ordencompra="ngForm" (ngSubmit)="Siguiente();">
+            <div class="caja">
+              <span class="tiulocaja"> Datos de Orden</span>
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="example-date-input">Forma de Pago</label>
+                  <input type="text" class="form-control" name="DataNewOrden.forma_pago" [(ngModel)]="DataNewOrden.forma_pago">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="example-date-input">Observaciones:</label>
+                  <textarea class="form-control" name="DataNewOrden.observaciones" [(ngModel)]="DataNewOrden.observaciones" cols="20" rows="5"></textarea>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="centrar">
+              <button class="btnbutton button" role="button" data-toggle="modal" data-target="#cancelarOrden">Cancelar</button>
+              <button type="button" (click)="Agregar_ArtPreview()" class="btnbutton button" awPreviousStep>Anterior</button>
+
+              <input *ngIf="sidebarComponent.contienePermiso(129)" type="submit" aria-hidden="true" (click)="MakePdf(DataNewOrden, 1)"
+                role="button" data-toggle="modal" data-target="#solicitudElectronica" name="Solicitud Electronica de Pedido"
+                class="btnbutton button" [disabled]="!articulosAgregados" value="Solicitud Electronica de Pedido">
+
+              <input *ngIf="sidebarComponent.contienePermiso(130)" type="submit" aria-hidden="true" (click)="GuardarOrdenCompra(DataNewOrden, true)"
+                name="Generar Compra" class="btnbutton button" [disabled]="!articulosAgregados" value="Generar Compra">
+
+              <input *ngIf="sidebarComponent.contienePermiso(131)" type="submit" aria-hidden="true" (click)="MakePdf(DataNewOrden, 2)"
+                name="Generar PDF" class="btnbutton button" [disabled]="!articulosAgregados" value="Generar PDF">
+
+              <input type="submit" aria-hidden="true" (click)="GuardarOrdenCompra(DataNewOrden, false)" name="Guardar" class="btnbutton button"
+                [disabled]="!articulosAgregados" value="Guardar">
+
+            </div>
+
+          </form>
+          <!-- ***************************************************************** -->
+
+        </aw-wizard-step>
+      </aw-wizard>
+
+    </div>
+  </div>
+  <!-- ************************* Seleccion de articulos **************************** -->
+
+  <div id="ArticulosModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Artículos </h3>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="tablacompras">
+            <div class="centrar buscar-paginacion">
+              <div class="buscar-paginacion2">
+                <input type="text" class="form-control" name="searchStringArt" placeholder="Buscar" [(ngModel)]="searchStringArt">
+              </div>
+              <div class="buscar-paginacion2">
+                <select class="form-control" name="itempageArt" [(ngModel)]="itempageArt">
+                  <option value="5" selected="selected">Articulos Por Página</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive panel-body">
+              <table width="100%" class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Articulo</th>
+                    <th class="center">Seleccionar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr (click)="clickFilaArt(data.id_articulo);" class="odd gradeX" *ngFor="let data of DataJsonArticulos | modalarticulosingoc: searchStringArt | paginate: { itemsPerPage: itempageArt, currentPage: selart ,id: 'selarticulo'}">
+                    <td>{{data.id_articulo}}</td>
+                    <td>{{data.nombre}}</td>
+                    <td class="center">
+                      <input type="radio" name="DataNewArticulo.id_articulo" value="{{data.id_articulo}}" [(ngModel)]="DataNewArticulo.id_articulo"
+                        required>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="centrarpaginacion">
+              <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="selart = $event" id="selarticulo"></pagination-controls>
+            </div>
+            <div class="centrar2" *ngIf="asig_articulos">
+              <a *ngIf="mas_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="loadMasArticulos(DataNewOrden.id_pro)"
+                title="Agregar Articulo">
+                <img src="assets/images/plus.png" width="15" height="15" class="btnReportes">
+                Mas Articulos <!-- 1 -->
+              </a>
+              <a *ngIf="menos_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="loadArticulosNegociacion(DataNewOrden.id_pro)"
+                title="Agregar Articulo">
+                <img src="assets/images/minus.png" width="15" height="15" class="btnReportes">
+                Menos Articulos <!-- 1 -->
+              </a>
+            </div>
+            <div class="centrar2" *ngIf="!asig_articulos">
+              <a *ngIf="mas_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="LoadTodosArticulosCompras()"
+                title="Agregar Articulo">
+                <img src="assets/images/plus.png" width="15" height="15" class="btnReportes">
+                Mas Articulos <!-- 2 -->
+              </a>
+              <a *ngIf="menos_articulos" type="button" data-toggle="tooltip" data-placement="top" (click)="LoadUltimosArticulosPorProveedor(DataNewOrden.id_pro)"
+                title="Agregar Articulo">
+                <img src="assets/images/minus.png" width="15" height="15" class="btnReportes">
+                Menos Articulos <!-- 2 -->
+              </a>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="GuardarArticuloSel(DataNewArticulo.id_articulo, DataNewOrden)" [disabled]="!DataNewArticulo.id_articulo"
+              data-dismiss="modal" class="btnbutton">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ****************************** Fin Seleccion de articulos ********************************** -->
+
+  <!-- myModal3 ES EL MODAL PARA SOLICITAR LA CONFIRMACION DE ELIMINAR UN ARTICULO DEL ARREGLO DE ListaArticulosAgregados-->
+
+  <div id="eliminarArt" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Confirmación</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="centrarmodal">
+            <h4>Esta seguro de Eliminar El Producto</h4>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="DeleteArticulo(idTablaEliminar)" data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ********************************* Fin Modal EliminarArticulos ***************************** -->
+
+  <!-- ***************************** Modal Cancelar Orden ***************************** -->
+  <div id="cancelarOrden" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Confirmación</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <b> Esta seguro que desea salir sin guardar cambios</b>
+          </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button [routerLink]="['/compras/ordencompra']" data-dismiss="modal" class="btnbutton">Si</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ************************* Fin Modal Cancelar Orden ********************************** -->
+
+  <!-- *************************** Modal Solicitud Electronica ************************ -->
+
+  <div id="solicitudElectronica" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="centrarmodal">
+            <h3>Envio de Orden de compra por Correo</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form #solicitudForm="ngForm">
+            <div class="form-group">
+              <label>Correo Destino
+                <b class="asterisco">*</b>:</label>
+              <input type="email" class="form-control" name="DataSolicitudElectronica.correo_destino" [(ngModel)]="DataSolicitudElectronica.correo_destino"
+                placeholder="Email" #corrdestino="ngModel" required
+                [ngClass]="{'is-invalid': !corrdestino.valid && (corrdestino.dirty || corrdestino.touched)}">
+              <span class="invalid-feedback" *ngIf="corrdestino.errors && (corrdestino.dirty || corrdestino.touched)">
+                <li *ngIf=corrdestino.errors.required>
+                  El campo Correo Destino es obligatorio
+                </li>
+              </span>
+            </div>
+            <div class="form-group">
+              <label>Asunto
+                <b class="asterisco">*</b>:</label>
+              <input type="text" class="form-control" name="DataSolicitudElectronica.asunto" [(ngModel)]="DataSolicitudElectronica.asunto"
+                placeholder="Adjutno Orden de Compra" #asunt="ngModel" required
+                [ngClass]="{'is-invalid': !asunt.valid && (asunt.dirty || asunt.touched)}">
+              <span class="invalid-feedback" *ngIf="asunt.errors && (asunt.dirty || asunt.touched)">
+                <li *ngIf=asunt.errors.required>
+                  El campo Asunto es obligatorio
+                </li>
+              </span>
+            </div>
+            <div class="form-group">
+              <label>Texto:</label>
+              <textarea class="form-control" name="DataSolicitudElectronica.contenido" [(ngModel)]="DataSolicitudElectronica.contenido"
+                cols="20" rows="5"></textarea>*Recuerde que por defecto la orden de compra sera adjunta en el correo enviado
+              <br>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="centrar">
+            <button (click)="EnvioSolicitud(DataSolicitudElectronica)" [disabled]="!solicitudForm.valid" data-dismiss="modal" class="btnbutton">Aceptar</button>
+            <button data-dismiss="modal" class="btnbuttoncerrar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

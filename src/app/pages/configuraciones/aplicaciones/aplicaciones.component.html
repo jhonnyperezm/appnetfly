@@ -1,0 +1,328 @@
+<div class="row">
+  <div class="container-fluid contenedorconfig">
+
+    <div class="row color_config">
+      <div class="col-lg-12" align="center">
+        <h1>Aplicaciones</h1>
+      </div>
+    </div>
+
+    <div class="row centrar">
+      <div class="col-md-12">
+      <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(23)"  uiSrefActive="active" role="button" data-toggle="modal" data-target="#CrearAplicacion" data-placement="top" title="Crear Aplicacion">
+        <a>
+          <span class="pull-left">Crear Aplicación</span>
+          <span class="pull-right">
+            <i class="fa fa-arrow-circle-right"></i>
+          </span>
+          <div class="clearfix"></div>
+        </a>
+      </div>
+      <div class="btnrouterlinkconfig" *ngIf="SidebarComponent.contienePermiso(24)"  uiSrefActive="active" (click)="LimpiarFormularioAplicacion();" role="button" data-toggle="modal" data-target="#AsignarAplicacion">
+        <a
+          data-placement="top" title="Asignar Aplicacion">
+          <span class="pull-left">Asignar Aplicación</span>
+          <span class="pull-right">
+            <i class="fa fa-arrow-circle-right"></i>
+          </span>
+          <div class="clearfix"></div>
+        </a>
+      </div></div>
+    </div>
+
+    <div class="tablaconfig">
+      <div class="centrar buscar-paginacionconfig">
+        <div class="buscar-paginacion2">
+          <input type="text" class="form-control" name="searchString" placeholder="Buscar" [(ngModel)]="searchString">
+        </div>
+        <div class="buscar-paginacion2">
+          <select class="form-control" name="itempage" [(ngModel)]="itempage">
+            <option value="5" selected="selected">Apliciones Por Página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+
+        <div class="loading" *ngIf="loader">
+          <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        </div>
+
+        <div class="loadError" *ngIf="LoadError">
+          <div class="alert alert-danger">{{error}}</div>
+        </div>
+        <div *ngIf="LoadTabla && !noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Cliente</th>
+                <th class="center" *ngIf="SidebarComponent.contienePermiso(25)" >Modificar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let data of DataClientesAplicacion | aplicaciones : searchString | paginate: { itemsPerPage: itempage, currentPage: p }">
+                <td>{{data.nombre}}</td>
+                <td class="center" *ngIf="SidebarComponent.contienePermiso(25)" >
+                    <a (click)="bindingDataModificar(data);onChangeAppTodo(DataAppRpt, false)" uiSrefActive="active" role="button" data-toggle="modal" data-placement="top" data-target="#VerAplicaciones"
+                      title="Aplicaciones" title="Modificar">
+                      <img src="assets/images/editar.png" width="30" height="30" class="btnReportes">
+                    </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="centrarpaginacion">
+            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+
+        <div *ngIf="LoadTabla && noHayRegistros" class="table-responsive panel-body">
+          <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Nombre Cliente</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX">
+                <td colspan="1" class="center">No hay Registros</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<!--*************************Modal Crear**************************-->
+
+<div id="CrearAplicacion" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Crear Aplicación</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #aplicacionForm="ngForm">
+          <div class="form-group">
+            <label for="nombre">Nombre Aplicación
+              <b class="asterisco">*</b>:</label>
+            <input type="text" class="form-control" name="DataNew.nombre" [(ngModel)]="DataNewApli.nombre" #nameMar="ngModel" (keypress)="kPLetras($event);"
+              minlength="2" maxlength="30" required
+              [ngClass]="{'is-invalid': !nameMar.valid && (nameMar.dirty || nameMar.touched)}"/>
+            <span class="invalid-feedback" *ngIf="nameMar.errors && (nameMar.dirty || nameMar.touched)">
+              <li *ngIf="nameMar.errors.required">
+                El campo nombre es obligatorio
+              </li>
+              <li *ngIf="nameMar.errors.minlength">
+                El campo nombre debe tener mas de 2 caracteres
+              </li>
+              <li *ngIf="nameMar.errors.maxlength">
+                El campo nombre no puede ser mayor a 30 caracteres
+              </li>
+            </span>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmit(DataNewApli);" [disabled]="!aplicacionForm.valid" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" class="btnbuttoncerrar" (click)="LimpiarFormularioCrearAplicacion()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--************************* Fin Modal Crear******************************-->
+
+<!--********************** Inicio Modal Asignar cliente *************************************-->
+
+<div id="AsignarAplicacion" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Asignar Aplicación</h4>
+      </div>
+
+      <div class="modal-body">
+        <form #asignarApliForm="ngForm">
+
+          <div class="form-group">
+            <label for="rol">Cliente Asignado
+              <b class="asterisco">*</b>:</label>
+            <input name="DataNewCliente.nomCliente" (change)="buscaridCliente(DataNewCliente.nomCliente);searchUsuario(DataNewCliente.idCliente);"
+              [(ngModel)]="DataNewCliente.nomCliente" class="form-control" (ngModelChange)="ValidarCliente($event)" list="apli"
+              name="apli" required>
+            <datalist id="apli">
+              <option [value]="data.nombre" required *ngFor="let data of DataClientes"></option>
+            </datalist>
+            <!-- <select class="form-control" name="DataNewCliente.idCliente" (change)="searchUsuario(DataNewCliente.idCliente);" [(ngModel)]="DataNewCliente.idCliente" #nameCli="ngModel" required>
+                <option></option>
+                <option value="{{ data.id }}" *ngFor="let data of DataClientes">{{data.nombre}}</option>
+              </select> -->
+            <!-- <span class="invalid-feedback" *ngIf="nameCli.errors && (nameCli.dirty || nameCli.touched)">
+                <li *ngIf="nameCli.errors.required">
+                  El campo Cliente es obligatorio
+                </li>
+              </span> -->
+          </div>
+        </form>
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringApli" placeholder="Buscar" [(ngModel)]="searchStringApli">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageApli" [(ngModel)]="itempageApli">
+                <option value="10" selected="selected">Aplicaciones Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="loading" *ngIf="loader">
+              <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+            </div>
+            <div class="loadError" *ngIf="LoadError">
+              <div class="alert alert-danger">{{error}}</div>
+            </div>
+            <div *ngIf="LoadTabla">
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Nombre Aplicacion</th>
+                      <th class="center">
+                        Seleccionar Todo
+                        <input type="checkbox" [checked]="checkedAll" (change)="onChangeAppAll(DataAppRpt, $event.target.checked)">
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr (click)="onChangeApp(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataAppRpt | modalaplicacionesnewcliente: searchStringApli | paginate: { itemsPerPage: itempageApli, currentPage: mapli, id: 'modalaplicaciones' }">
+                      <td>{{data.nombre}}</td>
+                      <td class="center">
+                        <input type="checkbox" [checked]="data.checked" name="check" (change)="onChangeApp(data, $event.target.checked)">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mapli = $event" id="modalaplicaciones"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitAsignar(DataNewCliente);" [disabled]="!asignarApliForm.valid || !existeCliente || DataJsonApp.length === 0"
+            data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" (click)="LimpiarFormularioAplicacion()" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--************************** Fin Modal Asignar cliente **********************************-->
+
+<!--*************************Modal Ver Aplicaciones**************************-->
+
+<div id="VerAplicaciones" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Asignar Aplicación</h4>
+        <h6>Cliente: {{DatosEditApp.nombre}}</h6>
+      </div>
+
+      <div class="modal-body">
+        <div class="tablaconfig">
+          <div class="centrar buscar-paginacionconfig">
+            <div class="buscar-paginacion2">
+              <input type="text" class="form-control" name="searchStringApli" placeholder="Buscar" [(ngModel)]="searchStringApli">
+            </div>
+            <div class="buscar-paginacion2">
+              <select class="form-control" name="itempageApli" [(ngModel)]="itempageApli">
+                <option value="5" selected="selected">Aplicaciones Por Página</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="loading" *ngIf="loader">
+              <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+            </div>
+            <div class="loadError" *ngIf="LoadError">
+              <div class="alert alert-danger">{{error}}</div>
+            </div>
+            <div *ngIf="LoadTabla">
+              <div class="panel-body table-responsive">
+                <table width="100%" class="table table-striped table-hover" id="dataTables-example">
+                  <thead>
+                    <tr>
+                      <th>Nombre Aplicacion</th>
+                      <th class="center">
+                        Seleccionar Todo
+                        <input type="checkbox" [checked]="checkedAll" (change)="onChangeAppAll(DataAppRpt, $event.target.checked)">
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr (click)="onChangeApp(data, !data.checked)" class="odd gradeX" *ngFor="let data of DataAppRpt | modalaplicacionesnewcliente: searchStringApli | paginate: { itemsPerPage: itempageApli, currentPage: mapli, id: 'modalaplicaciones' }">
+                      <td>{{data.nombre}}</td>
+                      <td class="center">
+                        <input type="checkbox" [checked]="data.checked" name="check" (change)="onChangeApp(data, $event.target.checked)">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="centrarpaginacion">
+                  <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mapli = $event" id="modalaplicaciones"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="centrar">
+          <button (click)="onSubmitModificar(DatosEditApp);" [disabled]="DataJsonApp.length === 0" data-dismiss="modal" class=" btnbutton">Aceptar</button>
+          <button data-dismiss="modal" (click)="LimpiarFomularioVerApli()" class="btnbuttoncerrar">Cancelar</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!--************************* Fin Modal Ver aplicaciones******************************-->
